@@ -11,10 +11,10 @@ namespace TowerDefense.UI
         public static readonly Vector2 ReferenceResolution = new Vector2(1280f, 720f);
 
         public const float TopBarHeight = 56f;
-        public const float BottomBarHeight = 124f;
+        public const float BottomBarHeight = 88f;
 
         public const float TowerCardWidth = 170f;
-        public const float TowerCardHeight = 96f;
+        public const float TowerCardHeight = 64f;
         public const float TowerCardGap = 12f;
 
         // 配色

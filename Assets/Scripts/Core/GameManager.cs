@@ -34,6 +34,7 @@ namespace TowerDefense.Core
         private readonly List<Enemy> _heapRecycle = new List<Enemy>();
 
         private Coroutine _gameLoop;
+        private Coroutine _barrage;
         private int _gold;
         private int _lives;
         private int _waveIndex;
@@ -205,6 +206,7 @@ namespace TowerDefense.Core
             }
 
             State = GameState.Victory;
+            IsDoubleSpeed = false;
             Time.timeScale = 0f; // 结束定格
         }
 
@@ -271,7 +273,9 @@ namespace TowerDefense.Core
         {
             State = GameState.GameOver;
             StopGameLoop();
+            StopBarrage();
             WaveSpawner.Reset();
+            IsDoubleSpeed = false;
             Time.timeScale = 0f;
         }
 
@@ -498,7 +502,17 @@ namespace TowerDefense.Core
         {
             if (State != GameState.Running || !CanBarrage) return;
             _power = 0f;
-            StartCoroutine(BarrageRoutine());
+            StopBarrage();
+            _barrage = StartCoroutine(BarrageRoutine());
+        }
+
+        private void StopBarrage()
+        {
+            if (_barrage != null)
+            {
+                StopCoroutine(_barrage);
+                _barrage = null;
+            }
         }
 
         private IEnumerator BarrageRoutine()
@@ -516,6 +530,8 @@ namespace TowerDefense.Core
                 elapsed += GameConfig.BarrageTickInterval;
                 yield return new WaitForSeconds(GameConfig.BarrageTickInterval);
             }
+
+            _barrage = null;
         }
 
         private void FireBarrageSpread(float angleOffset)
@@ -548,6 +564,7 @@ namespace TowerDefense.Core
         public void Restart()
         {
             StopGameLoop();
+            StopBarrage();
             _enemies.Clear();
             _towers.Clear();
             CreateWorld();

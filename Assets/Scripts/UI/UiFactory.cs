@@ -100,6 +100,17 @@ namespace TowerDefense.UI
 
             var button = go.AddComponent<Button>();
             button.targetGraphic = image;
+            button.colors = new ColorBlock
+            {
+                normalColor = bgColor,
+                highlightedColor = Color.Lerp(bgColor, Color.white, 0.18f),
+                pressedColor = Color.Lerp(bgColor, Color.black, 0.18f),
+                selectedColor = bgColor,
+                disabledColor = new Color(0.5f, 0.5f, 0.5f, 0.5f),
+                colorMultiplier = 1f,
+                fadeDuration = 0.1f,
+            };
+
             if (onClick != null)
             {
                 button.onClick.AddListener(() => onClick());

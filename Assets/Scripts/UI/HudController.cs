@@ -70,16 +70,16 @@ namespace TowerDefense.UI
             _livesText = CreateStat(top.transform, "Lives", 16f, 72f);
             _goldText = CreateStat(top.transform, "Gold", 90f, 84f);
             _waveText = CreateStat(top.transform, "Wave", 176f, 110f);
-            _scoreText = CreateStat(top.transform, "Score", 290f, 110f);
+            _scoreText = CreateStat(top.transform, "Score", 290f, 100f);
 
             var powerLabel = UiFactory.CreateText(top.transform, "PowerLabel", "P点", UiTheme.FontSize, UiTheme.TextDim, TextAnchor.MiddleLeft);
-            SetLeftAnchor(powerLabel.rectTransform, 402f, 44f);
+            SetLeftAnchor(powerLabel.rectTransform, 392f, 44f);
 
             var powerBar = UiFactory.CreateProgressBar(top.transform, "PowerBar", UiTheme.PowerBar, UiTheme.PowerBarBg);
-            SetCenterAnchor(powerBar.background.rectTransform, new Vector2(0f, 1f), new Vector2(448f, -28f), new Vector2(130f, 14f));
+            SetCenterAnchor(powerBar.background.rectTransform, new Vector2(0f, 1f), new Vector2(500f, -28f), new Vector2(110f, 14f));
             _powerFill = powerBar.fill;
 
-            _stateText = CreateStat(top.transform, "State", 590f, 120f);
+            _stateText = CreateStat(top.transform, "State", 568f, 120f);
 
             _speedLabel = CreateTopButton(top.transform, "Speed", "速度 1x", 432f, 96f, ToggleSpeed, out _);
             _targetingLabel = CreateTopButton(top.transform, "Targeting", "索敌", 238f, 186f, CycleTargeting, out _);
@@ -130,6 +130,8 @@ namespace TowerDefense.UI
             var card = new TowerCard { Type = type };
 
             var button = UiFactory.CreateButton(parent, def.DisplayName, string.Empty, UiTheme.CardBg, UiTheme.FontSizeCardSub, () => GameManager.Instance?.TowerPlacer.SelectTower(type));
+            button.transition = Selectable.Transition.None; // 颜色由 RefreshCards 手动管理，避免与 ColorTint 打架
+
             var rt = button.GetComponent<RectTransform>();
             rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0f);
             rt.pivot = new Vector2(0.5f, 0.5f);
@@ -141,13 +143,13 @@ namespace TowerDefense.UI
 
             var icon = UiFactory.CreateImage(button.transform, "Icon", def.Color);
             icon.raycastTarget = false; // 不拦截卡片按钮点击
-            SetCenterAnchor(icon.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 20f), new Vector2(28f, 28f));
+            SetCenterAnchor(icon.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 12f), new Vector2(20f, 20f));
 
             card.Name = UiFactory.CreateText(button.transform, "Name", def.DisplayName, UiTheme.FontSizeCardTitle, UiTheme.TextPrimary);
-            SetCenterAnchor(card.Name.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -4f), new Vector2(160f, 24f));
+            SetCenterAnchor(card.Name.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -6f), new Vector2(150f, 20f));
 
             card.Sub = UiFactory.CreateText(button.transform, "Sub", SubText(def), UiTheme.FontSizeCardSub, UiTheme.TextDim);
-            SetCenterAnchor(card.Sub.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -26f), new Vector2(160f, 20f));
+            SetCenterAnchor(card.Sub.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -22f), new Vector2(150f, 16f));
 
             return card;
         }

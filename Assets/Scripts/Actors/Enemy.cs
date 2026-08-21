@@ -150,6 +150,8 @@ namespace TowerDefense.Actors
 
         private void TryAttackTower()
         {
+            if (!IsAlive) return;
+
             _attackCooldown -= Time.deltaTime;
             if (_attackCooldown > 0f) return;
 
@@ -189,6 +191,7 @@ namespace TowerDefense.Actors
 
         private void ReachBase()
         {
+            _health = 0f; // 标记死亡，避免同帧继续攻击塔
             GameManager.Instance.NotifyEnemyReachedBase(_damageToBase);
             Despawn();
         }
