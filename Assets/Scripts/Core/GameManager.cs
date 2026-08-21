@@ -37,6 +37,8 @@ namespace TowerDefense.Core
         private int _gold;
         private int _lives;
         private int _waveIndex;
+        private int _score;
+        private float _power;
 
         public Transform WorldRoot { get; private set; }
         public MapSystem Map { get; private set; }
@@ -53,6 +55,9 @@ namespace TowerDefense.Core
         public int CurrentWave => _waveIndex + 1; // 1-based，与 HUD 显示一致
         public bool IsDoubleSpeed { get; private set; }
         public int EnemyCount => _enemies.Count;
+        public int Score => _score;
+        public float Power => _power;
+        public bool CanBarrage => _power >= GameConfig.MaxPower;
 
         private void Awake()
         {
@@ -151,6 +156,8 @@ namespace TowerDefense.Core
             _gold = GameConfig.StartingGold;
             _lives = GameConfig.StartingLives;
             _waveIndex = 0;
+            _score = 0;
+            _power = 0f;
             State = GameState.Running;
             _enemies.Clear();
             _towers.Clear();
@@ -234,6 +241,8 @@ namespace TowerDefense.Core
         public void NotifyEnemyKilled(Enemy enemy, int reward)
         {
             AddGold(reward);
+            _score += reward * GameConfig.ScorePerGold;
+            _power = Mathf.Min(GameConfig.MaxPower, _power + GameConfig.PowerPerKill);
         }
 
         public void NotifyEnemyReachedBase(int damage)
@@ -432,6 +441,60 @@ namespace TowerDefense.Core
             int count = System.Enum.GetValues(typeof(TargetingPriority)).Length;
             int next = ((int)TargetingPriority + 1) % count;
             TargetingPriority = (TargetingPriority)next;
+        }
+
+        // ---- 弹幕射击（东方风格）----
+
+        /// <summary>P点攒满后触发弹幕射击：范围扫射 + 跟踪弹，持续数秒。</summary>
+        public void TriggerBarrage()
+        {
+            if (State != GameState.Running || !CanBarrage) return;
+            _power = 0f;
+            StartCoroutine(BarrageRoutine());
+        }
+
+        private IEnumerator BarrageRoutine()
+        {
+            float elapsed = 0f;
+            float angleOffset = 0f;
+            float angleStep = 360f / (GameConfig.BarrageDuration / GameConfig.BarrageTickInterval);
+
+            while (elapsed < GameConfig.BarrageDuration)
+            {
+                FireBarrageSpread(angleOffset);
+                FireBarrageHoming();
+
+                angleOffset += angleStep;
+                elapsed += GameConfig.BarrageTickInterval;
+                yield return new WaitForSeconds(GameConfig.BarrageTickInterval);
+            }
+        }
+
+        private void FireBarrageSpread(float angleOffset)
+        {
+            var origin = Map.CellToWorld(GameConfig.BaseCell);
+            int count = GameConfig.BarrageSpreadPerTick;
+
+            for (int i = 0; i < count; i++)
+            {
+                float angle = (i * (360f / count) + angleOffset) * Mathf.Deg2Rad;
+                var direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+                Projectile.Spawn(GameConfig.BarrageSpread, origin, direction);
+            }
+        }
+
+        private void FireBarrageHoming()
+        {
+            if (_enemies.Count == 0) return;
+
+            var origin = Map.CellToWorld(GameConfig.BaseCell);
+            int count = Mathf.Min(GameConfig.BarrageHomingPerTick, _enemies.Count);
+
+            for (int i = 0; i < count; i++)
+            {
+                var enemy = _enemies[Random.Range(0, _enemies.Count)];
+                Projectile.Spawn(GameConfig.BarrageHoming, origin, enemy);
+            }
         }
 
         public void Restart()

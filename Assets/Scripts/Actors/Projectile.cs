@@ -36,6 +36,7 @@ namespace TowerDefense.Actors
 
         private bool _fading;
         private float _fadeTimer;
+        private bool _directional; // 无目标的直线弹（弹幕扫射用）
 
         private static Projectile CreateNew()
         {
@@ -56,10 +57,21 @@ namespace TowerDefense.Actors
             return p;
         }
 
+        /// <summary>生成一枚朝指定方向飞行的直线弹（弹幕扫射用）。</summary>
+        public static Projectile Spawn(TowerDefinition definition, Vector2 position, Vector2 direction)
+        {
+            var p = Pool.Get();
+            p.transform.SetParent(GameManager.Instance.WorldRoot, true);
+            p.transform.position = position;
+            p.ConfigureDirectional(definition, direction);
+            return p;
+        }
+
         private void Configure(TowerDefinition definition, Enemy target)
         {
             _definition = definition;
             _target = target;
+            _directional = false;
             _damage = definition.Damage;
             _splashRadius = definition.SplashRadius;
             _speed = definition.ProjectileSpeed;
@@ -76,11 +88,34 @@ namespace TowerDefense.Actors
             _velocity = direction * _speed;
         }
 
+        private void ConfigureDirectional(TowerDefinition definition, Vector2 direction)
+        {
+            _definition = definition;
+            _target = null;
+            _directional = true;
+            _damage = definition.Damage;
+            _splashRadius = definition.SplashRadius;
+            _speed = definition.ProjectileSpeed;
+            _homingStrength = 0f;
+            _lifetime = MaxLifetime;
+            _fading = false;
+            _fadeTimer = 0f;
+
+            _sprite.sprite = SpriteFactory.Circle(0.09f, definition.ProjectileColor);
+            _velocity = direction.normalized * _speed;
+        }
+
         private void Update()
         {
             if (_fading)
             {
                 UpdateFade();
+                return;
+            }
+
+            if (_directional)
+            {
+                UpdateDirectional();
                 return;
             }
 
@@ -116,6 +151,25 @@ namespace TowerDefense.Actors
             if (Vector2.Distance(transform.position, _target.transform.position) <= hitDistance)
             {
                 Impact(_target);
+            }
+        }
+
+        private void UpdateDirectional()
+        {
+            transform.position += (Vector3)(_velocity * Time.deltaTime);
+
+            _lifetime -= Time.deltaTime;
+            if (_lifetime <= 0f)
+            {
+                Despawn();
+                return;
+            }
+
+            // 扫射弹命中：碰到最近敌人即结算（可带 AOE）。
+            var hit = GameManager.Instance.GetNearestEnemy(transform.position, HitRadius + 0.35f);
+            if (hit != null)
+            {
+                Impact(hit);
             }
         }
 

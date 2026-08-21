@@ -41,10 +41,12 @@ namespace TowerDefense.UI
         {
             GUI.Box(HudLayout.TopBar, string.Empty, _boxStyle);
 
-            GUI.Label(new Rect(14f, 13f, 90f, 24f), $"生命 {gm.Lives}", _labelStyle);
-            GUI.Label(new Rect(100f, 13f, 100f, 24f), $"金币 {gm.Gold}", _labelStyle);
-            GUI.Label(new Rect(196f, 13f, 120f, 24f), $"波次 {gm.CurrentWave}/{gm.TotalWaves}", _labelStyle);
-            GUI.Label(new Rect(310f, 13f, 160f, 24f), StateText(gm.State), _labelStyle);
+            GUI.Label(new Rect(14f, 13f, 70f, 24f), $"生命 {gm.Lives}", _labelStyle);
+            GUI.Label(new Rect(86f, 13f, 80f, 24f), $"金币 {gm.Gold}", _labelStyle);
+            GUI.Label(new Rect(166f, 13f, 100f, 24f), $"波次 {gm.CurrentWave}/{gm.TotalWaves}", _labelStyle);
+            GUI.Label(new Rect(266f, 13f, 110f, 24f), $"得分 {gm.Score}", _labelStyle);
+            GUI.Label(new Rect(376f, 13f, 120f, 24f), $"P点 {gm.Power:0.00}", _labelStyle);
+            GUI.Label(new Rect(496f, 13f, 120f, 24f), StateText(gm.State), _labelStyle);
 
             if (GUI.Button(HudLayout.SpeedButton, gm.IsDoubleSpeed ? "速度 2x" : "速度 1x", _buttonStyle))
             {
@@ -55,6 +57,15 @@ namespace TowerDefense.UI
             {
                 gm.CycleTargetingPriority();
             }
+
+            bool canBarrage = gm.CanBarrage && gm.State == GameState.Running;
+            GUI.enabled = canBarrage;
+            string barrageLabel = gm.CanBarrage ? "弹幕射击" : $"弹幕 P {gm.Power:0.0}";
+            if (GUI.Button(HudLayout.BarrageButton, barrageLabel, _buttonStyle))
+            {
+                gm.TriggerBarrage();
+            }
+            GUI.enabled = true;
 
             if (GUI.Button(HudLayout.RestartButton, "重新开始", _buttonStyle))
             {

@@ -33,6 +33,46 @@ namespace TowerDefense.Core
         public const float DefeatRefundRatio = 0.2f;   // 被打败返还 20%
         public const float RetreatRefundRatio = 0.5f;  // 主动撤退返还 50%
 
+        // ---- P点 / 得分 / 弹幕射击（东方风格）----
+        public const float MaxPower = 1f;              // P点上限（满值即可释放弹幕）
+        public const float PowerPerKill = 0.04f;       // 每击杀获得的 P点
+        public const int ScorePerGold = 10;            // 得分换算（击杀金币 × 10）
+        public const float BarrageDuration = 1.6f;     // 弹幕持续时间（秒）
+        public const float BarrageTickInterval = 0.12f;// 弹幕发射间隔（秒）
+        public const int BarrageSpreadPerTick = 10;    // 每次扫射子弹数
+        public const int BarrageHomingPerTick = 6;     // 每次追踪弹数
+
+        // 弹幕用的子弹定义（不属于可放置塔，仅作为 Projectile 的数值载体）。
+        public static readonly TowerDefinition BarrageHoming = new TowerDefinition
+        {
+            Type = TowerType.Gun,
+            DisplayName = "弹幕追踪弹",
+            Cost = 0,
+            Damage = 18f,
+            ProjectileSpeed = 10f,
+            HomingStrength = 70f,
+            SplashRadius = 0.5f,
+            SlowFactor = 1f,
+            SlowDuration = 0f,
+            Color = new Color(1f, 0.4f, 0.6f),
+            ProjectileColor = new Color(1f, 0.5f, 0.7f),
+        };
+
+        public static readonly TowerDefinition BarrageSpread = new TowerDefinition
+        {
+            Type = TowerType.Gun,
+            DisplayName = "弹幕扫射弹",
+            Cost = 0,
+            Damage = 12f,
+            ProjectileSpeed = 14f,
+            HomingStrength = 0f,
+            SplashRadius = 0f,
+            SlowFactor = 1f,
+            SlowDuration = 0f,
+            Color = new Color(0.5f, 0.9f, 1f),
+            ProjectileColor = new Color(0.55f, 0.9f, 1f),
+        };
+
         // ---- 基地（蓝门）与正交路线（每条一个红门）----
         public static readonly Vector2Int BaseCell = new Vector2Int(8, 0);
 
