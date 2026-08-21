@@ -61,6 +61,7 @@ namespace TowerDefense.Core
         public int Score => _score;
         public float Power => _power;
         public bool CanBarrage => _power >= GameConfig.MaxPower;
+        public float DamageMultiplier => 1f + _power * GameConfig.PowerDamageBonus;
         public int TotalKills => _totalKills;
         public int LeakedEnemies => _leakedEnemies;
         public int WavesCleared => _wavesCleared;

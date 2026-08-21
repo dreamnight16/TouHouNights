@@ -36,6 +36,7 @@ namespace TowerDefense.Core
         // ---- P点 / 得分 / 弹幕射击（东方风格）----
         public const float MaxPower = 1f;              // P点上限（满值即可释放弹幕）
         public const float PowerPerKill = 0.04f;       // 每击杀获得的 P点
+        public const float PowerDamageBonus = 0.5f;    // P点满时塔伤害加成（+50%）
         public const int ScorePerGold = 10;            // 得分换算（击杀金币 × 10）
         public const int TargetScore = 6000;           // 评分用的目标得分（得分效率=得分/目标）
         public const float BarrageDuration = 1.6f;     // 弹幕持续时间（秒）

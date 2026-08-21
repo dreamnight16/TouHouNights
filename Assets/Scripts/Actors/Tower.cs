@@ -110,7 +110,7 @@ namespace TowerDefense.Actors
         private void Fire(Enemy target)
         {
             var muzzle = (Vector2)transform.position + (Vector2)_barrel.up * 0.5f;
-            Projectile.Spawn(_definition, muzzle, target);
+            Projectile.Spawn(_definition, muzzle, target, GameManager.Instance.DamageMultiplier);
         }
     }
 }

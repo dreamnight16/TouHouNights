@@ -50,10 +50,16 @@ namespace TowerDefense.Actors
 
         public static Projectile Spawn(TowerDefinition definition, Vector2 position, Enemy target)
         {
+            return Spawn(definition, position, target, 1f);
+        }
+
+        /// <summary>生成一枚追踪/直线弹，并乘以伤害倍率（塔伤害随 P点 成长）。</summary>
+        public static Projectile Spawn(TowerDefinition definition, Vector2 position, Enemy target, float damageMultiplier)
+        {
             var p = Pool.Get();
             p.transform.SetParent(GameManager.Instance.WorldRoot, true);
             p.transform.position = position;
-            p.Configure(definition, target);
+            p.Configure(definition, target, damageMultiplier);
             return p;
         }
 
@@ -67,12 +73,12 @@ namespace TowerDefense.Actors
             return p;
         }
 
-        private void Configure(TowerDefinition definition, Enemy target)
+        private void Configure(TowerDefinition definition, Enemy target, float damageMultiplier)
         {
             _definition = definition;
             _target = target;
             _directional = false;
-            _damage = definition.Damage;
+            _damage = definition.Damage * damageMultiplier;
             _splashRadius = definition.SplashRadius;
             _speed = definition.ProjectileSpeed;
             _homingStrength = definition.HomingStrength;
