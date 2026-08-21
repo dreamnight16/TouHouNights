@@ -20,9 +20,8 @@ namespace TowerDefense.UI
         public static Rect BottomBar => new Rect(0f, Screen.height - BottomBarHeight, Screen.width, BottomBarHeight);
 
         // 顶栏右侧按钮（从右往左排）。
-        public static Rect SpeedButton => new Rect(Screen.width - 536f, 8f, 100f, 32f);
-        public static Rect TargetingButton => new Rect(Screen.width - 428f, 8f, 188f, 32f);
-        public static Rect StartButton => new Rect(Screen.width - 232f, 8f, 106f, 32f);
+        public static Rect SpeedButton => new Rect(Screen.width - 430f, 8f, 100f, 32f);
+        public static Rect TargetingButton => new Rect(Screen.width - 322f, 8f, 188f, 32f);
         public static Rect RestartButton => new Rect(Screen.width - 118f, 8f, 106f, 32f);
 
         public static Rect HintLabel => new Rect(14f, Screen.height - 22f, 620f, 18f);

@@ -1,35 +1,39 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TowerDefense.Core;
+using TowerDefense.Data;
 using TowerDefense.Util;
 
 namespace TowerDefense.Systems
 {
     /// <summary>
-    /// 负责构建地图：绘制路径、起点/终点、网格线，并计算哪些格子被路径占据（禁止放塔）。
+    /// 开放地图：绘制多种敌人轨迹（每种敌人一条，固定起点/终点）、网格与基地，
+    /// 并计算哪些格子被轨迹占据（细线，禁止放塔）。
     /// </summary>
     public sealed class MapSystem : MonoBehaviour
     {
-        private Vector2[] _waypoints;
         private readonly HashSet<Vector2Int> _blockedCells = new HashSet<Vector2Int>();
 
-        public Vector2[] Waypoints => _waypoints;
-        public Vector2 StartPosition => _waypoints.Length > 0 ? _waypoints[0] : Vector2.zero;
-        public Vector2 EndPosition => _waypoints.Length > 0 ? _waypoints[_waypoints.Length - 1] : Vector2.zero;
+        public Vector2 StartPosition => GameConfig.StartPosition;
+        public Vector2 EndPosition => GameConfig.EndPosition;
 
         public void Init(Transform parent)
         {
-            _waypoints = GameConfig.Path;
-            BuildPathVisuals(parent);
+            BuildTrajectoryVisuals(parent);
             BuildGridVisuals(parent);
             BuildBaseVisual(parent);
+            BuildStartVisual(parent);
             ComputeBlockedCells();
+        }
+
+        public Vector2[] GetTrajectory(EnemyType type)
+        {
+            return GameConfig.Trajectories[type];
         }
 
         public bool IsCellBlocked(Vector2Int cell)
         {
-            if (_blockedCells.Contains(cell)) return true;
-            return false;
+            return _blockedCells.Contains(cell);
         }
 
         public Vector2 CellToWorld(Vector2Int cell)
@@ -46,15 +50,25 @@ namespace TowerDefense.Systems
 
         // ---- 绘制 ----
 
-        private void BuildPathVisuals(Transform parent)
+        private void BuildTrajectoryVisuals(Transform parent)
         {
-            var root = new GameObject("PathVisuals");
+            var root = new GameObject("TrajectoryVisuals");
             root.transform.SetParent(parent, false);
 
-            for (int i = 0; i < _waypoints.Length - 1; i++)
+            foreach (var pair in GameConfig.Trajectories)
             {
-                var a = _waypoints[i];
-                var b = _waypoints[i + 1];
+                var color = GameConfig.Enemies[pair.Key].Color;
+                color.a = 0.75f;
+                DrawPolyline(pair.Value, color, root.transform);
+            }
+        }
+
+        private static void DrawPolyline(Vector2[] points, Color color, Transform parent)
+        {
+            for (int i = 0; i < points.Length - 1; i++)
+            {
+                var a = points[i];
+                var b = points[i + 1];
                 float length = Vector2.Distance(a, b);
                 int steps = Mathf.CeilToInt(length / 0.2f);
                 var dir = (b - a) / length;
@@ -63,21 +77,13 @@ namespace TowerDefense.Systems
                 {
                     var pos = a + dir * (length * s / steps);
                     var go = new GameObject("PathDot");
-                    go.transform.SetParent(root.transform, false);
+                    go.transform.SetParent(parent, false);
                     go.transform.position = pos;
                     var sr = go.AddComponent<SpriteRenderer>();
-                    sr.sprite = SpriteFactory.Square(0.55f, GameConfig.PathColor);
+                    sr.sprite = SpriteFactory.Square(0.30f, color);
                     sr.sortingOrder = 1;
                 }
             }
-
-            // 起点标记。
-            var start = new GameObject("Start");
-            start.transform.SetParent(root.transform, false);
-            start.transform.position = StartPosition;
-            var startSr = start.AddComponent<SpriteRenderer>();
-            startSr.sprite = SpriteFactory.Circle(0.45f, new Color(0.9f, 0.55f, 0.2f));
-            startSr.sortingOrder = 2;
         }
 
         private void BuildGridVisuals(Transform parent)
@@ -120,6 +126,16 @@ namespace TowerDefense.Systems
             sr.sortingOrder = 2;
         }
 
+        private void BuildStartVisual(Transform parent)
+        {
+            var go = new GameObject("Start");
+            go.transform.SetParent(parent, false);
+            go.transform.position = StartPosition;
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = SpriteFactory.Circle(0.45f, new Color(0.9f, 0.55f, 0.2f));
+            sr.sortingOrder = 2;
+        }
+
         // ---- 阻挡判定 ----
 
         private void ComputeBlockedCells()
@@ -131,9 +147,10 @@ namespace TowerDefense.Systems
                 for (int y = -4; y <= 4; y++)
                 {
                     var center = new Vector2(x, y);
-                    for (int i = 0; i < _waypoints.Length - 1; i++)
+
+                    foreach (var trajectory in GameConfig.Trajectories.Values)
                     {
-                        if (DistanceToSegment(center, _waypoints[i], _waypoints[i + 1]) < GameConfig.PathCorridorWidth)
+                        if (IsNearAnySegment(center, trajectory))
                         {
                             _blockedCells.Add(new Vector2Int(x, y));
                             break;
@@ -141,6 +158,18 @@ namespace TowerDefense.Systems
                     }
                 }
             }
+        }
+
+        private static bool IsNearAnySegment(Vector2 p, Vector2[] points)
+        {
+            for (int i = 0; i < points.Length - 1; i++)
+            {
+                if (DistanceToSegment(p, points[i], points[i + 1]) < GameConfig.TrajectoryBlockRadius)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static float DistanceToSegment(Vector2 p, Vector2 a, Vector2 b)

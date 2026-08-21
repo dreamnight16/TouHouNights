@@ -1,12 +1,13 @@
 using UnityEngine;
 using TowerDefense.Core;
 using TowerDefense.Data;
+using TowerDefense.UI;
 using TowerDefense.Util;
 
 namespace TowerDefense.Actors
 {
     /// <summary>
-    /// 防御塔：在射程内锁定敌人并攻击。
+    /// 防御塔：在射程内锁定敌人并攻击，同时具备生命值（可被敌人击毁）。
     /// - 普通塔：发射子弹（直线 / 追踪 / AOE 由定义决定）；
     /// - 减速塔：不发射子弹，改为对范围内敌人持续施加减速。
     /// 索敌使用 GameManager 的全局智能索敌策略（★★★）。
@@ -15,16 +16,23 @@ namespace TowerDefense.Actors
     {
         private TowerDefinition _definition;
         private Transform _barrel;
+        private HealthBarView _healthBar;
         private float _cooldown;
+        private float _maxHealth;
+        private float _health;
 
         public TowerDefinition Definition => _definition;
         public TowerType Type => _definition.Type;
+        public Vector2Int Cell { get; private set; }
 
-        public void Configure(TowerDefinition definition, Vector2 position)
+        public void Configure(TowerDefinition definition, Vector2Int cell, Vector2 position)
         {
             _definition = definition;
+            Cell = cell;
             transform.position = position;
             _cooldown = 0f;
+            _maxHealth = definition.MaxHealth;
+            _health = _maxHealth;
 
             // 塔身（圆形底盘）。
             var body = new GameObject("Body");
@@ -42,6 +50,9 @@ namespace TowerDefense.Actors
             barrelSr.sprite = SpriteFactory.Square(1f, Color.Lerp(definition.Color, Color.white, 0.25f));
             barrelSr.sortingOrder = 7;
             _barrel = barrel.transform;
+
+            _healthBar = HealthBarView.Attach(transform, 0.8f, 0.09f, 0.62f);
+            _healthBar.SetRatio(1f);
         }
 
         private void Update()
@@ -71,6 +82,19 @@ namespace TowerDefense.Actors
             {
                 Fire(target);
                 _cooldown = 1f / Mathf.Max(0.05f, _definition.FireRate);
+            }
+        }
+
+        public void TakeDamage(float damage)
+        {
+            if (_health <= 0f) return;
+
+            _health = Mathf.Max(0f, _health - damage);
+            _healthBar.SetRatio(_health / _maxHealth);
+
+            if (_health <= 0f)
+            {
+                GameManager.Instance.OnTowerDefeated(this);
             }
         }
 

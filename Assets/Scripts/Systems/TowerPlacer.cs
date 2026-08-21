@@ -10,9 +10,9 @@ using TowerDefense.Util;
 namespace TowerDefense.Systems
 {
     /// <summary>
-    /// 塔的放置交互：鼠标悬停显示格子高亮 + 格子化攻击范围预览，点击合法格子放置所选塔。
-    /// 鼠标输入全部走 IMGUI 的 <see cref="Event"/>，不依赖旧版 Input 类，
-    /// 因此不受 Unity 6 的「Active Input Handling（旧/新 Input System）」影响。
+    /// 塔的放置/撤退交互：鼠标悬停显示格子高亮 + 格子化攻击范围预览；
+    /// 点击空地放塔，点击已有塔则撤退（返还 50%）。
+    /// 鼠标输入全部走 IMGUI 的 <see cref="Event"/>，不依赖旧版 Input 类。
     /// </summary>
     public sealed class TowerPlacer : MonoBehaviour
     {
@@ -21,7 +21,7 @@ namespace TowerDefense.Systems
         private const int MinCellY = -4;
         private const int MaxCellY = 4;
 
-        private readonly HashSet<Vector2Int> _occupiedCells = new HashSet<Vector2Int>();
+        private readonly Dictionary<Vector2Int, Tower> _occupiedTowers = new Dictionary<Vector2Int, Tower>();
         private readonly List<SpriteRenderer> _rangeCells = new List<SpriteRenderer>();
 
         private TowerType _selectedType = TowerType.Gun;
@@ -43,16 +43,20 @@ namespace TowerDefense.Systems
             _selectedType = type;
         }
 
+        public void FreeCell(Vector2Int cell)
+        {
+            _occupiedTowers.Remove(cell);
+        }
+
         private void OnGUI()
         {
             var gm = GameManager.Instance;
             var cam = Camera.main;
             if (gm == null || cam == null) return;
 
-            // Event.current.mousePosition 是 GUI 坐标（左上角原点、y 向下）。
             var guiPosition = Event.current.mousePosition;
 
-            if (gm.State != GameState.Building)
+            if (gm.State != GameState.Running)
             {
                 HidePreview();
                 return;
@@ -64,7 +68,8 @@ namespace TowerDefense.Systems
 
             var cell = gm.Map.WorldToCell(mouseWorld);
             bool inBounds = cell.x >= MinCellX && cell.x <= MaxCellX && cell.y >= MinCellY && cell.y <= MaxCellY;
-            bool blocked = inBounds && (gm.Map.IsCellBlocked(cell) || _occupiedCells.Contains(cell));
+            bool mapBlocked = inBounds && gm.Map.IsCellBlocked(cell);
+            bool occupied = inBounds && _occupiedTowers.ContainsKey(cell);
 
             var definition = GameConfig.Towers[_selectedType];
 
@@ -72,9 +77,17 @@ namespace TowerDefense.Systems
             {
                 _hoverCell.gameObject.SetActive(true);
                 _hoverCell.transform.position = gm.Map.CellToWorld(cell);
-                _hoverCell.color = blocked ? GameConfig.GridBlockedColor : GameConfig.GridHoverColor;
 
-                UpdateRangePreview(cell, definition.RangeCells);
+                if (occupied)
+                {
+                    _hoverCell.color = GameConfig.GridRetreatColor;
+                    HideRangePreview();
+                }
+                else
+                {
+                    _hoverCell.color = mapBlocked ? GameConfig.GridBlockedColor : GameConfig.GridHoverColor;
+                    UpdateRangePreview(cell, definition.RangeCells);
+                }
             }
             else
             {
@@ -84,10 +97,16 @@ namespace TowerDefense.Systems
             if (Event.current.type == EventType.MouseDown
                 && Event.current.button == 0
                 && inBounds
-                && !blocked
                 && !HudLayout.IsPointerOverGui(guiPosition))
             {
-                TryPlace(cell, definition);
+                if (_occupiedTowers.TryGetValue(cell, out var tower))
+                {
+                    gm.RetreatTower(tower);
+                }
+                else if (!mapBlocked)
+                {
+                    TryPlace(cell, definition);
+                }
             }
         }
 
@@ -134,13 +153,18 @@ namespace TowerDefense.Systems
             }
         }
 
-        private void HidePreview()
+        private void HideRangePreview()
         {
-            _hoverCell.gameObject.SetActive(false);
             for (int i = 0; i < _rangeCells.Count; i++)
             {
                 _rangeCells[i].gameObject.SetActive(false);
             }
+        }
+
+        private void HidePreview()
+        {
+            _hoverCell.gameObject.SetActive(false);
+            HideRangePreview();
         }
 
         private void TryPlace(Vector2Int cell, TowerDefinition definition)
@@ -152,9 +176,11 @@ namespace TowerDefense.Systems
             var go = new GameObject(definition.DisplayName);
             go.transform.SetParent(gm.WorldRoot, false);
             var tower = go.AddComponent<Tower>();
-            tower.Configure(definition, position);
+            tower.Configure(definition, cell, position);
 
-            _occupiedCells.Add(cell);
+            _occupiedTowers.Add(cell, tower);
+            gm.NotifyTowerSpawned(tower);
+
             EffectFactory.SpawnBurst(position, definition.Color, 0.5f, 0.25f);
         }
 

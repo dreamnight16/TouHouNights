@@ -29,6 +29,7 @@ namespace TowerDefense.Actors
         private float _speed;
         private float _slowFactor = 1f;
         private float _slowTimer;
+        private float _attackCooldown;
         private int _damageToBase;
         private int _goldReward;
 
@@ -86,6 +87,7 @@ namespace TowerDefense.Actors
             _goldReward = definition.GoldReward;
             _slowFactor = 1f;
             _slowTimer = 0f;
+            _attackCooldown = 0f;
 
             _sprite.sprite = SpriteFactory.Circle(definition.Radius, definition.Color);
             _healthBar.SetRatio(1f);
@@ -97,6 +99,7 @@ namespace TowerDefense.Actors
 
             TickSlow();
             MoveTowardsNextWaypoint();
+            TryAttackTower();
         }
 
         private void MoveTowardsNextWaypoint()
@@ -130,6 +133,18 @@ namespace TowerDefense.Actors
                 _slowTimer = 0f;
                 _slowFactor = 1f; // 减速结束，恢复原速
             }
+        }
+
+        private void TryAttackTower()
+        {
+            _attackCooldown -= Time.deltaTime;
+            if (_attackCooldown > 0f) return;
+
+            var tower = GameManager.Instance.GetNearestTower(transform.position, _definition.AttackRange);
+            if (tower == null) return;
+
+            tower.TakeDamage(_definition.AttackDamage);
+            _attackCooldown = _definition.AttackInterval;
         }
 
         public void TakeDamage(float damage)

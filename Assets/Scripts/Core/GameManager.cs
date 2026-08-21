@@ -1,7 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TowerDefense.Actors;
 using TowerDefense.Data;
+using TowerDefense.Effects;
 using TowerDefense.Systems;
 using TowerDefense.UI;
 using TowerDefense.Util;
@@ -10,22 +12,25 @@ namespace TowerDefense.Core
 {
     public enum GameState
     {
-        Building,
-        WaveActive,
+        Running,   // 建造与战斗并行，无独立阶段
         GameOver,
         Victory
     }
 
     /// <summary>
-    /// 游戏总控：持有经济、生命、波次、敌人注册表与全局索敌策略，
-    /// 并负责相机、地图、UI、刷怪器、放置器的组装与重启。
+    /// 游戏总控：持有经济、生命、敌人/塔注册表、空间哈希与全局索敌策略，
+    /// 负责相机、地图、UI、刷怪器、放置器的组装；波次由协程自动推进（无需手动开波）。
     /// </summary>
     public sealed class GameManager : MonoBehaviour
     {
         public static GameManager Instance { get; private set; }
 
         private readonly List<Enemy> _enemies = new List<Enemy>();
+        private readonly List<Tower> _towers = new List<Tower>();
+        private readonly SpatialGrid _spatialGrid = new SpatialGrid();
+        private readonly List<Enemy> _queryBuffer = new List<Enemy>();
 
+        private Coroutine _gameLoop;
         private int _gold;
         private int _lives;
         private int _waveIndex;
@@ -35,7 +40,7 @@ namespace TowerDefense.Core
         public TowerPlacer TowerPlacer { get; private set; }
         public WaveSpawner WaveSpawner { get; private set; }
 
-        public GameState State { get; private set; } = GameState.Building;
+        public GameState State { get; private set; } = GameState.Running;
         public TargetingPriority TargetingPriority { get; private set; } = TargetingPriority.Nearest;
 
         public int Gold => _gold;
@@ -61,24 +66,13 @@ namespace TowerDefense.Core
             CreateHud();
             CreateWorld();
             ResetState();
+            StartGame();
         }
 
         private void Update()
         {
-            if (State != GameState.WaveActive) return;
-
-            if (WaveSpawner.IsWaveComplete && _enemies.Count == 0)
-            {
-                if (_waveIndex + 1 >= TotalWaves)
-                {
-                    State = GameState.Victory;
-                }
-                else
-                {
-                    _waveIndex++;
-                    State = GameState.Building;
-                }
-            }
+            // 每帧重建空间哈希，供塔索敌、子弹重锁定、AOE、减速范围查询使用。
+            _spatialGrid.Rebuild(_enemies);
         }
 
         // ---- 组装 ----
@@ -152,11 +146,47 @@ namespace TowerDefense.Core
             _gold = GameConfig.StartingGold;
             _lives = GameConfig.StartingLives;
             _waveIndex = 0;
-            State = GameState.Building;
+            State = GameState.Running;
             _enemies.Clear();
+            _towers.Clear();
             WaveSpawner.Reset();
             SetSpeed(false);
         }
+
+        // ---- 波次自动推进 ----
+
+        private void StartGame()
+        {
+            StopGameLoop();
+            _gameLoop = StartCoroutine(GameLoop());
+        }
+
+        private void StopGameLoop()
+        {
+            if (_gameLoop != null)
+            {
+                StopCoroutine(_gameLoop);
+                _gameLoop = null;
+            }
+        }
+
+        private IEnumerator GameLoop()
+        {
+            yield return new WaitForSeconds(2f); // 开局缓冲，期间仍可建塔
+
+            for (int i = 0; i < TotalWaves; i++)
+            {
+                _waveIndex = i;
+                WaveSpawner.StartWave(i);
+                yield return new WaitUntil(() => WaveSpawner.IsWaveComplete && _enemies.Count == 0);
+                yield return new WaitForSeconds(1.2f); // 波间短暂缓冲，仍可建塔
+            }
+
+            State = GameState.Victory;
+            Time.timeScale = 0f; // 结束定格
+        }
+
+        // ---- 速度 ----
 
         private void SetSpeed(bool doubleSpeed)
         {
@@ -166,6 +196,7 @@ namespace TowerDefense.Core
 
         public void ToggleSpeed()
         {
+            if (State != GameState.Running) return;
             SetSpeed(!IsDoubleSpeed);
         }
 
@@ -206,55 +237,116 @@ namespace TowerDefense.Core
             if (_lives <= 0)
             {
                 _lives = 0;
-                State = GameState.GameOver;
+                OnGameOver();
             }
+        }
+
+        private void OnGameOver()
+        {
+            State = GameState.GameOver;
+            StopGameLoop();
+            WaveSpawner.Reset();
+            Time.timeScale = 0f;
+        }
+
+        // ---- 塔生命周期 ----
+
+        public void NotifyTowerSpawned(Tower tower)
+        {
+            _towers.Add(tower);
+        }
+
+        public void NotifyTowerRemoved(Tower tower)
+        {
+            _towers.Remove(tower);
+        }
+
+        public Tower GetNearestTower(Vector2 position, float range)
+        {
+            Tower best = null;
+            float bestSqr = range * range;
+
+            foreach (var tower in _towers)
+            {
+                if (tower == null) continue;
+                float sqr = (position - (Vector2)tower.transform.position).sqrMagnitude;
+                if (sqr <= bestSqr)
+                {
+                    bestSqr = sqr;
+                    best = tower;
+                }
+            }
+
+            return best;
+        }
+
+        /// <summary>主动撤退塔，返还 50% 金币。</summary>
+        public void RetreatTower(Tower tower)
+        {
+            if (tower == null) return;
+            AddGold(Mathf.RoundToInt(tower.Definition.Cost * GameConfig.RetreatRefundRatio));
+            RemoveTower(tower);
+        }
+
+        /// <summary>塔被敌人击毁，返还 20% 金币。</summary>
+        public void OnTowerDefeated(Tower tower)
+        {
+            if (tower == null) return;
+            AddGold(Mathf.RoundToInt(tower.Definition.Cost * GameConfig.DefeatRefundRatio));
+            RemoveTower(tower);
+        }
+
+        private void RemoveTower(Tower tower)
+        {
+            _towers.Remove(tower);
+            TowerPlacer.FreeCell(tower.Cell);
+            EffectFactory.SpawnBurst(tower.transform.position, tower.Definition.Color, 0.6f, 0.3f);
+            Destroy(tower.gameObject);
         }
 
         // ---- 索敌 / 伤害 ----
 
         public Enemy SelectTarget(Vector2 position, int rangeCells)
         {
+            _spatialGrid.QueryChebyshev(position, rangeCells, _queryBuffer);
+
             Enemy best = null;
-
-            foreach (var enemy in _enemies)
+            for (int i = 0; i < _queryBuffer.Count; i++)
             {
-                if (enemy == null || !enemy.IsAlive) continue;
-                if (Chebyshev(position, enemy.transform.position) > rangeCells) continue;
-
+                var enemy = _queryBuffer[i];
                 if (best == null || IsBetter(enemy, best, position))
                 {
                     best = enemy;
                 }
             }
-
             return best;
         }
 
         public Enemy GetNearestEnemy(Vector2 position, float range)
         {
-            Enemy best = null;
-            float bestDistance = range * range;
+            _spatialGrid.QueryCircle(position, range, _queryBuffer);
 
-            foreach (var enemy in _enemies)
+            Enemy best = null;
+            float bestSqr = float.MaxValue;
+            for (int i = 0; i < _queryBuffer.Count; i++)
             {
-                if (enemy == null || !enemy.IsAlive) continue;
-                float sqrDistance = (position - (Vector2)enemy.transform.position).sqrMagnitude;
-                if (sqrDistance <= bestDistance)
+                var enemy = _queryBuffer[i];
+                float sqr = (position - (Vector2)enemy.transform.position).sqrMagnitude;
+                if (sqr < bestSqr)
                 {
-                    bestDistance = sqrDistance;
+                    bestSqr = sqr;
                     best = enemy;
                 }
             }
-
             return best;
         }
 
         public void DamageEnemiesInRadius(Vector2 center, float radius, float damage)
         {
-            var snapshot = new List<Enemy>(_enemies);
-            foreach (var enemy in snapshot)
+            _spatialGrid.QueryCircle(center, radius + 0.5f, _queryBuffer);
+            for (int i = 0; i < _queryBuffer.Count; i++)
             {
-                if (enemy == null || !enemy.IsAlive) continue;
+                var enemy = _queryBuffer[i];
                 if (Vector2.Distance(center, enemy.transform.position) <= radius + enemy.Radius)
                 {
                     enemy.TakeDamage(damage);
@@ -264,20 +356,11 @@ namespace TowerDefense.Core
 
         public void ApplySlowInRange(Vector2 center, int rangeCells, float factor, float duration)
         {
-            var snapshot = new List<Enemy>(_enemies);
-            foreach (var enemy in snapshot)
+            _spatialGrid.QueryChebyshev(center, rangeCells, _queryBuffer);
+            for (int i = 0; i < _queryBuffer.Count; i++)
             {
-                if (enemy == null || !enemy.IsAlive) continue;
-                if (Chebyshev(center, enemy.transform.position) <= rangeCells)
-                {
-                    enemy.ApplySlow(factor, duration);
-                }
+                _queryBuffer[i].ApplySlow(factor, duration);
             }
-        }
-
-        private static float Chebyshev(Vector2 a, Vector2 b)
-        {
-            return Mathf.Max(Mathf.Abs(a.x - b.x), Mathf.Abs(a.y - b.y));
         }
 
         private bool IsBetter(Enemy candidate, Enemy current, Vector2 position)
@@ -304,19 +387,14 @@ namespace TowerDefense.Core
             TargetingPriority = (TargetingPriority)next;
         }
 
-        public void StartNextWave()
-        {
-            if (State != GameState.Building || _waveIndex >= TotalWaves) return;
-
-            State = GameState.WaveActive;
-            WaveSpawner.StartWave(_waveIndex);
-        }
-
         public void Restart()
         {
+            StopGameLoop();
             _enemies.Clear();
+            _towers.Clear();
             CreateWorld();
             ResetState();
+            StartGame();
         }
     }
 }

@@ -46,6 +46,7 @@ namespace TowerDefense.Data
         public string DisplayName;
         public int Cost;
 
+        public float MaxHealth;         // 塔的生命值（可被敌人击毁）
         public int RangeCells;          // 索敌/攻击范围（格子数，Chebyshev 距离，与格子高亮一致）
         public float FireRate;          // 每秒攻击次数
         public float Damage;            // 单次伤害（减速塔为 0）
@@ -74,6 +75,10 @@ namespace TowerDefense.Data
 
         public int GoldReward;
         public int DamageToBase;        // 到达终点后对基地造成的伤害
+
+        public float AttackDamage;      // 对防御塔的单次伤害
+        public float AttackRange;       // 攻击塔的索敌范围（近战）
+        public float AttackInterval;    // 攻击间隔（秒）
 
         public Color Color;
     }

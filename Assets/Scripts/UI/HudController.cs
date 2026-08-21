@@ -56,14 +56,6 @@ namespace TowerDefense.UI
                 gm.CycleTargetingPriority();
             }
 
-            bool canStart = gm.State == GameState.Building && gm.WaveIndex < gm.TotalWaves;
-            GUI.enabled = canStart;
-            if (GUI.Button(HudLayout.StartButton, "开始下一波", _buttonStyle))
-            {
-                gm.StartNextWave();
-            }
-            GUI.enabled = true;
-
             if (GUI.Button(HudLayout.RestartButton, "重新开始", _buttonStyle))
             {
                 gm.Restart();
@@ -94,7 +86,7 @@ namespace TowerDefense.UI
                 }
             }
 
-            GUI.Label(HudLayout.HintLabel, "左键点击空地放置所选塔（不可放置时格子变红）", _hintStyle);
+            GUI.Label(HudLayout.HintLabel, "左键点空地放塔 · 点已有塔撤退(返还50%)", _hintStyle);
         }
 
         private void DrawOverlay(GameManager gm)
@@ -191,8 +183,7 @@ namespace TowerDefense.UI
         {
             switch (state)
             {
-                case GameState.Building: return "布防阶段";
-                case GameState.WaveActive: return "战斗进行中";
+                case GameState.Running: return "进行中";
                 case GameState.GameOver: return "游戏失败";
                 case GameState.Victory: return "胜利";
                 default: return state.ToString();

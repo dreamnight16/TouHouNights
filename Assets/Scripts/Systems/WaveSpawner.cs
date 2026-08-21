@@ -42,12 +42,12 @@ namespace TowerDefense.Systems
         private IEnumerator SpawnRoutine(WaveDefinition wave, float healthScale)
         {
             var definition = GameConfig.Enemies[wave.EnemyType];
-            var path = GameManager.Instance.Map.Waypoints;
+            var trajectory = GameManager.Instance.Map.GetTrajectory(wave.EnemyType);
             var spawnPos = GameManager.Instance.Map.StartPosition;
 
             for (int i = 0; i < wave.Count; i++)
             {
-                Enemy.Spawn(definition, healthScale, path, spawnPos);
+                Enemy.Spawn(definition, healthScale, trajectory, spawnPos);
                 _remainingSpawns--;
                 yield return new WaitForSeconds(wave.SpawnInterval);
             }
