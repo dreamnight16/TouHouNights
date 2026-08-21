@@ -77,18 +77,26 @@ namespace TowerDefense.Data
         public int DamageToBase;        // 到达终点后对基地造成的伤害
 
         public float AttackDamage;      // 对防御塔的单次伤害
-        public float AttackRange;       // 攻击塔的索敌范围（近战）
+        public int AttackRangeCells;    // 攻击塔的索敌范围（相邻格 = 1）
         public float AttackInterval;    // 攻击间隔（秒）
 
         public Color Color;
     }
 
-    /// <summary>单个波次的描述。</summary>
+    /// <summary>单个刷怪组：同一波次里从某个红门、以某种怪刷一组。</summary>
+    [Serializable]
+    public class SpawnGroup
+    {
+        public EnemyType EnemyType;
+        public int RouteIndex;          // 走哪条正交路线（红门）
+        public int Count;
+        public float SpawnInterval;
+    }
+
+    /// <summary>单个波次 = 多个刷怪组（可同时从多个红门出怪）。</summary>
     [Serializable]
     public class WaveDefinition
     {
-        public EnemyType EnemyType;
-        public int Count;
-        public float SpawnInterval;
+        public SpawnGroup[] Groups;
     }
 }

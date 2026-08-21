@@ -11,7 +11,7 @@ SAST 游戏开发与设计组免试题 · 程序方向 · **选项二 选项 B**
 1. 用 **Unity Hub** 打开本目录 `TowerDefenseUnity`（已在 **Unity 6.5 / 6000.5.9f1** 上验证，其它 Unity 6.x 也可，若提示升级请选择继续）。
 2. 首次打开时 Unity 会自动生成 `Assets/**/*.meta` 与缺失的 `ProjectSettings` 文件，属正常现象，请一并提交。
 3. 若 Unity 提示「没有可打开的场景」，直接新建一个空场景（或保持当前空场景）即可 —— 本工程通过 `RuntimeInitializeOnLoadMethod` 自动启动，**场景里不需要放任何东西**。
-4. 点击 **Play**，游戏会自动创建相机、地图、轨迹、HUD，波次自动推进（建造与战斗并行，无需手动开波）。
+4. 点击 **Play**，游戏会自动创建相机、地图、正交路线、HUD，波次自动推进（建造与战斗并行，无需手动开波）。
 
 > 若你用的是自带 `SampleScene` 的新建工程，同样直接 Play 即可：脚本会自动把已有相机配置为正交俯视相机。
 
@@ -32,7 +32,7 @@ SAST 游戏开发与设计组免试题 · 程序方向 · **选项二 选项 B**
 
 ### 门槛要求（必达）
 
-- **敌人与路径**：敌人沿各自的预设轨迹（每种敌人一条，固定起点/终点）向终点移动，具备血量、死亡销毁与到达终点逻辑 → `Actors/Enemy.cs`、`Systems/MapSystem.cs`。
+- **敌人与路径**：敌人沿正交路线（只上下左右、贴格子）向基地移动，具备血量、死亡销毁与到达终点逻辑；一波可从多个红门同时出怪 → `Actors/Enemy.cs`、`Systems/MapSystem.cs`、`Systems/WaveSpawner.cs`。
 - **索敌与攻击**：防御塔在检测范围内锁定敌人并发射子弹 → `Actors/Tower.cs`、`GameManager.SelectTarget`。
 - **子弹命中**：子弹命中后扣血并销毁子弹 → `Actors/Projectile.cs`。
 
@@ -53,8 +53,8 @@ TowerDefenseUnity/
 ├── Assets/Scripts/
 │   ├── Core/
 │   │   ├── GameBootstrap.cs    # RuntimeInitializeOnLoadMethod 自启动入口
-│   │   ├── GameManager.cs      # 总控：经济/生命/波次/敌塔注册表/空间哈希/索敌/撤退
-│   │   └── GameConfig.cs       # 所有可调数值（轨迹、塔、敌人、波次、返还比例）
+│   │   ├── GameManager.cs      # 总控：经济/生命/波次/敌塔注册表/空间哈希/懒删除堆/索敌/撤退
+│   │   └── GameConfig.cs       # 所有可调数值（正交路线、塔、敌人、波次、返还比例）
 │   ├── Data/
 │   │   └── Definitions.cs      # 枚举 + 可序列化数值定义
 │   ├── Actors/
@@ -62,8 +62,8 @@ TowerDefenseUnity/
 │   │   ├── Tower.cs            # 塔：索敌 + 攻击/减速 + 血量 + 被打败
 │   │   └── Projectile.cs       # 子弹：直线/追踪/AOE/淡出/重锁定（对象池）
 │   ├── Systems/
-│   │   ├── MapSystem.cs        # 开放地图：多条敌人轨迹 + 网格 + 阻挡判定
-│   │   ├── WaveSpawner.cs      # 波次刷怪（按敌人类型选轨迹）
+│   │   ├── MapSystem.cs        # 开放地图：正交路线 + BFS 距离场 + 道路格
+│   │   ├── WaveSpawner.cs      # 波次刷怪（多刷怪组并发，多红门同波）
 │   │   ├── TowerPlacer.cs      # 鼠标放置/撤退交互 + 占用格子登记
 │   │   └── SpatialGrid.cs      # 均匀网格空间哈希（ICPC 式索敌加速）
 │   ├── UI/
@@ -75,6 +75,7 @@ TowerDefenseUnity/
 │   │   └── EffectFactory.cs    # 特效入口
 │   └── Util/
 │       ├── SpriteFactory.cs    # 运行时生成圆形/方形贴图
+│       ├── MinHeap.cs          # 懒删除二叉最小堆（索敌用）
 │       └── ObjectPool.cs       # 通用对象池
 ├── Packages/manifest.json
 ├── ProjectSettings/
@@ -84,7 +85,7 @@ TowerDefenseUnity/
 ## 五、设计说明（要点）
 
 - **零资源自包含**：所有 Sprite 由 `SpriteFactory` 在运行时用 `Texture2D` 生成，工程无任何外部图片/模型依赖。
-- **开放地图 + 多轨迹**：每种敌人一条固定轨迹（固定起点/终点），地图大部分开放可放塔，仅轨迹细线禁放。
+- **开放地图 + 正交路线 + 多红门**：3 条贴格子的正交路线（只上下左右），每条一个红门、汇入同一蓝门；一波可同时从多个红门出怪，同一条路线可走不同怪。
 - **建造/战斗并行**：波次由协程自动推进，放塔、撤退、开火与刷怪同时进行，无独立阶段。
 - **塔的血量与撤退**：敌人会近战攻击范围内的塔；塔被击毁返还 20%、主动撤退返还 50% 金币。
 - **不用物理引擎做命中检测**：敌人与子弹的碰撞按距离在 `Update` 里手动判断，省去 Layer/Tag/Rigidbody 的配置，保证开箱即跑。
@@ -92,6 +93,8 @@ TowerDefenseUnity/
 - **数据驱动**：塔/敌人/波次数值集中在 `GameConfig`，便于平衡性调整。
 - **全局索敌策略**：三种策略（最近/最低血/最近终点）全部实现并可运行时切换，塔只需调用 `SelectTarget`。
 - **空间哈希（ICPC 式优化）**：`SpatialGrid` 用均匀网格把敌人分桶，索敌/AOE/减速的范围查询从 O(N) 全量扫描降为 O(1) 摊销 + 候选集过滤，每帧由 `GameManager` 重建。
+- **懒删除堆（ICPC 式优化）**：`MinHeap` 用二叉最小堆维护「血量最低 / 距终点最近」两个全局索引，Pop 时跳过已死敌人（懒删除），塔取目标时「弹死/弹界 + 回插」。
+- **BFS 距离场（ICPC 式优化）**：`MapSystem` 把道路格建成 4 邻接无权图，从蓝门 BFS 出每个道路格到基地的最短格数，供「距终点最近」策略 O(1) 查表。
 
 ## 六、提交到 GitHub
 

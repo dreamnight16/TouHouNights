@@ -37,19 +37,32 @@ namespace TowerDefense.Actors
         public float Radius => _definition != null ? _definition.Radius : 0.3f;
         public float HealthRatio => _maxHealth > 0f ? _health / _maxHealth : 0f;
 
-        /// <summary>从出生点到终点剩余的总路程（用于「距离终点最近」索敌策略）。</summary>
+        /// <summary>
+        /// 到基地的最短距离（用于「距离终点最近」索敌策略）。
+        /// 直接用 MapSystem 预计算的 BFS 距离场（O(1) 查表），替代逐段求和。
+        /// </summary>
         public float DistanceToEnd
         {
             get
             {
-                if (_path == null || _waypointIndex >= _path.Length) return 0f;
-                float d = Vector2.Distance(transform.position, _path[_waypointIndex]);
-                for (int i = _waypointIndex + 1; i < _path.Length; i++)
+                var map = GameManager.Instance != null ? GameManager.Instance.Map : null;
+                if (map != null)
                 {
-                    d += Vector2.Distance(_path[i - 1], _path[i]);
+                    return map.GetDistanceToBase(map.WorldToCell(transform.position));
                 }
-                return d;
+                return ComputeRouteDistance();
             }
+        }
+
+        private float ComputeRouteDistance()
+        {
+            if (_path == null || _waypointIndex >= _path.Length) return 0f;
+            float d = Vector2.Distance(transform.position, _path[_waypointIndex]);
+            for (int i = _waypointIndex + 1; i < _path.Length; i++)
+            {
+                d += Vector2.Distance(_path[i - 1], _path[i]);
+            }
+            return d;
         }
 
         private static Enemy CreateNew()
@@ -140,7 +153,7 @@ namespace TowerDefense.Actors
             _attackCooldown -= Time.deltaTime;
             if (_attackCooldown > 0f) return;
 
-            var tower = GameManager.Instance.GetNearestTower(transform.position, _definition.AttackRange);
+            var tower = GameManager.Instance.GetNearestTower(transform.position, _definition.AttackRangeCells);
             if (tower == null) return;
 
             tower.TakeDamage(_definition.AttackDamage);

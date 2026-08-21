@@ -7,52 +7,52 @@ using TowerDefense.Data;
 namespace TowerDefense.Systems
 {
     /// <summary>
-    /// 波次刷怪器：按波次定义在路径起点生成敌人，血量随波次线性成长。
+    /// 波次刷怪器：一个波次含多个刷怪组（SpawnGroup），可同时从多个红门出怪。
+    /// 用「剩余刷怪数 + 活跃协程数」双计数判定波次是否刷完。
     /// </summary>
     public sealed class WaveSpawner : MonoBehaviour
     {
-        private Coroutine _waveCoroutine;
         private int _remainingSpawns;
+        private int _activeSpawners;
 
-        public bool IsWaveComplete => _remainingSpawns <= 0 && _waveCoroutine == null;
+        public bool IsWaveComplete => _remainingSpawns <= 0 && _activeSpawners == 0;
 
         public void StartWave(int waveIndex)
         {
-            if (_waveCoroutine != null)
-            {
-                StopCoroutine(_waveCoroutine);
-            }
+            Reset();
 
             var wave = GameConfig.Waves[waveIndex];
-            _remainingSpawns = wave.Count;
             float healthScale = 1f + waveIndex * 0.18f;
-            _waveCoroutine = StartCoroutine(SpawnRoutine(wave, healthScale));
+
+            foreach (var group in wave.Groups)
+            {
+                _remainingSpawns += group.Count;
+                _activeSpawners++;
+                StartCoroutine(SpawnGroup(group, healthScale));
+            }
         }
 
         public void Reset()
         {
-            if (_waveCoroutine != null)
-            {
-                StopCoroutine(_waveCoroutine);
-                _waveCoroutine = null;
-            }
+            StopAllCoroutines();
             _remainingSpawns = 0;
+            _activeSpawners = 0;
         }
 
-        private IEnumerator SpawnRoutine(WaveDefinition wave, float healthScale)
+        private IEnumerator SpawnGroup(SpawnGroup group, float healthScale)
         {
-            var definition = GameConfig.Enemies[wave.EnemyType];
-            var trajectory = GameManager.Instance.Map.GetTrajectory(wave.EnemyType);
-            var spawnPos = GameManager.Instance.Map.StartPosition;
+            var definition = GameConfig.Enemies[group.EnemyType];
+            var route = GameManager.Instance.Map.GetRouteWorld(group.RouteIndex);
+            var spawnPos = GameManager.Instance.Map.GetSpawnPosition(group.RouteIndex);
 
-            for (int i = 0; i < wave.Count; i++)
+            for (int i = 0; i < group.Count; i++)
             {
-                Enemy.Spawn(definition, healthScale, trajectory, spawnPos);
+                Enemy.Spawn(definition, healthScale, route, spawnPos);
                 _remainingSpawns--;
-                yield return new WaitForSeconds(wave.SpawnInterval);
+                yield return new WaitForSeconds(group.SpawnInterval);
             }
 
-            _waveCoroutine = null;
+            _activeSpawners--;
         }
     }
 }

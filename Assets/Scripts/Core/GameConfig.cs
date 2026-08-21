@@ -5,7 +5,7 @@ using TowerDefense.Data;
 namespace TowerDefense.Core
 {
     /// <summary>
-    /// 集中存放所有可调数值（地图、轨迹、塔、敌人、波次、经济）。
+    /// 集中存放所有可调数值（地图、正交路线、塔、敌人、波次、经济）。
     /// 这样设计便于平衡性调整，避免把魔法数字散落在逻辑代码里。
     /// </summary>
     public static class GameConfig
@@ -14,7 +14,6 @@ namespace TowerDefense.Core
         public const float WorldHalfWidth = 9f;
         public const float WorldHalfHeight = 5f;
         public const float GridCellSize = 1f;
-        public const float TrajectoryBlockRadius = 0.45f; // 轨迹禁放塔的半径（细线，保持地图开放）
 
         public const float CameraSize = 5.4f;
 
@@ -24,7 +23,6 @@ namespace TowerDefense.Core
         public static readonly Color GridBlockedColor = new Color(1f, 0.30f, 0.30f, 0.40f);
         public static readonly Color GridRetreatColor = new Color(0.30f, 0.60f, 1f, 0.35f);
         public static readonly Color RangeCellColor = new Color(0.35f, 0.60f, 1f, 0.22f);
-        public static readonly Color PathColor = new Color(0.30f, 0.34f, 0.42f);
         public static readonly Color BaseColor = new Color(0.20f, 0.85f, 0.40f);
 
         // ---- 经济 / 基地 ----
@@ -35,48 +33,44 @@ namespace TowerDefense.Core
         public const float DefeatRefundRatio = 0.2f;   // 被打败返还 20%
         public const float RetreatRefundRatio = 0.5f;  // 主动撤退返还 50%
 
-        // ---- 敌人轨迹（开放地图：固定起点/终点，每种敌人走不同路线）----
-        public static readonly Vector2 StartPosition = new Vector2(-9.0f, 0.0f);
-        public static readonly Vector2 EndPosition = new Vector2(9.0f, 0.0f);
+        // ---- 基地（蓝门）与正交路线（每条一个红门）----
+        public static readonly Vector2Int BaseCell = new Vector2Int(8, 0);
 
-        public static readonly Dictionary<EnemyType, Vector2[]> Trajectories =
-            new Dictionary<EnemyType, Vector2[]>
+        // 路线只由水平/竖直段组成，坐标均为格子中心；每条路线从红门走到蓝门。
+        public static readonly Vector2Int[][] Routes = new Vector2Int[][]
         {
+            // 路线 0：左上红门
+            new Vector2Int[]
             {
-                EnemyType.Normal,
-                new Vector2[]
-                {
-                    new Vector2(-9.0f, 0.0f),
-                    new Vector2(-4.0f, 1.0f),
-                    new Vector2(0.0f, -1.0f),
-                    new Vector2(4.0f, 1.0f),
-                    new Vector2(9.0f, 0.0f),
-                }
+                new Vector2Int(-8, 3),
+                new Vector2Int(-3, 3),
+                new Vector2Int(-3, 0),
+                new Vector2Int(8, 0),
             },
+            // 路线 1：左下红门
+            new Vector2Int[]
             {
-                EnemyType.Fast,
-                new Vector2[]
-                {
-                    new Vector2(-9.0f, 0.0f),
-                    new Vector2(-5.0f, -2.0f),
-                    new Vector2(-1.0f, 2.0f),
-                    new Vector2(3.0f, -2.0f),
-                    new Vector2(7.0f, 2.0f),
-                    new Vector2(9.0f, 0.0f),
-                }
+                new Vector2Int(-8, -3),
+                new Vector2Int(-3, -3),
+                new Vector2Int(-3, 0),
+                new Vector2Int(8, 0),
             },
+            // 路线 2：上方红门
+            new Vector2Int[]
             {
-                EnemyType.Tank,
-                new Vector2[]
-                {
-                    new Vector2(-9.0f, 0.0f),
-                    new Vector2(-7.0f, 3.0f),
-                    new Vector2(-2.0f, 3.0f),
-                    new Vector2(2.0f, -3.0f),
-                    new Vector2(6.0f, -3.0f),
-                    new Vector2(9.0f, 0.0f),
-                }
+                new Vector2Int(1, 4),
+                new Vector2Int(1, 1),
+                new Vector2Int(5, 1),
+                new Vector2Int(5, 0),
+                new Vector2Int(8, 0),
             },
+        };
+
+        public static readonly Color[] RouteColors = new Color[]
+        {
+            new Color(0.95f, 0.55f, 0.25f),
+            new Color(0.25f, 0.70f, 0.95f),
+            new Color(0.75f, 0.45f, 0.95f),
         };
 
         // ---- 塔的定义 ----
@@ -181,7 +175,7 @@ namespace TowerDefense.Core
                     GoldReward = 10,
                     DamageToBase = 1,
                     AttackDamage = 12f,
-                    AttackRange = 0.8f,
+                    AttackRangeCells = 1,
                     AttackInterval = 1.0f,
                     Color = new Color(0.95f, 0.35f, 0.30f),
                 }
@@ -198,7 +192,7 @@ namespace TowerDefense.Core
                     GoldReward = 12,
                     DamageToBase = 1,
                     AttackDamage = 9f,
-                    AttackRange = 0.75f,
+                    AttackRangeCells = 1,
                     AttackInterval = 0.8f,
                     Color = new Color(1.00f, 0.85f, 0.25f),
                 }
@@ -215,24 +209,82 @@ namespace TowerDefense.Core
                     GoldReward = 30,
                     DamageToBase = 2,
                     AttackDamage = 30f,
-                    AttackRange = 0.95f,
+                    AttackRangeCells = 1,
                     AttackInterval = 1.2f,
                     Color = new Color(0.80f, 0.35f, 0.95f),
                 }
             },
         };
 
-        // ---- 波次（血量随波次线性成长，见 WaveSpawner）----
+        // ---- 波次（多个刷怪组，可同时从多个红门出怪；血量随波次线性成长）----
         public static readonly WaveDefinition[] Waves = new WaveDefinition[]
         {
-            new WaveDefinition { EnemyType = EnemyType.Normal, Count = 6,  SpawnInterval = 0.9f },
-            new WaveDefinition { EnemyType = EnemyType.Normal, Count = 8,  SpawnInterval = 0.8f },
-            new WaveDefinition { EnemyType = EnemyType.Fast,   Count = 8,  SpawnInterval = 0.6f },
-            new WaveDefinition { EnemyType = EnemyType.Normal, Count = 12, SpawnInterval = 0.6f },
-            new WaveDefinition { EnemyType = EnemyType.Tank,   Count = 4,  SpawnInterval = 1.4f },
-            new WaveDefinition { EnemyType = EnemyType.Fast,   Count = 14, SpawnInterval = 0.5f },
-            new WaveDefinition { EnemyType = EnemyType.Tank,   Count = 6,  SpawnInterval = 1.2f },
-            new WaveDefinition { EnemyType = EnemyType.Normal, Count = 18, SpawnInterval = 0.45f },
+            new WaveDefinition
+            {
+                Groups = new SpawnGroup[]
+                {
+                    new SpawnGroup { EnemyType = EnemyType.Normal, RouteIndex = 0, Count = 3, SpawnInterval = 0.8f },
+                    new SpawnGroup { EnemyType = EnemyType.Normal, RouteIndex = 1, Count = 3, SpawnInterval = 0.8f },
+                }
+            },
+            new WaveDefinition
+            {
+                Groups = new SpawnGroup[]
+                {
+                    new SpawnGroup { EnemyType = EnemyType.Normal, RouteIndex = 2, Count = 4, SpawnInterval = 0.7f },
+                    new SpawnGroup { EnemyType = EnemyType.Fast,   RouteIndex = 0, Count = 4, SpawnInterval = 0.6f },
+                }
+            },
+            new WaveDefinition
+            {
+                Groups = new SpawnGroup[]
+                {
+                    new SpawnGroup { EnemyType = EnemyType.Fast, RouteIndex = 1, Count = 6, SpawnInterval = 0.5f },
+                    new SpawnGroup { EnemyType = EnemyType.Fast, RouteIndex = 2, Count = 4, SpawnInterval = 0.5f },
+                }
+            },
+            new WaveDefinition
+            {
+                Groups = new SpawnGroup[]
+                {
+                    new SpawnGroup { EnemyType = EnemyType.Tank,   RouteIndex = 0, Count = 2, SpawnInterval = 1.2f },
+                    new SpawnGroup { EnemyType = EnemyType.Normal, RouteIndex = 1, Count = 6, SpawnInterval = 0.6f },
+                    new SpawnGroup { EnemyType = EnemyType.Normal, RouteIndex = 2, Count = 6, SpawnInterval = 0.6f },
+                }
+            },
+            new WaveDefinition
+            {
+                Groups = new SpawnGroup[]
+                {
+                    new SpawnGroup { EnemyType = EnemyType.Tank, RouteIndex = 2, Count = 2, SpawnInterval = 1.2f },
+                    new SpawnGroup { EnemyType = EnemyType.Fast, RouteIndex = 0, Count = 6, SpawnInterval = 0.5f },
+                }
+            },
+            new WaveDefinition
+            {
+                Groups = new SpawnGroup[]
+                {
+                    new SpawnGroup { EnemyType = EnemyType.Fast, RouteIndex = 1, Count = 8, SpawnInterval = 0.45f },
+                    new SpawnGroup { EnemyType = EnemyType.Tank, RouteIndex = 0, Count = 2, SpawnInterval = 1.2f },
+                }
+            },
+            new WaveDefinition
+            {
+                Groups = new SpawnGroup[]
+                {
+                    new SpawnGroup { EnemyType = EnemyType.Tank, RouteIndex = 1, Count = 3, SpawnInterval = 1.2f },
+                    new SpawnGroup { EnemyType = EnemyType.Tank, RouteIndex = 2, Count = 3, SpawnInterval = 1.2f },
+                }
+            },
+            new WaveDefinition
+            {
+                Groups = new SpawnGroup[]
+                {
+                    new SpawnGroup { EnemyType = EnemyType.Normal, RouteIndex = 0, Count = 8, SpawnInterval = 0.45f },
+                    new SpawnGroup { EnemyType = EnemyType.Normal, RouteIndex = 1, Count = 8, SpawnInterval = 0.45f },
+                    new SpawnGroup { EnemyType = EnemyType.Fast,   RouteIndex = 2, Count = 6, SpawnInterval = 0.45f },
+                }
+            },
         };
     }
 }

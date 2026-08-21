@@ -18,7 +18,7 @@ namespace TowerDefense.Core
     }
 
     /// <summary>
-    /// 游戏总控：持有经济、生命、敌人/塔注册表、空间哈希与全局索敌策略，
+    /// 游戏总控：持有经济、生命、敌人/塔注册表、空间哈希、懒删除堆与全局索敌策略，
     /// 负责相机、地图、UI、刷怪器、放置器的组装；波次由协程自动推进（无需手动开波）。
     /// </summary>
     public sealed class GameManager : MonoBehaviour
@@ -28,7 +28,10 @@ namespace TowerDefense.Core
         private readonly List<Enemy> _enemies = new List<Enemy>();
         private readonly List<Tower> _towers = new List<Tower>();
         private readonly SpatialGrid _spatialGrid = new SpatialGrid();
+        private readonly MinHeap<Enemy> _lowestHealthHeap = new MinHeap<Enemy>(enemy => enemy.HealthRatio);
+        private readonly MinHeap<Enemy> _closestToEndHeap = new MinHeap<Enemy>(enemy => enemy.DistanceToEnd);
         private readonly List<Enemy> _queryBuffer = new List<Enemy>();
+        private readonly List<Enemy> _heapRecycle = new List<Enemy>();
 
         private Coroutine _gameLoop;
         private int _gold;
@@ -71,8 +74,10 @@ namespace TowerDefense.Core
 
         private void Update()
         {
-            // 每帧重建空间哈希，供塔索敌、子弹重锁定、AOE、减速范围查询使用。
+            // 每帧重建空间哈希与懒删除堆，供索敌/AOE/减速/子弹重锁定查询使用。
             _spatialGrid.Rebuild(_enemies);
+            _lowestHealthHeap.Rebuild(_enemies);
+            _closestToEndHeap.Rebuild(_enemies);
         }
 
         // ---- 组装 ----
@@ -261,16 +266,19 @@ namespace TowerDefense.Core
             _towers.Remove(tower);
         }
 
-        public Tower GetNearestTower(Vector2 position, float range)
+        public Tower GetNearestTower(Vector2 position, int rangeCells)
         {
             Tower best = null;
-            float bestSqr = range * range;
+            float bestSqr = float.MaxValue;
 
             foreach (var tower in _towers)
             {
                 if (tower == null) continue;
-                float sqr = (position - (Vector2)tower.transform.position).sqrMagnitude;
-                if (sqr <= bestSqr)
+                var p = (Vector2)tower.transform.position;
+                if (Chebyshev(position, p) > rangeCells) continue;
+
+                float sqr = (position - p).sqrMagnitude;
+                if (sqr < bestSqr)
                 {
                     bestSqr = sqr;
                     best = tower;
@@ -308,18 +316,67 @@ namespace TowerDefense.Core
 
         public Enemy SelectTarget(Vector2 position, int rangeCells)
         {
+            switch (TargetingPriority)
+            {
+                case TargetingPriority.LowestHealth:
+                    return SelectByHeap(_lowestHealthHeap, position, rangeCells);
+                case TargetingPriority.ClosestToEnd:
+                    return SelectByHeap(_closestToEndHeap, position, rangeCells);
+                case TargetingPriority.Nearest:
+                default:
+                    return SelectNearest(position, rangeCells);
+            }
+        }
+
+        private Enemy SelectNearest(Vector2 position, int rangeCells)
+        {
             _spatialGrid.QueryChebyshev(position, rangeCells, _queryBuffer);
 
             Enemy best = null;
+            float bestSqr = float.MaxValue;
             for (int i = 0; i < _queryBuffer.Count; i++)
             {
                 var enemy = _queryBuffer[i];
-                if (best == null || IsBetter(enemy, best, position))
+                float sqr = (position - (Vector2)enemy.transform.position).sqrMagnitude;
+                if (sqr < bestSqr)
                 {
+                    bestSqr = sqr;
                     best = enemy;
                 }
             }
             return best;
+        }
+
+        private Enemy SelectByHeap(MinHeap<Enemy> heap, Vector2 position, int rangeCells)
+        {
+            _heapRecycle.Clear();
+            Enemy result = null;
+
+            while (heap.Count > 0)
+            {
+                var top = heap.Peek();
+                if (top == null || !top.IsAlive)
+                {
+                    heap.Pop(); // 懒删除：跳过已死敌人
+                    continue;
+                }
+
+                if (Chebyshev(position, top.transform.position) <= rangeCells)
+                {
+                    result = top;
+                    break;
+                }
+
+                _heapRecycle.Add(heap.Pop()); // 出界项暂存，稍后回插
+            }
+
+            for (int i = 0; i < _heapRecycle.Count; i++)
+            {
+                heap.Push(_heapRecycle[i]);
+            }
+            _heapRecycle.Clear();
+
+            return result;
         }
 
         public Enemy GetNearestEnemy(Vector2 position, float range)
@@ -363,19 +420,9 @@ namespace TowerDefense.Core
             }
         }
 
-        private bool IsBetter(Enemy candidate, Enemy current, Vector2 position)
+        private static float Chebyshev(Vector2 a, Vector2 b)
         {
-            switch (TargetingPriority)
-            {
-                case TargetingPriority.LowestHealth:
-                    return candidate.HealthRatio < current.HealthRatio;
-                case TargetingPriority.ClosestToEnd:
-                    return candidate.DistanceToEnd < current.DistanceToEnd;
-                case TargetingPriority.Nearest:
-                default:
-                    return (candidate.transform.position - (Vector3)position).sqrMagnitude
-                         < (current.transform.position - (Vector3)position).sqrMagnitude;
-            }
+            return Mathf.Max(Mathf.Abs(a.x - b.x), Mathf.Abs(a.y - b.y));
         }
 
         // ---- 流程控制 ----
