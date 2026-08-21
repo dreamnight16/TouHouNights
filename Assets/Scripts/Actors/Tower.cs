@@ -49,9 +49,9 @@ namespace TowerDefense.Actors
             // 减速塔：持续范围减速，不发射子弹。
             if (_definition.Damage <= 0f && _definition.SlowFactor < 1f)
             {
-                GameManager.Instance.ApplySlowInRadius(
+                GameManager.Instance.ApplySlowInRange(
                     transform.position,
-                    _definition.Range,
+                    _definition.RangeCells,
                     _definition.SlowFactor,
                     _definition.SlowDuration);
                 return;
@@ -59,7 +59,7 @@ namespace TowerDefense.Actors
 
             _cooldown -= Time.deltaTime;
 
-            var target = GameManager.Instance.SelectTarget(transform.position, _definition.Range);
+            var target = GameManager.Instance.SelectTarget(transform.position, _definition.RangeCells);
             if (target == null)
             {
                 return;

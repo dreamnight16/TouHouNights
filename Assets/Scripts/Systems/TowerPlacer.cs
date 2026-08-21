@@ -10,7 +10,7 @@ using TowerDefense.Util;
 namespace TowerDefense.Systems
 {
     /// <summary>
-    /// 塔的放置交互：鼠标悬停显示格子高亮 + 射程预览，点击合法格子放置所选塔。
+    /// 塔的放置交互：鼠标悬停显示格子高亮 + 格子化攻击范围预览，点击合法格子放置所选塔。
     /// 鼠标输入全部走 IMGUI 的 <see cref="Event"/>，不依赖旧版 Input 类，
     /// 因此不受 Unity 6 的「Active Input Handling（旧/新 Input System）」影响。
     /// </summary>
@@ -22,23 +22,20 @@ namespace TowerDefense.Systems
         private const int MaxCellY = 4;
 
         private readonly HashSet<Vector2Int> _occupiedCells = new HashSet<Vector2Int>();
+        private readonly List<SpriteRenderer> _rangeCells = new List<SpriteRenderer>();
 
         private TowerType _selectedType = TowerType.Gun;
         private SpriteRenderer _hoverCell;
-        private SpriteRenderer _rangeGhost;
 
         public TowerType SelectedType => _selectedType;
 
         public void Init(Transform parent)
         {
-            _hoverCell = CreateSpriteObject(parent, "HoverCell", 1);
-            _rangeGhost = CreateSpriteObject(parent, "RangeGhost", 0);
-
-            _hoverCell.sprite = SpriteFactory.Square(0.92f, GameConfig.GridHoverColor);
-            _rangeGhost.sprite = SpriteFactory.Circle(0.5f, new Color(1f, 1f, 1f, 0.10f));
-
+            _hoverCell = CreateSpriteObject(parent, "HoverCell", 2);
+            _hoverCell.sprite = SpriteFactory.Square(0.94f, GameConfig.GridHoverColor);
             _hoverCell.gameObject.SetActive(false);
-            _rangeGhost.gameObject.SetActive(false);
+
+            BuildRangeCellPool(parent);
         }
 
         public void SelectTower(TowerType type)
@@ -57,8 +54,7 @@ namespace TowerDefense.Systems
 
             if (gm.State != GameState.Building)
             {
-                _hoverCell.gameObject.SetActive(false);
-                _rangeGhost.gameObject.SetActive(false);
+                HidePreview();
                 return;
             }
 
@@ -76,16 +72,13 @@ namespace TowerDefense.Systems
             {
                 _hoverCell.gameObject.SetActive(true);
                 _hoverCell.transform.position = gm.Map.CellToWorld(cell);
-                _hoverCell.color = blocked ? new Color(1f, 0.3f, 0.3f, 0.4f) : GameConfig.GridHoverColor;
+                _hoverCell.color = blocked ? GameConfig.GridBlockedColor : GameConfig.GridHoverColor;
 
-                _rangeGhost.gameObject.SetActive(true);
-                _rangeGhost.transform.position = gm.Map.CellToWorld(cell);
-                _rangeGhost.transform.localScale = Vector3.one * (definition.Range * 2f);
+                UpdateRangePreview(cell, definition.RangeCells);
             }
             else
             {
-                _hoverCell.gameObject.SetActive(false);
-                _rangeGhost.gameObject.SetActive(false);
+                HidePreview();
             }
 
             if (Event.current.type == EventType.MouseDown
@@ -95,6 +88,58 @@ namespace TowerDefense.Systems
                 && !HudLayout.IsPointerOverGui(guiPosition))
             {
                 TryPlace(cell, definition);
+            }
+        }
+
+        private void BuildRangeCellPool(Transform parent)
+        {
+            int maxRange = 0;
+            foreach (var tower in GameConfig.Towers.Values)
+            {
+                maxRange = Mathf.Max(maxRange, tower.RangeCells);
+            }
+
+            int side = maxRange * 2 + 1;
+            for (int i = 0; i < side * side; i++)
+            {
+                var sr = CreateSpriteObject(parent, "RangeCell", 1);
+                sr.sprite = SpriteFactory.Square(0.94f, GameConfig.RangeCellColor);
+                sr.gameObject.SetActive(false);
+                _rangeCells.Add(sr);
+            }
+        }
+
+        private void UpdateRangePreview(Vector2Int center, int rangeCells)
+        {
+            var map = GameManager.Instance.Map;
+            int index = 0;
+
+            for (int dx = -rangeCells; dx <= rangeCells; dx++)
+            {
+                for (int dy = -rangeCells; dy <= rangeCells; dy++)
+                {
+                    var cell = new Vector2Int(center.x + dx, center.y + dy);
+                    if (cell.x < MinCellX || cell.x > MaxCellX || cell.y < MinCellY || cell.y > MaxCellY) continue;
+                    if (index >= _rangeCells.Count) break;
+
+                    var sr = _rangeCells[index++];
+                    sr.gameObject.SetActive(true);
+                    sr.transform.position = map.CellToWorld(cell);
+                }
+            }
+
+            for (int i = index; i < _rangeCells.Count; i++)
+            {
+                _rangeCells[i].gameObject.SetActive(false);
+            }
+        }
+
+        private void HidePreview()
+        {
+            _hoverCell.gameObject.SetActive(false);
+            for (int i = 0; i < _rangeCells.Count; i++)
+            {
+                _rangeCells[i].gameObject.SetActive(false);
             }
         }
 

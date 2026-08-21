@@ -21,6 +21,8 @@ namespace TowerDefense.Core
         public static readonly Color BackgroundColor = new Color(0.06f, 0.07f, 0.10f);
         public static readonly Color GridColor = new Color(1f, 1f, 1f, 0.05f);
         public static readonly Color GridHoverColor = new Color(0.2f, 1f, 0.3f, 0.28f);
+        public static readonly Color GridBlockedColor = new Color(1f, 0.30f, 0.30f, 0.40f);
+        public static readonly Color RangeCellColor = new Color(0.35f, 0.60f, 1f, 0.22f);
         public static readonly Color PathColor = new Color(0.30f, 0.34f, 0.42f);
         public static readonly Color BaseColor = new Color(0.20f, 0.85f, 0.40f);
 
@@ -50,7 +52,7 @@ namespace TowerDefense.Core
                     Type = TowerType.Gun,
                     DisplayName = "机枪塔",
                     Cost = 60,
-                    Range = 3.2f,
+                    RangeCells = 3,
                     FireRate = 3.0f,
                     Damage = 12f,
                     ProjectileSpeed = 16f,
@@ -69,7 +71,7 @@ namespace TowerDefense.Core
                     Type = TowerType.Sniper,
                     DisplayName = "狙击塔",
                     Cost = 100,
-                    Range = 5.0f,
+                    RangeCells = 5,
                     FireRate = 0.7f,
                     Damage = 90f,
                     ProjectileSpeed = 30f,
@@ -88,7 +90,7 @@ namespace TowerDefense.Core
                     Type = TowerType.Missile,
                     DisplayName = "导弹塔",
                     Cost = 130,
-                    Range = 4.0f,
+                    RangeCells = 4,
                     FireRate = 0.8f,
                     Damage = 45f,
                     ProjectileSpeed = 8f,
@@ -107,7 +109,7 @@ namespace TowerDefense.Core
                     Type = TowerType.Slow,
                     DisplayName = "减速塔",
                     Cost = 80,
-                    Range = 2.6f,
+                    RangeCells = 3,
                     FireRate = 1f,
                     Damage = 0f,              // 不造成伤害
                     ProjectileSpeed = 0f,

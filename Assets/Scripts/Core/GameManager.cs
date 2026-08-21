@@ -42,6 +42,8 @@ namespace TowerDefense.Core
         public int Lives => _lives;
         public int WaveIndex => _waveIndex;
         public int TotalWaves => GameConfig.Waves.Length;
+        public int CurrentWave => _waveIndex + 1; // 1-based，与 HUD 显示一致
+        public bool IsDoubleSpeed { get; private set; }
         public int EnemyCount => _enemies.Count;
 
         private void Awake()
@@ -67,7 +69,15 @@ namespace TowerDefense.Core
 
             if (WaveSpawner.IsWaveComplete && _enemies.Count == 0)
             {
-                State = _waveIndex >= TotalWaves ? GameState.Victory : GameState.Building;
+                if (_waveIndex + 1 >= TotalWaves)
+                {
+                    State = GameState.Victory;
+                }
+                else
+                {
+                    _waveIndex++;
+                    State = GameState.Building;
+                }
             }
         }
 
@@ -145,6 +155,18 @@ namespace TowerDefense.Core
             State = GameState.Building;
             _enemies.Clear();
             WaveSpawner.Reset();
+            SetSpeed(false);
+        }
+
+        private void SetSpeed(bool doubleSpeed)
+        {
+            IsDoubleSpeed = doubleSpeed;
+            Time.timeScale = doubleSpeed ? 2f : 1f;
+        }
+
+        public void ToggleSpeed()
+        {
+            SetSpeed(!IsDoubleSpeed);
         }
 
         // ---- 经济 ----
@@ -190,14 +212,14 @@ namespace TowerDefense.Core
 
         // ---- 索敌 / 伤害 ----
 
-        public Enemy SelectTarget(Vector2 position, float range)
+        public Enemy SelectTarget(Vector2 position, int rangeCells)
         {
             Enemy best = null;
 
             foreach (var enemy in _enemies)
             {
                 if (enemy == null || !enemy.IsAlive) continue;
-                if (Vector2.Distance(position, enemy.transform.position) > range) continue;
+                if (Chebyshev(position, enemy.transform.position) > rangeCells) continue;
 
                 if (best == null || IsBetter(enemy, best, position))
                 {
@@ -240,17 +262,22 @@ namespace TowerDefense.Core
             }
         }
 
-        public void ApplySlowInRadius(Vector2 center, float radius, float factor, float duration)
+        public void ApplySlowInRange(Vector2 center, int rangeCells, float factor, float duration)
         {
             var snapshot = new List<Enemy>(_enemies);
             foreach (var enemy in snapshot)
             {
                 if (enemy == null || !enemy.IsAlive) continue;
-                if (Vector2.Distance(center, enemy.transform.position) <= radius + enemy.Radius)
+                if (Chebyshev(center, enemy.transform.position) <= rangeCells)
                 {
                     enemy.ApplySlow(factor, duration);
                 }
             }
+        }
+
+        private static float Chebyshev(Vector2 a, Vector2 b)
+        {
+            return Mathf.Max(Mathf.Abs(a.x - b.x), Mathf.Abs(a.y - b.y));
         }
 
         private bool IsBetter(Enemy candidate, Enemy current, Vector2 position)
@@ -283,7 +310,6 @@ namespace TowerDefense.Core
 
             State = GameState.WaveActive;
             WaveSpawner.StartWave(_waveIndex);
-            _waveIndex++;
         }
 
         public void Restart()

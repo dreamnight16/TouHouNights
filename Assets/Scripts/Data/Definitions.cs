@@ -46,7 +46,7 @@ namespace TowerDefense.Data
         public string DisplayName;
         public int Cost;
 
-        public float Range;             // 索敌/攻击范围
+        public int RangeCells;          // 索敌/攻击范围（格子数，Chebyshev 距离，与格子高亮一致）
         public float FireRate;          // 每秒攻击次数
         public float Damage;            // 单次伤害（减速塔为 0）
 
