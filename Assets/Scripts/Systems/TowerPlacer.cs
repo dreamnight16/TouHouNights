@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using TowerDefense.Actors;
 using TowerDefense.Core;
 using TowerDefense.Data;
 using TowerDefense.Effects;
-using TowerDefense.UI;
 using TowerDefense.Util;
 
 namespace TowerDefense.Systems
@@ -12,7 +12,7 @@ namespace TowerDefense.Systems
     /// <summary>
     /// 塔的放置/撤退交互：鼠标悬停显示格子高亮 + 格子化攻击范围预览；
     /// 点击空地放塔，点击已有塔则撤退（返还 50%）。
-    /// 鼠标输入全部走 IMGUI 的 <see cref="Event"/>，不依赖旧版 Input 类。
+    /// 使用 legacy Input + EventSystem 判定指针是否落在 UI 上（UGUI）。
     /// </summary>
     public sealed class TowerPlacer : MonoBehaviour
     {
@@ -48,13 +48,11 @@ namespace TowerDefense.Systems
             _occupiedTowers.Remove(cell);
         }
 
-        private void OnGUI()
+        private void Update()
         {
             var gm = GameManager.Instance;
             var cam = Camera.main;
             if (gm == null || cam == null) return;
-
-            var guiPosition = Event.current.mousePosition;
 
             if (gm.State != GameState.Running)
             {
@@ -62,11 +60,16 @@ namespace TowerDefense.Systems
                 return;
             }
 
-            // 转换为屏幕坐标（左下角原点）再映射到世界坐标。
-            var screenPosition = new Vector3(guiPosition.x, Screen.height - guiPosition.y, 0f);
-            var mouseWorld = cam.ScreenToWorldPoint(screenPosition);
+            // 指针在 UI 上时不处理放置/悬停。
+            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            {
+                HidePreview();
+                return;
+            }
 
+            var mouseWorld = cam.ScreenToWorldPoint(Input.mousePosition);
             var cell = gm.Map.WorldToCell(mouseWorld);
+
             bool inBounds = cell.x >= MinCellX && cell.x <= MaxCellX && cell.y >= MinCellY && cell.y <= MaxCellY;
             bool mapBlocked = inBounds && gm.Map.IsCellBlocked(cell);
             bool occupied = inBounds && _occupiedTowers.ContainsKey(cell);
@@ -94,10 +97,7 @@ namespace TowerDefense.Systems
                 HidePreview();
             }
 
-            if (Event.current.type == EventType.MouseDown
-                && Event.current.button == 0
-                && inBounds
-                && !HudLayout.IsPointerOverGui(guiPosition))
+            if (Input.GetMouseButtonDown(0) && inBounds)
             {
                 if (_occupiedTowers.TryGetValue(cell, out var tower))
                 {

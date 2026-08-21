@@ -39,6 +39,9 @@ namespace TowerDefense.Core
         private int _waveIndex;
         private int _score;
         private float _power;
+        private int _totalKills;
+        private int _leakedEnemies;
+        private int _wavesCleared;
 
         public Transform WorldRoot { get; private set; }
         public MapSystem Map { get; private set; }
@@ -58,6 +61,9 @@ namespace TowerDefense.Core
         public int Score => _score;
         public float Power => _power;
         public bool CanBarrage => _power >= GameConfig.MaxPower;
+        public int TotalKills => _totalKills;
+        public int LeakedEnemies => _leakedEnemies;
+        public int WavesCleared => _wavesCleared;
 
         private void Awake()
         {
@@ -108,10 +114,9 @@ namespace TowerDefense.Core
 
         private void CreateHud()
         {
-            if (GetComponent<HudController>() == null)
-            {
-                gameObject.AddComponent<HudController>();
-            }
+            var canvas = UiFactory.CreateCanvas();
+            UiFactory.EnsureEventSystem();
+            canvas.gameObject.AddComponent<HudController>();
         }
 
         private void CreateWorld()
@@ -158,6 +163,9 @@ namespace TowerDefense.Core
             _waveIndex = 0;
             _score = 0;
             _power = 0f;
+            _totalKills = 0;
+            _leakedEnemies = 0;
+            _wavesCleared = 0;
             State = GameState.Running;
             _enemies.Clear();
             _towers.Clear();
@@ -191,6 +199,7 @@ namespace TowerDefense.Core
                 _waveIndex = i;
                 WaveSpawner.StartWave(i);
                 yield return new WaitUntil(() => WaveSpawner.IsWaveComplete && _enemies.Count == 0);
+                _wavesCleared++; // 本波通关
                 yield return new WaitForSeconds(1.2f); // 波间短暂缓冲，仍可建塔
             }
 
@@ -243,10 +252,12 @@ namespace TowerDefense.Core
             AddGold(reward);
             _score += reward * GameConfig.ScorePerGold;
             _power = Mathf.Min(GameConfig.MaxPower, _power + GameConfig.PowerPerKill);
+            _totalKills++;
         }
 
         public void NotifyEnemyReachedBase(int damage)
         {
+            _leakedEnemies++;
             _lives -= damage;
             if (_lives <= 0)
             {
@@ -441,6 +452,42 @@ namespace TowerDefense.Core
             int count = System.Enum.GetValues(typeof(TargetingPriority)).Length;
             int next = ((int)TargetingPriority + 1) % count;
             TargetingPriority = (TargetingPriority)next;
+        }
+
+        // ---- 结算 / 评分 ----
+
+        /// <summary>计算结算数据与 Phigros 风格评级（Φ/V/S/A/B/C）。</summary>
+        public GameResult GetResult()
+        {
+            float clearProgress = TotalWaves > 0 ? (float)_wavesCleared / TotalWaves : 0f;
+            float lifeRatio = GameConfig.StartingLives > 0 ? (float)_lives / GameConfig.StartingLives : 0f;
+            float scoreFactor = Mathf.Clamp01(_score / (float)GameConfig.TargetScore);
+
+            int rating = Mathf.RoundToInt(100f * (0.4f * clearProgress + 0.4f * lifeRatio + 0.2f * scoreFactor));
+            bool perfect = clearProgress >= 1f && _leakedEnemies == 0;
+
+            return new GameResult
+            {
+                Victory = State == GameState.Victory,
+                Score = _score,
+                TotalKills = _totalKills,
+                LeakedEnemies = _leakedEnemies,
+                LivesRemaining = _lives,
+                WavesCleared = _wavesCleared,
+                TotalWaves = TotalWaves,
+                Rating = rating,
+                Grade = GradeFromRating(rating, perfect),
+            };
+        }
+
+        private static string GradeFromRating(int rating, bool perfect)
+        {
+            if (perfect && rating >= 100) return "Φ";
+            if (rating >= 90) return "V";
+            if (rating >= 80) return "S";
+            if (rating >= 70) return "A";
+            if (rating >= 60) return "B";
+            return "C";
         }
 
         // ---- 弹幕射击（东方风格）----

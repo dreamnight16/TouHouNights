@@ -68,9 +68,11 @@ TowerDefenseUnity/
 │   │   ├── TowerPlacer.cs      # 鼠标放置/撤退交互 + 占用格子登记
 │   │   └── SpatialGrid.cs      # 均匀网格空间哈希（ICPC 式索敌加速）
 │   ├── UI/
-│   │   ├── HudController.cs    # IMGUI HUD（金币/生命/选塔/速度/切换索敌）
-│   │   ├── HudLayout.cs        # 固定布局 + UI 区域命中判断
-│   │   └── HealthBarView.cs    # 世界空间血条
+│   │   ├── HudController.cs    # UGUI HUD（顶栏/底栏塔卡片/结算，运行时构建）
+│   │   ├── UiTheme.cs          # UGUI 主题（配色/字号/布局）
+│   │   ├── UiFactory.cs        # UGUI 工厂（Canvas/EventSystem/控件/进度条）
+│   │   ├── ResultPanel.cs      # 结算面板（东方 stage 风格 + Phigros 评级）
+│   │   └── HealthBarView.cs    # 世界空间血条（颜色随血量变化）
 │   ├── Effects/
 │   │   ├── BurstEffect.cs      # 扩散淡出特效
 │   │   └── EffectFactory.cs    # 特效入口
@@ -96,6 +98,8 @@ TowerDefenseUnity/
 - **空间哈希（ICPC 式优化）**：`SpatialGrid` 用均匀网格把敌人分桶，索敌/AOE/减速的范围查询从 O(N) 全量扫描降为 O(1) 摊销 + 候选集过滤，每帧由 `GameManager` 重建。
 - **懒删除堆（ICPC 式优化）**：`MinHeap` 用二叉最小堆维护「血量最低 / 距终点最近」两个全局索引，Pop 时跳过已死敌人（懒删除），塔取目标时「弹死/弹界 + 回插」。
 - **BFS 距离场（ICPC 式优化）**：`MapSystem` 把道路格建成 4 邻接无权图，从蓝门 BFS 出每个道路格到基地的最短格数，供「距终点最近」策略 O(1) 查表。
+- **UGUI 界面**：HUD 用 Canvas + UGUI（`Image`/`Text`/`Button`/进度条）运行时构建，字体用系统 `Microsoft YaHei`（支持中文，无需外部字体资源）；顶栏显示生命/金币/波次/得分/P点进度条/状态，底栏为 4 张塔卡片（选中高亮、金币不足置灰）。
+- **结算与评级**：游戏结束弹出结算面板（东方 stage 风格），展示评级大字 + 评分 + 得分/击杀/漏怪/剩余生命/通关波次；评级按 Phigros 风格映射为 `Φ/V/S/A/B/C`。
 - **P点 / 得分 / 弹幕（东方风格）**：击杀累积「得分」与「P点」；P点满 1.00 后不再增长，由玩家手动触发「弹幕射击」——从蓝门持续发射范围扫射弹 + 追踪弹，触发后 P点清零。
 
 ## 六、提交到 GitHub

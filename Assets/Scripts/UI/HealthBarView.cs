@@ -10,6 +10,7 @@ namespace TowerDefense.UI
     public class HealthBarView : MonoBehaviour
     {
         private Transform _fill;
+        private SpriteRenderer _fillSr;
         private float _width;
         private float _height;
 
@@ -42,6 +43,7 @@ namespace TowerDefense.UI
             fillSr.sprite = SpriteFactory.Square(1f, new Color(0.30f, 1f, 0.35f, 0.95f));
             fillSr.sortingOrder = 21;
             _fill = fill.transform;
+            _fillSr = fillSr;
 
             SetRatio(1f);
         }
@@ -52,6 +54,20 @@ namespace TowerDefense.UI
             _fill.localScale = new Vector3(_width * ratio, _height, 1f);
             // 左对齐，血条从左往右缩短。
             _fill.localPosition = new Vector3(-_width * (1f - ratio) * 0.5f, 0f, 0f);
+            _fillSr.color = HealthColor(ratio);
+        }
+
+        private static Color HealthColor(float ratio)
+        {
+            var green = new Color(0.30f, 1f, 0.35f, 0.95f);
+            var yellow = new Color(1f, 0.85f, 0.25f, 0.95f);
+            var red = new Color(1f, 0.30f, 0.30f, 0.95f);
+
+            if (ratio >= 0.5f)
+            {
+                return Color.Lerp(yellow, green, (ratio - 0.5f) * 2f);
+            }
+            return Color.Lerp(red, yellow, ratio * 2f);
         }
     }
 }

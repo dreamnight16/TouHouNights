@@ -144,23 +144,25 @@ namespace TowerDefense.Systems
 
         private void BuildBaseVisual(Transform parent)
         {
+            // 蓝门：基地。
             var go = new GameObject("Base");
             go.transform.SetParent(parent, false);
             go.transform.position = CellToWorld(GameConfig.BaseCell);
             var sr = go.AddComponent<SpriteRenderer>();
-            sr.sprite = SpriteFactory.Square(1.0f, GameConfig.BaseColor);
+            sr.sprite = SpriteFactory.Square(1.2f, new Color(0.20f, 0.55f, 1.00f));
             sr.sortingOrder = 2;
         }
 
         private void BuildSpawnVisuals(Transform parent)
         {
+            // 红门：出怪口。
             for (int r = 0; r < GameConfig.Routes.Length; r++)
             {
                 var go = new GameObject("SpawnDoor");
                 go.transform.SetParent(parent, false);
                 go.transform.position = GetSpawnPosition(r);
                 var sr = go.AddComponent<SpriteRenderer>();
-                sr.sprite = SpriteFactory.Circle(0.45f, new Color(0.95f, 0.30f, 0.25f));
+                sr.sprite = SpriteFactory.Circle(0.55f, new Color(0.95f, 0.28f, 0.22f));
                 sr.sortingOrder = 2;
             }
         }

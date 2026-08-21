@@ -1,13 +1,15 @@
+using System;
 using UnityEngine;
+using UnityEngine.UI;
 using TowerDefense.Core;
 using TowerDefense.Data;
 
 namespace TowerDefense.UI
 {
     /// <summary>
-    /// HUD（IMGUI，明日方舟式布局）：顶栏显示生命/金币/波次/状态与流程按钮，
-    /// 底栏为居中排列的防御塔选择卡片；金币不足的塔卡片自动标灰且不可点。
-    /// 采用 IMGUI 而非 UGUI，避免 EventSystem/Canvas/Text 的工程配置依赖。
+    /// UGUI HUD：顶栏（生命/金币/波次/得分/P点进度条/状态 + 速度/索敌/弹幕/重开），
+    /// 底栏（4 张塔卡片，选中高亮、金币不足置灰），以及结算面板。
+    /// 运行时纯代码构建，不使用 prefab。
     /// </summary>
     public sealed class HudController : MonoBehaviour
     {
@@ -16,179 +18,225 @@ namespace TowerDefense.UI
             TowerType.Gun, TowerType.Sniper, TowerType.Missile, TowerType.Slow
         };
 
-        private GUIStyle _boxStyle;
-        private GUIStyle _labelStyle;
-        private GUIStyle _titleStyle;
-        private GUIStyle _buttonStyle;
-        private GUIStyle _cardStyle;
-        private GUIStyle _cardSelectedStyle;
-        private GUIStyle _cardDisabledStyle;
-        private GUIStyle _hintStyle;
+        private Text _livesText;
+        private Text _goldText;
+        private Text _waveText;
+        private Text _scoreText;
+        private Text _stateText;
+        private Image _powerFill;
 
-        private void OnGUI()
+        private Text _speedLabel;
+        private Text _targetingLabel;
+        private Text _barrageLabel;
+        private Button _barrageButton;
+
+        private sealed class TowerCard
         {
-            EnsureStyles();
+            public TowerType Type;
+            public Button Button;
+            public Image Bg;
+            public Text Name;
+            public Text Sub;
+        }
 
+        private readonly TowerCard[] _cards = new TowerCard[4];
+        private ResultPanel _resultPanel;
+        private bool _resultShown;
+
+        private void Awake()
+        {
+            BuildTopBar();
+            BuildBottomBar();
+            BuildResultPanel();
+        }
+
+        private void Update()
+        {
             var gm = GameManager.Instance;
             if (gm == null) return;
 
-            DrawTopBar(gm);
-            DrawBottomBar(gm);
-            DrawOverlay(gm);
+            RefreshTopBar(gm);
+            RefreshCards(gm);
+            RefreshResult(gm);
         }
 
-        private void DrawTopBar(GameManager gm)
+        // ---- 顶栏 ----
+
+        private void BuildTopBar()
         {
-            GUI.Box(HudLayout.TopBar, string.Empty, _boxStyle);
+            var top = UiFactory.CreateImage(transform, "TopBar", UiTheme.PanelBg);
+            UiFactory.SetStretch(top.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, -UiTheme.TopBarHeight), Vector2.zero);
 
-            GUI.Label(new Rect(14f, 13f, 70f, 24f), $"生命 {gm.Lives}", _labelStyle);
-            GUI.Label(new Rect(86f, 13f, 80f, 24f), $"金币 {gm.Gold}", _labelStyle);
-            GUI.Label(new Rect(166f, 13f, 100f, 24f), $"波次 {gm.CurrentWave}/{gm.TotalWaves}", _labelStyle);
-            GUI.Label(new Rect(266f, 13f, 110f, 24f), $"得分 {gm.Score}", _labelStyle);
-            GUI.Label(new Rect(376f, 13f, 120f, 24f), $"P点 {gm.Power:0.00}", _labelStyle);
-            GUI.Label(new Rect(496f, 13f, 120f, 24f), StateText(gm.State), _labelStyle);
+            _livesText = CreateStat(top.transform, "Lives", 16f, 72f);
+            _goldText = CreateStat(top.transform, "Gold", 90f, 84f);
+            _waveText = CreateStat(top.transform, "Wave", 176f, 110f);
+            _scoreText = CreateStat(top.transform, "Score", 290f, 110f);
 
-            if (GUI.Button(HudLayout.SpeedButton, gm.IsDoubleSpeed ? "速度 2x" : "速度 1x", _buttonStyle))
-            {
-                gm.ToggleSpeed();
-            }
+            var powerLabel = UiFactory.CreateText(top.transform, "PowerLabel", "P点", UiTheme.FontSize, UiTheme.TextDim, TextAnchor.MiddleLeft);
+            SetLeftAnchor(powerLabel.rectTransform, 402f, 44f);
 
-            if (GUI.Button(HudLayout.TargetingButton, $"索敌：{TargetingText(gm.TargetingPriority)}", _buttonStyle))
-            {
-                gm.CycleTargetingPriority();
-            }
+            var powerBar = UiFactory.CreateProgressBar(top.transform, "PowerBar", UiTheme.PowerBar, UiTheme.PowerBarBg);
+            SetCenterAnchor(powerBar.background.rectTransform, new Vector2(0f, 1f), new Vector2(448f, -28f), new Vector2(130f, 14f));
+            _powerFill = powerBar.fill;
 
-            bool canBarrage = gm.CanBarrage && gm.State == GameState.Running;
-            GUI.enabled = canBarrage;
-            string barrageLabel = gm.CanBarrage ? "弹幕射击" : $"弹幕 P {gm.Power:0.0}";
-            if (GUI.Button(HudLayout.BarrageButton, barrageLabel, _buttonStyle))
-            {
-                gm.TriggerBarrage();
-            }
-            GUI.enabled = true;
+            _stateText = CreateStat(top.transform, "State", 590f, 120f);
 
-            if (GUI.Button(HudLayout.RestartButton, "重新开始", _buttonStyle))
-            {
-                gm.Restart();
-            }
+            _speedLabel = CreateTopButton(top.transform, "Speed", "速度 1x", 432f, 96f, ToggleSpeed, out _);
+            _targetingLabel = CreateTopButton(top.transform, "Targeting", "索敌", 238f, 186f, CycleTargeting, out _);
+            _barrageLabel = CreateTopButton(top.transform, "Barrage", "弹幕", 120f, 110f, TriggerBarrage, out _barrageButton);
+            CreateTopButton(top.transform, "Restart", "重新开始", 16f, 96f, RestartGame, out _);
         }
 
-        private void DrawBottomBar(GameManager gm)
+        private Text CreateStat(Transform parent, string name, float x, float width)
         {
-            GUI.Box(HudLayout.BottomBar, string.Empty, _boxStyle);
+            var text = UiFactory.CreateText(parent, name, string.Empty, UiTheme.FontSize, UiTheme.TextPrimary, TextAnchor.MiddleLeft);
+            SetLeftAnchor(text.rectTransform, x, width);
+            return text;
+        }
+
+        private Text CreateTopButton(Transform parent, string name, string label, float rightMargin, float width, Action onClick, out Button button)
+        {
+            var b = UiFactory.CreateButton(parent, name, label, UiTheme.ButtonBg, UiTheme.FontSize, onClick);
+            var rt = b.GetComponent<RectTransform>();
+            rt.anchorMin = rt.anchorMax = new Vector2(1f, 1f);
+            rt.pivot = new Vector2(1f, 0.5f);
+            rt.anchoredPosition = new Vector2(-rightMargin, -28f);
+            rt.sizeDelta = new Vector2(width, 32f);
+            button = b;
+            return b.GetComponentInChildren<Text>();
+        }
+
+        // ---- 底栏 ----
+
+        private void BuildBottomBar()
+        {
+            var bottom = UiFactory.CreateImage(transform, "BottomBar", UiTheme.PanelBg);
+            UiFactory.SetStretch(bottom.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), Vector2.zero, new Vector2(0f, UiTheme.BottomBarHeight));
+
+            float total = TowerOrder.Length * UiTheme.TowerCardWidth + (TowerOrder.Length - 1) * UiTheme.TowerCardGap;
+            float x0 = (UiTheme.ReferenceResolution.x - total) * 0.5f;
 
             for (int i = 0; i < TowerOrder.Length; i++)
             {
                 var type = TowerOrder[i];
                 var def = GameConfig.Towers[type];
-                var rect = HudLayout.TowerButton(i, TowerOrder.Length);
+                float centerX = x0 + UiTheme.TowerCardWidth * 0.5f + i * (UiTheme.TowerCardWidth + UiTheme.TowerCardGap) - UiTheme.ReferenceResolution.x * 0.5f;
+                _cards[i] = BuildTowerCard(bottom.transform, type, def, new Vector2(centerX, UiTheme.BottomBarHeight * 0.5f));
+            }
+        }
+
+        private TowerCard BuildTowerCard(Transform parent, TowerType type, TowerDefinition def, Vector2 anchoredPosition)
+        {
+            var card = new TowerCard { Type = type };
+
+            var button = UiFactory.CreateButton(parent, def.DisplayName, string.Empty, UiTheme.CardBg, UiTheme.FontSizeCardSub, () => GameManager.Instance?.TowerPlacer.SelectTower(type));
+            var rt = button.GetComponent<RectTransform>();
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0f);
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.anchoredPosition = anchoredPosition;
+            rt.sizeDelta = new Vector2(UiTheme.TowerCardWidth, UiTheme.TowerCardHeight);
+
+            card.Button = button;
+            card.Bg = button.GetComponent<Image>();
+
+            var icon = UiFactory.CreateImage(button.transform, "Icon", def.Color);
+            icon.raycastTarget = false; // 不拦截卡片按钮点击
+            SetCenterAnchor(icon.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 20f), new Vector2(28f, 28f));
+
+            card.Name = UiFactory.CreateText(button.transform, "Name", def.DisplayName, UiTheme.FontSizeCardTitle, UiTheme.TextPrimary);
+            SetCenterAnchor(card.Name.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -4f), new Vector2(160f, 24f));
+
+            card.Sub = UiFactory.CreateText(button.transform, "Sub", SubText(def), UiTheme.FontSizeCardSub, UiTheme.TextDim);
+            SetCenterAnchor(card.Sub.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -26f), new Vector2(160f, 20f));
+
+            return card;
+        }
+
+        // ---- 结算 ----
+
+        private void BuildResultPanel()
+        {
+            _resultPanel = gameObject.AddComponent<ResultPanel>();
+            _resultPanel.Build(transform);
+        }
+
+        // ---- 刷新 ----
+
+        private void RefreshTopBar(GameManager gm)
+        {
+            _livesText.text = $"生命 {gm.Lives}";
+            _goldText.text = $"金币 {gm.Gold}";
+            _waveText.text = $"波次 {gm.CurrentWave}/{gm.TotalWaves}";
+            _scoreText.text = $"得分 {gm.Score}";
+            _stateText.text = StateText(gm.State);
+            _powerFill.fillAmount = gm.Power;
+
+            _speedLabel.text = gm.IsDoubleSpeed ? "速度 2x" : "速度 1x";
+            _targetingLabel.text = $"索敌：{TargetingText(gm.TargetingPriority)}";
+
+            bool canBarrage = gm.CanBarrage && gm.State == GameState.Running;
+            _barrageButton.interactable = canBarrage;
+            _barrageLabel.text = gm.CanBarrage ? "弹幕射击" : $"弹幕 P {gm.Power:0.0}";
+        }
+
+        private void RefreshCards(GameManager gm)
+        {
+            for (int i = 0; i < _cards.Length; i++)
+            {
+                var card = _cards[i];
+                var def = GameConfig.Towers[card.Type];
 
                 bool affordable = gm.Gold >= def.Cost;
-                bool selected = gm.TowerPlacer.SelectedType == type;
+                bool selected = gm.TowerPlacer.SelectedType == card.Type;
 
-                var style = !affordable ? _cardDisabledStyle
-                          : selected ? _cardSelectedStyle
-                          : _cardStyle;
+                card.Button.interactable = affordable;
+                card.Bg.color = !affordable ? UiTheme.CardDisabled : selected ? UiTheme.CardSelected : UiTheme.CardBg;
+                card.Name.color = affordable ? UiTheme.TextPrimary : UiTheme.TextDim;
+                card.Sub.color = affordable ? UiTheme.TextDim : new Color(0.45f, 0.48f, 0.55f, 1f);
+            }
+        }
 
-                string label = $"{def.DisplayName}  ${def.Cost}  射程{def.RangeCells}";
-                if (GUI.Button(rect, label, style) && affordable)
+        private void RefreshResult(GameManager gm)
+        {
+            if (gm.State == GameState.Running)
+            {
+                if (_resultShown)
                 {
-                    gm.TowerPlacer.SelectTower(type);
+                    _resultShown = false;
+                    _resultPanel.Hide();
                 }
+                return;
             }
 
-            GUI.Label(HudLayout.HintLabel, "左键点空地放塔 · 点已有塔撤退(返还50%)", _hintStyle);
-        }
-
-        private void DrawOverlay(GameManager gm)
-        {
-            if (gm.State != GameState.GameOver && gm.State != GameState.Victory) return;
-
-            var rect = new Rect(Screen.width * 0.5f - 180f, Screen.height * 0.5f - 90f, 360f, 140f);
-            GUI.Box(rect, string.Empty, _boxStyle);
-
-            string title = gm.State == GameState.Victory ? "胜利！所有波次已被击退" : "游戏失败：生命值归零";
-            GUI.Label(new Rect(rect.x + 20f, rect.y + 24f, 320f, 40f), title, _titleStyle);
-
-            if (GUI.Button(new Rect(rect.x + 90f, rect.y + 82f, 180f, 40f), "再来一局", _buttonStyle))
+            if (!_resultShown && (gm.State == GameState.GameOver || gm.State == GameState.Victory))
             {
-                gm.Restart();
+                _resultShown = true;
+                _resultPanel.Show(gm.GetResult());
             }
         }
 
-        // ---- 样式 ----
+        // ---- 布局小工具 ----
 
-        private void EnsureStyles()
+        private static void SetLeftAnchor(RectTransform rect, float x, float width)
         {
-            if (_boxStyle != null) return;
-
-            _boxStyle = new GUIStyle(GUI.skin.box)
-            {
-                normal = { background = Texture(new Color(0.10f, 0.11f, 0.15f, 0.94f)) },
-                padding = new RectOffset(10, 10, 10, 10)
-            };
-
-            _labelStyle = new GUIStyle(GUI.skin.label)
-            {
-                fontSize = 16,
-                fontStyle = FontStyle.Bold,
-                normal = { textColor = new Color(0.92f, 0.94f, 1f) }
-            };
-
-            _titleStyle = new GUIStyle(GUI.skin.label)
-            {
-                fontSize = 18,
-                fontStyle = FontStyle.Bold,
-                alignment = TextAnchor.MiddleCenter,
-                normal = { textColor = new Color(0.55f, 0.85f, 1f) }
-            };
-
-            _buttonStyle = new GUIStyle(GUI.skin.button)
-            {
-                fontSize = 14,
-                fontStyle = FontStyle.Bold,
-                normal = { background = Texture(new Color(0.22f, 0.28f, 0.38f)), textColor = Color.white },
-                hover = { background = Texture(new Color(0.28f, 0.36f, 0.48f)), textColor = Color.white },
-                active = { background = Texture(new Color(0.16f, 0.20f, 0.28f)), textColor = Color.white },
-                alignment = TextAnchor.MiddleCenter
-            };
-
-            _cardStyle = new GUIStyle(GUI.skin.button)
-            {
-                fontSize = 13,
-                fontStyle = FontStyle.Bold,
-                normal = { background = Texture(new Color(0.20f, 0.26f, 0.35f)), textColor = Color.white },
-                hover = { background = Texture(new Color(0.26f, 0.34f, 0.45f)), textColor = Color.white },
-                active = { background = Texture(new Color(0.15f, 0.19f, 0.26f)), textColor = Color.white },
-                alignment = TextAnchor.MiddleCenter
-            };
-
-            _cardSelectedStyle = new GUIStyle(_cardStyle)
-            {
-                normal = { background = Texture(new Color(0.20f, 0.60f, 0.34f)), textColor = Color.white }
-            };
-
-            _cardDisabledStyle = new GUIStyle(_cardStyle)
-            {
-                normal = { background = Texture(new Color(0.13f, 0.15f, 0.18f)), textColor = new Color(0.55f, 0.55f, 0.55f) },
-                hover = { background = Texture(new Color(0.13f, 0.15f, 0.18f)), textColor = new Color(0.55f, 0.55f, 0.55f) },
-                active = { background = Texture(new Color(0.13f, 0.15f, 0.18f)), textColor = new Color(0.55f, 0.55f, 0.55f) }
-            };
-
-            _hintStyle = new GUIStyle(GUI.skin.label)
-            {
-                fontSize = 12,
-                normal = { textColor = new Color(0.65f, 0.68f, 0.75f) }
-            };
+            rect.anchorMin = rect.anchorMax = new Vector2(0f, 1f);
+            rect.pivot = new Vector2(0f, 0.5f);
+            rect.anchoredPosition = new Vector2(x, -28f);
+            rect.sizeDelta = new Vector2(width, 26f);
         }
 
-        private static Texture2D Texture(Color color)
+        private static void SetCenterAnchor(RectTransform rect, Vector2 anchor, Vector2 anchoredPosition, Vector2 size)
         {
-            var tex = new Texture2D(1, 1);
-            tex.SetPixel(0, 0, color);
-            tex.Apply();
-            return tex;
+            rect.anchorMin = rect.anchorMax = anchor;
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = anchoredPosition;
+            rect.sizeDelta = size;
         }
+
+        private static void ToggleSpeed() => GameManager.Instance?.ToggleSpeed();
+        private static void CycleTargeting() => GameManager.Instance?.CycleTargetingPriority();
+        private static void TriggerBarrage() => GameManager.Instance?.TriggerBarrage();
+        private static void RestartGame() => GameManager.Instance?.Restart();
 
         private static string StateText(GameState state)
         {
@@ -210,6 +258,15 @@ namespace TowerDefense.UI
                 case TargetingPriority.ClosestToEnd: return "距终点最近";
                 default: return priority.ToString();
             }
+        }
+
+        private static string SubText(TowerDefinition def)
+        {
+            if (def.Damage <= 0f)
+            {
+                return $"费用{def.Cost} 射程{def.RangeCells} 减速{Mathf.RoundToInt((1f - def.SlowFactor) * 100f)}%";
+            }
+            return $"费用{def.Cost} 射程{def.RangeCells} 伤害{Mathf.RoundToInt(def.Damage)}";
         }
     }
 }

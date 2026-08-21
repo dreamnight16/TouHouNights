@@ -99,4 +99,18 @@ namespace TowerDefense.Data
     {
         public SpawnGroup[] Groups;
     }
+
+    /// <summary>结算数据：游戏结束时展示东方 stage 风格战绩 + Phigros 风格评级。</summary>
+    public struct GameResult
+    {
+        public bool Victory;
+        public int Score;
+        public int TotalKills;
+        public int LeakedEnemies;
+        public int LivesRemaining;
+        public int WavesCleared;
+        public int TotalWaves;
+        public int Rating;
+        public string Grade;
+    }
 }
