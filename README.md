@@ -8,7 +8,7 @@ SAST 游戏开发与设计组免试题 · 程序方向 · **选项二 选项 B**
 
 ## 一、如何运行
 
-1. 用 **Unity Hub** 打开本目录 `TowerDefenseUnity`（版本 **2022.3 LTS** 或更高的 Unity 6 均可，若提示升级请选择继续）。
+1. 用 **Unity Hub** 打开本目录 `TowerDefenseUnity`（已在 **Unity 6.5 / 6000.5.9f1** 上验证，其它 Unity 6.x 也可，若提示升级请选择继续）。
 2. 首次打开时 Unity 会自动生成 `Assets/**/*.meta` 与缺失的 `ProjectSettings` 文件，属正常现象，请一并提交。
 3. 若 Unity 提示「没有可打开的场景」，直接新建一个空场景（或保持当前空场景）即可 —— 本工程通过 `RuntimeInitializeOnLoadMethod` 自动启动，**场景里不需要放任何东西**。
 4. 点击 **Play**，游戏会自动创建相机、地图、路径、HUD 并进入布防阶段。
