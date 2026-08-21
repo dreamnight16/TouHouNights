@@ -11,7 +11,8 @@ namespace TowerDefense.Systems
 {
     /// <summary>
     /// 塔的放置交互：鼠标悬停显示格子高亮 + 射程预览，点击合法格子放置所选塔。
-    /// 负责占用格子的登记，防止叠塔。
+    /// 鼠标输入全部走 IMGUI 的 <see cref="Event"/>，不依赖旧版 Input 类，
+    /// 因此不受 Unity 6 的「Active Input Handling（旧/新 Input System）」影响。
     /// </summary>
     public sealed class TowerPlacer : MonoBehaviour
     {
@@ -45,31 +46,40 @@ namespace TowerDefense.Systems
             _selectedType = type;
         }
 
-        private void Update()
+        private void OnGUI()
         {
-            bool canPlace = GameManager.Instance.State == GameState.Building;
-            if (!canPlace)
+            var gm = GameManager.Instance;
+            var cam = Camera.main;
+            if (gm == null || cam == null) return;
+
+            // Event.current.mousePosition 是 GUI 坐标（左上角原点、y 向下）。
+            var guiPosition = Event.current.mousePosition;
+
+            if (gm.State != GameState.Building)
             {
                 _hoverCell.gameObject.SetActive(false);
                 _rangeGhost.gameObject.SetActive(false);
                 return;
             }
 
-            var mouseWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            var cell = GameManager.Instance.Map.WorldToCell(mouseWorld);
+            // 转换为屏幕坐标（左下角原点）再映射到世界坐标。
+            var screenPosition = new Vector3(guiPosition.x, Screen.height - guiPosition.y, 0f);
+            var mouseWorld = cam.ScreenToWorldPoint(screenPosition);
+
+            var cell = gm.Map.WorldToCell(mouseWorld);
             bool inBounds = cell.x >= MinCellX && cell.x <= MaxCellX && cell.y >= MinCellY && cell.y <= MaxCellY;
-            bool blocked = inBounds && (GameManager.Instance.Map.IsCellBlocked(cell) || _occupiedCells.Contains(cell));
+            bool blocked = inBounds && (gm.Map.IsCellBlocked(cell) || _occupiedCells.Contains(cell));
 
             var definition = GameConfig.Towers[_selectedType];
 
             if (inBounds)
             {
                 _hoverCell.gameObject.SetActive(true);
-                _hoverCell.transform.position = GameManager.Instance.Map.CellToWorld(cell);
+                _hoverCell.transform.position = gm.Map.CellToWorld(cell);
                 _hoverCell.color = blocked ? new Color(1f, 0.3f, 0.3f, 0.4f) : GameConfig.GridHoverColor;
 
                 _rangeGhost.gameObject.SetActive(true);
-                _rangeGhost.transform.position = GameManager.Instance.Map.CellToWorld(cell);
+                _rangeGhost.transform.position = gm.Map.CellToWorld(cell);
                 _rangeGhost.transform.localScale = Vector3.one * (definition.Range * 2f);
             }
             else
@@ -78,10 +88,11 @@ namespace TowerDefense.Systems
                 _rangeGhost.gameObject.SetActive(false);
             }
 
-            if (Input.GetMouseButtonDown(0)
+            if (Event.current.type == EventType.MouseDown
+                && Event.current.button == 0
                 && inBounds
                 && !blocked
-                && !HudLayout.IsPointerOverUI(Input.mousePosition))
+                && !HudLayout.IsPointerOverGui(guiPosition))
             {
                 TryPlace(cell, definition);
             }
@@ -89,11 +100,12 @@ namespace TowerDefense.Systems
 
         private void TryPlace(Vector2Int cell, TowerDefinition definition)
         {
-            if (!GameManager.Instance.TrySpendGold(definition.Cost)) return;
+            var gm = GameManager.Instance;
+            if (gm == null || !gm.TrySpendGold(definition.Cost)) return;
 
-            var position = GameManager.Instance.Map.CellToWorld(cell);
+            var position = gm.Map.CellToWorld(cell);
             var go = new GameObject(definition.DisplayName);
-            go.transform.SetParent(GameManager.Instance.WorldRoot, false);
+            go.transform.SetParent(gm.WorldRoot, false);
             var tower = go.AddComponent<Tower>();
             tower.Configure(definition, position);
 

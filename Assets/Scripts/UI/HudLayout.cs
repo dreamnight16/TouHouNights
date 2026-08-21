@@ -4,7 +4,7 @@ namespace TowerDefense.UI
 {
     /// <summary>
     /// HUD 的固定屏幕布局。集中定义矩形，供 HUD 绘制与「点击是否落在 UI 上」判断共用。
-    /// 注意：OnGUI 使用左上角原点（y 向下），而 Input.mousePosition 是左下角原点。
+    /// 所有矩形均使用 OnGUI 坐标系（左上角原点、y 向下）。
     /// </summary>
     public static class HudLayout
     {
@@ -20,9 +20,9 @@ namespace TowerDefense.UI
 
         public static readonly Rect InteractiveRegion = new Rect(12f, 12f, 562f, 304f);
 
-        public static bool IsPointerOverUI(Vector2 screenPosition)
+        /// <summary>判断某个 GUI 坐标（左上角原点）是否落在 HUD 交互区域上。</summary>
+        public static bool IsPointerOverGui(Vector2 guiPosition)
         {
-            var guiPosition = new Vector2(screenPosition.x, Screen.height - screenPosition.y);
             return InteractiveRegion.Contains(guiPosition);
         }
     }
