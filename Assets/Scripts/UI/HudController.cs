@@ -38,6 +38,7 @@ namespace TowerDefense.UI
             public TowerType Type;
             public Button Button;
             public Image Bg;
+            public Image Border;
             public Text Name;
             public Text Sub;
         }
@@ -49,6 +50,7 @@ namespace TowerDefense.UI
         private GameObject _towerInfoRoot;
         private Text _towerInfoTitle;
         private Text _towerInfoStats;
+        private Text _towerInfoRefund;
         private Button _towerInfoRetreat;
 
         private void Awake()
@@ -158,6 +160,7 @@ namespace TowerDefense.UI
             UiFactory.Inset(button.GetComponent<RectTransform>(), 1f);
             card.Button = button;
             card.Bg = button.GetComponent<Image>();
+            card.Border = border;
 
             // 色块图标（左上）
             var icon = UiFactory.CreateImage(button.transform, "Icon", def.Color);
@@ -193,18 +196,22 @@ namespace TowerDefense.UI
         {
             _towerInfoRoot = new GameObject("TowerInfoPanel", typeof(RectTransform));
             _towerInfoRoot.transform.SetParent(transform, false);
+            UiFactory.Stretch(_towerInfoRoot.GetComponent<RectTransform>()); // 根节点铺满全屏，子元素才能正确锚定到屏幕边缘
 
             var panel = UiFactory.CreatePanel(_towerInfoRoot.transform, "Panel");
-            UiFactory.SetRect(panel.rectTransform, new Vector2(1f, 0.5f), new Vector2(-16f, 0f), new Vector2(250f, 210f));
+            UiFactory.SetRect(panel.rectTransform, new Vector2(1f, 0.5f), new Vector2(-16f, 0f), new Vector2(250f, 220f));
 
             _towerInfoTitle = UiFactory.CreateText(panel.transform, "Title", string.Empty, UiTheme.FontSize, UiTheme.Accent);
-            UiFactory.SetRect(_towerInfoTitle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 70f), new Vector2(230f, 30f));
+            UiFactory.SetRect(_towerInfoTitle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 76f), new Vector2(230f, 30f));
 
             _towerInfoStats = UiFactory.CreateText(panel.transform, "Stats", string.Empty, UiTheme.FontSizeSmall, UiTheme.Ink, TextAnchor.UpperLeft);
-            UiFactory.SetRect(_towerInfoStats.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -10f), new Vector2(220f, 100f));
+            UiFactory.SetRect(_towerInfoStats.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -4f), new Vector2(220f, 90f));
 
-            var retreat = UiFactory.CreateButton(panel.transform, "Retreat", "撤退(50%)", UiTheme.EnemyRed, UiTheme.FontSize, RetreatSelected);
-            UiFactory.SetRect(retreat.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0f, -78f), new Vector2(180f, 44f));
+            _towerInfoRefund = UiFactory.CreateText(panel.transform, "Refund", string.Empty, UiTheme.FontSizeCardSub, UiTheme.Gold);
+            UiFactory.SetRect(_towerInfoRefund.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -54f), new Vector2(220f, 18f));
+
+            var retreat = UiFactory.CreateButton(panel.transform, "Retreat", "撤退", UiTheme.EnemyRed, UiTheme.FontSize, RetreatSelected);
+            UiFactory.SetRect(retreat.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0f, -86f), new Vector2(180f, 40f));
             _towerInfoRetreat = retreat;
 
             _towerInfoRoot.SetActive(false);
@@ -223,6 +230,7 @@ namespace TowerDefense.UI
             _towerInfoRoot.SetActive(true);
             _towerInfoTitle.text = tower.Definition.DisplayName;
             _towerInfoStats.text = BuildTowerStats(tower);
+            _towerInfoRefund.text = BuildRefundText(tower);
             _towerInfoRetreat.interactable = !gm.IsPaused;
         }
 
@@ -237,6 +245,14 @@ namespace TowerDefense.UI
             }
 
             return $"{hp}\n伤害  {Mathf.RoundToInt(def.Damage)}\n攻速  {def.FireRate:0.#} 次/秒\n射程  {def.RangeCells} 格";
+        }
+
+        private static string BuildRefundText(Tower tower)
+        {
+            var def = tower.Definition;
+            int retreat = Mathf.RoundToInt(def.Cost * GameConfig.RetreatRefundRatio);
+            int defeat = Mathf.RoundToInt(def.Cost * GameConfig.DefeatRefundRatio);
+            return $"撤退返还 {retreat} 金币 · 击毁返还 {defeat} 金币";
         }
 
         // ---- 刷新 ----
@@ -271,8 +287,9 @@ namespace TowerDefense.UI
                 bool selected = gm.TowerPlacer.SelectedType == card.Type;
 
                 card.Button.interactable = affordable && !gm.IsPaused;
+                card.Border.color = selected ? UiTheme.Accent : UiTheme.PanelLine;
                 card.Bg.color = !affordable ? UiTheme.CardDisabled : selected ? UiTheme.CardSelected : UiTheme.CardBg;
-                card.Name.color = affordable ? UiTheme.Ink : UiTheme.InkDim;
+                card.Name.color = !affordable ? UiTheme.InkDim : selected ? UiTheme.Accent : UiTheme.Ink;
                 card.Sub.color = affordable ? UiTheme.InkDim : new Color(0.42f, 0.45f, 0.52f, 1f);
             }
         }

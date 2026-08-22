@@ -25,6 +25,7 @@ namespace TowerDefense.UI
         {
             _root = new GameObject("ResultPanel", typeof(RectTransform));
             _root.transform.SetParent(canvasRoot, false);
+            UiFactory.Stretch(_root.GetComponent<RectTransform>()); // 根节点铺满全屏
 
             // 全屏遮罩，阻挡点击。
             var overlay = UiFactory.CreateImage(_root.transform, "Overlay", UiTheme.Overlay);
