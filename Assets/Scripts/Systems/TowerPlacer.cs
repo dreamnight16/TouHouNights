@@ -78,6 +78,12 @@ namespace TowerDefense.Systems
                 return;
             }
 
+            if (gm.IsPaused)
+            {
+                HidePreview(); // 暂停时只能观察，不处理放塔/选塔
+                return;
+            }
+
             // 指针在 UI 上时不处理放置/悬停。
             if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
             {

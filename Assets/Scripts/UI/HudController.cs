@@ -49,6 +49,7 @@ namespace TowerDefense.UI
         private GameObject _towerInfoRoot;
         private Text _towerInfoTitle;
         private Text _towerInfoStats;
+        private Button _towerInfoRetreat;
 
         private void Awake()
         {
@@ -204,6 +205,7 @@ namespace TowerDefense.UI
 
             var retreat = UiFactory.CreateButton(panel.transform, "Retreat", "撤退(50%)", UiTheme.EnemyRed, UiTheme.FontSize, RetreatSelected);
             UiFactory.SetRect(retreat.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0f, -78f), new Vector2(180f, 44f));
+            _towerInfoRetreat = retreat;
 
             _towerInfoRoot.SetActive(false);
         }
@@ -221,6 +223,7 @@ namespace TowerDefense.UI
             _towerInfoRoot.SetActive(true);
             _towerInfoTitle.text = tower.Definition.DisplayName;
             _towerInfoStats.text = BuildTowerStats(tower);
+            _towerInfoRetreat.interactable = !gm.IsPaused;
         }
 
         private static string BuildTowerStats(Tower tower)
@@ -252,7 +255,7 @@ namespace TowerDefense.UI
             _pauseLabel.text = gm.IsPaused ? "继续" : "暂停";
             _targetingLabel.text = $"索敌：{TargetingText(gm.TargetingPriority)}";
 
-            bool canBarrage = gm.CanBarrage && gm.State == GameState.Running;
+            bool canBarrage = gm.CanBarrage && gm.State == GameState.Running && !gm.IsPaused;
             _barrageButton.interactable = canBarrage;
             _barrageLabel.text = gm.CanBarrage ? "弹幕射击" : $"弹幕 P {gm.Power:0.0}";
         }
@@ -267,7 +270,7 @@ namespace TowerDefense.UI
                 bool affordable = gm.Gold >= def.Cost;
                 bool selected = gm.TowerPlacer.SelectedType == card.Type;
 
-                card.Button.interactable = affordable;
+                card.Button.interactable = affordable && !gm.IsPaused;
                 card.Bg.color = !affordable ? UiTheme.CardDisabled : selected ? UiTheme.CardSelected : UiTheme.CardBg;
                 card.Name.color = affordable ? UiTheme.Ink : UiTheme.InkDim;
                 card.Sub.color = affordable ? UiTheme.InkDim : new Color(0.42f, 0.45f, 0.52f, 1f);
