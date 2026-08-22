@@ -34,7 +34,8 @@ namespace TowerDefense.UI
         {
             try
             {
-                return Font.CreateDynamicFontFromOSFont(name, 16);
+                // 用较大基准字号创建动态字体，避免小字号下字形被拉伸导致文字发糊。
+                return Font.CreateDynamicFontFromOSFont(name, 64);
             }
             catch
             {
@@ -75,34 +76,16 @@ namespace TowerDefense.UI
             return image;
         }
 
-        /// <summary>创建圆角（Fluent 式）Image：白色圆角精灵 + Sliced 拉伸 + 颜色染色。</summary>
-        public static Image CreateRoundedImage(Transform parent, string name, Color color)
-        {
-            var image = CreateImage(parent, name, color);
-            image.sprite = SpriteFactory.RoundedRect();
-            image.type = Image.Type.Sliced;
-            return image;
-        }
-
         /// <summary>
         /// 方舟式「1px 冷描边面板」：外层是描边色，内层面板底自动内缩 1px。
         /// 返回外层（描边）便于定位。
         /// </summary>
         public static Image CreatePanel(Transform parent, string name)
         {
-            var border = CreateRoundedImage(parent, name + "_Border", UiTheme.PanelLine);
-            var fill = CreateRoundedImage(border.transform, name, UiTheme.PanelBg);
+            var border = CreateImage(parent, name + "_Border", UiTheme.PanelLine);
+            var fill = CreateImage(border.transform, name, UiTheme.PanelBg);
             Inset(fill.rectTransform, 1f);
-            AddShadow(border, new Vector2(0f, -4f), new Color(0f, 0f, 0f, 0.35f));
             return border;
-        }
-
-        /// <summary>给 Graphic 加一层柔和投影（Fluent Depth 的轻量实现）。</summary>
-        public static void AddShadow(Graphic graphic, Vector2 distance, Color color)
-        {
-            var shadow = graphic.gameObject.AddComponent<Shadow>();
-            shadow.effectColor = color;
-            shadow.effectDistance = distance;
         }
 
         /// <summary>把子矩形内缩 amount 像素（相对父），用于描边面板的内层。</summary>
@@ -136,8 +119,6 @@ namespace TowerDefense.UI
             go.transform.SetParent(parent, false);
 
             var image = go.AddComponent<Image>();
-            image.sprite = SpriteFactory.RoundedRect();
-            image.type = Image.Type.Sliced;
             image.color = bgColor;
 
             var button = go.AddComponent<Button>();

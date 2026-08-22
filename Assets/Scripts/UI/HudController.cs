@@ -152,9 +152,8 @@ namespace TowerDefense.UI
             var card = new TowerCard { Type = type };
 
             // 外层 1px 描边
-            var border = UiFactory.CreateRoundedImage(parent, def.DisplayName + "_Border", UiTheme.PanelLine);
+            var border = UiFactory.CreateImage(parent, def.DisplayName + "_Border", UiTheme.PanelLine);
             border.raycastTarget = false;
-            UiFactory.AddShadow(border, new Vector2(0f, -2f), new Color(0f, 0f, 0f, 0.28f));
             var borderRect = border.rectTransform;
             borderRect.anchorMin = borderRect.anchorMax = new Vector2(0.5f, 0f);
             borderRect.pivot = new Vector2(0.5f, 0.5f);
@@ -210,7 +209,7 @@ namespace TowerDefense.UI
             UiFactory.SetRect(panel.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, UiTheme.BottomBarHeight + 16f), new Vector2(520f, 120f));
 
             // 顶部职业色条
-            _towerInfoAccent = UiFactory.CreateRoundedImage(panel.transform, "Accent", UiTheme.Accent);
+            _towerInfoAccent = UiFactory.CreateImage(panel.transform, "Accent", UiTheme.Accent);
             _towerInfoAccent.raycastTarget = false;
             UiFactory.SetRect(_towerInfoAccent.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -2f), new Vector2(520f, 3f));
 
