@@ -50,7 +50,7 @@ namespace TowerDefense.Util
                     float dx = Mathf.Max(Mathf.Abs(px - half) - inner, 0f);
                     float dy = Mathf.Max(Mathf.Abs(py - half) - inner, 0f);
                     float dist = Mathf.Sqrt(dx * dx + dy * dy);
-                    float a = dist <= radius ? 1f : (dist <= radius + 1f ? radius + 1f - dist : 0f);
+                    float a = dist <= radius ? 1f : (dist <= radius + 2f ? radius + 2f - dist : 0f);
                     pixels[y * res + x] = new Color(1f, 1f, 1f, a);
                 }
             }
@@ -79,7 +79,7 @@ namespace TowerDefense.Util
                 float ny = (dy - 0.5f) * 2f;
                 float d = Mathf.Sqrt(nx * nx + ny * ny);
 
-                float soft = 2f / Resolution;
+                float soft = 4f / Resolution; // 约 2px 柔边，边缘更平滑
                 if (d <= 1f) return 1f;
                 if (d <= 1f + soft) return (1f + soft - d) / soft;
                 return 0f;

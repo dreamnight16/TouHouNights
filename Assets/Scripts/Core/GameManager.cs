@@ -116,6 +116,10 @@ namespace TowerDefense.Core
             cam.backgroundColor = GameConfig.BackgroundColor;
             cam.clearFlags = CameraClearFlags.SolidColor;
             cam.transform.position = new Vector3(0f, 0f, -10f);
+
+            // 抗锯齿：消除精灵边缘锯齿。
+            QualitySettings.antiAliasing = 8;
+            cam.allowMSAA = true;
         }
 
         private void CreateHud()
