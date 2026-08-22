@@ -7,8 +7,8 @@ using TowerDefense.Data;
 namespace TowerDefense.UI
 {
     /// <summary>
-    /// UGUI HUD：顶栏（生命/金币/波次/得分/P点进度条/状态 + 速度/索敌/弹幕/重开），
-    /// 底栏（4 张塔卡片，选中高亮、金币不足置灰），以及结算面板。
+    /// UGUI HUD（方舟式锐角工业风）：顶栏（生命/金币/敌人/波次/得分/P点进度条/状态 + 速度/索敌/弹幕/重开），
+    /// 底栏（4 张塔卡片，1px 描边 + 色块 + 费用 + 射程/伤害），以及结算面板。
     /// 运行时纯代码构建，不使用 prefab。
     /// </summary>
     public sealed class HudController : MonoBehaviour
@@ -20,6 +20,7 @@ namespace TowerDefense.UI
 
         private Text _livesText;
         private Text _goldText;
+        private Text _enemyText;
         private Text _waveText;
         private Text _scoreText;
         private Text _stateText;
@@ -64,22 +65,25 @@ namespace TowerDefense.UI
 
         private void BuildTopBar()
         {
-            var top = UiFactory.CreateImage(transform, "TopBar", UiTheme.PanelBg);
+            var top = UiFactory.CreatePanel(transform, "TopBar");
             UiFactory.SetStretch(top.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, -UiTheme.TopBarHeight), Vector2.zero);
 
-            _livesText = CreateStat(top.transform, "Lives", 16f, 72f);
-            _goldText = CreateStat(top.transform, "Gold", 90f, 84f);
-            _waveText = CreateStat(top.transform, "Wave", 176f, 110f);
-            _scoreText = CreateStat(top.transform, "Score", 290f, 100f);
+            float cy = -UiTheme.TopBarHeight * 0.5f;
 
-            var powerLabel = UiFactory.CreateText(top.transform, "PowerLabel", "P点", UiTheme.FontSize, UiTheme.TextDim, TextAnchor.MiddleLeft);
-            SetLeftAnchor(powerLabel.rectTransform, 392f, 44f);
+            _livesText = CreateStat(top.transform, "Lives", 16f, 64f);
+            _goldText = CreateStat(top.transform, "Gold", 82f, 80f);
+            _enemyText = CreateStat(top.transform, "Enemy", 164f, 80f);
+            _waveText = CreateStat(top.transform, "Wave", 246f, 100f);
+            _scoreText = CreateStat(top.transform, "Score", 348f, 88f);
+
+            var powerLabel = UiFactory.CreateText(top.transform, "PowerLabel", "P点", UiTheme.FontSizeSmall, UiTheme.InkDim, TextAnchor.MiddleLeft);
+            SetLeftAnchor(powerLabel.rectTransform, 440f, 40f);
 
             var powerBar = UiFactory.CreateProgressBar(top.transform, "PowerBar", UiTheme.PowerBar, UiTheme.PowerBarBg);
-            SetCenterAnchor(powerBar.background.rectTransform, new Vector2(0f, 1f), new Vector2(500f, -28f), new Vector2(110f, 14f));
+            SetCenterAnchor(powerBar.background.rectTransform, new Vector2(0f, 1f), new Vector2(531f, cy), new Vector2(90f, 14f));
             _powerFill = powerBar.fill;
 
-            _stateText = CreateStat(top.transform, "State", 568f, 120f);
+            _stateText = CreateStat(top.transform, "State", 580f, 110f);
 
             _speedLabel = CreateTopButton(top.transform, "Speed", "速度 1x", 432f, 96f, ToggleSpeed, out _);
             _targetingLabel = CreateTopButton(top.transform, "Targeting", "索敌", 238f, 186f, CycleTargeting, out _);
@@ -89,18 +93,18 @@ namespace TowerDefense.UI
 
         private Text CreateStat(Transform parent, string name, float x, float width)
         {
-            var text = UiFactory.CreateText(parent, name, string.Empty, UiTheme.FontSize, UiTheme.TextPrimary, TextAnchor.MiddleLeft);
+            var text = UiFactory.CreateText(parent, name, string.Empty, UiTheme.FontSize, UiTheme.Ink, TextAnchor.MiddleLeft);
             SetLeftAnchor(text.rectTransform, x, width);
             return text;
         }
 
         private Text CreateTopButton(Transform parent, string name, string label, float rightMargin, float width, Action onClick, out Button button)
         {
-            var b = UiFactory.CreateButton(parent, name, label, UiTheme.ButtonBg, UiTheme.FontSize, onClick);
+            var b = UiFactory.CreateButton(parent, name, label, UiTheme.ButtonBg, UiTheme.FontSizeSmall, onClick);
             var rt = b.GetComponent<RectTransform>();
             rt.anchorMin = rt.anchorMax = new Vector2(1f, 1f);
             rt.pivot = new Vector2(1f, 0.5f);
-            rt.anchoredPosition = new Vector2(-rightMargin, -28f);
+            rt.anchoredPosition = new Vector2(-rightMargin, -UiTheme.TopBarHeight * 0.5f);
             rt.sizeDelta = new Vector2(width, 32f);
             button = b;
             return b.GetComponentInChildren<Text>();
@@ -110,7 +114,7 @@ namespace TowerDefense.UI
 
         private void BuildBottomBar()
         {
-            var bottom = UiFactory.CreateImage(transform, "BottomBar", UiTheme.PanelBg);
+            var bottom = UiFactory.CreatePanel(transform, "BottomBar");
             UiFactory.SetStretch(bottom.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), Vector2.zero, new Vector2(0f, UiTheme.BottomBarHeight));
 
             float total = TowerOrder.Length * UiTheme.TowerCardWidth + (TowerOrder.Length - 1) * UiTheme.TowerCardGap;
@@ -129,27 +133,38 @@ namespace TowerDefense.UI
         {
             var card = new TowerCard { Type = type };
 
-            var button = UiFactory.CreateButton(parent, def.DisplayName, string.Empty, UiTheme.CardBg, UiTheme.FontSizeCardSub, () => GameManager.Instance?.TowerPlacer.SelectTower(type));
-            button.transition = Selectable.Transition.None; // 颜色由 RefreshCards 手动管理，避免与 ColorTint 打架
+            // 外层 1px 描边
+            var border = UiFactory.CreateImage(parent, def.DisplayName + "_Border", UiTheme.PanelLine);
+            border.raycastTarget = false;
+            var borderRect = border.rectTransform;
+            borderRect.anchorMin = borderRect.anchorMax = new Vector2(0.5f, 0f);
+            borderRect.pivot = new Vector2(0.5f, 0.5f);
+            borderRect.anchoredPosition = anchoredPosition;
+            borderRect.sizeDelta = new Vector2(UiTheme.TowerCardWidth, UiTheme.TowerCardHeight);
 
-            var rt = button.GetComponent<RectTransform>();
-            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0f);
-            rt.pivot = new Vector2(0.5f, 0.5f);
-            rt.anchoredPosition = anchoredPosition;
-            rt.sizeDelta = new Vector2(UiTheme.TowerCardWidth, UiTheme.TowerCardHeight);
-
+            // 内层按钮（填充，内缩 1px）
+            var button = UiFactory.CreateButton(border.transform, def.DisplayName, string.Empty, UiTheme.CardBg, UiTheme.FontSizeCardSub, () => GameManager.Instance?.TowerPlacer.SelectTower(type));
+            button.transition = Selectable.Transition.None;
+            UiFactory.Inset(button.GetComponent<RectTransform>(), 1f);
             card.Button = button;
             card.Bg = button.GetComponent<Image>();
 
+            // 色块图标（左上）
             var icon = UiFactory.CreateImage(button.transform, "Icon", def.Color);
-            icon.raycastTarget = false; // 不拦截卡片按钮点击
-            SetCenterAnchor(icon.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 12f), new Vector2(20f, 20f));
+            icon.raycastTarget = false;
+            SetAnchor(icon.rectTransform, new Vector2(0f, 1f), new Vector2(0.5f, 0.5f), new Vector2(14f, -14f), new Vector2(18f, 18f));
 
-            card.Name = UiFactory.CreateText(button.transform, "Name", def.DisplayName, UiTheme.FontSizeCardTitle, UiTheme.TextPrimary);
-            SetCenterAnchor(card.Name.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -6f), new Vector2(150f, 20f));
+            // 名称（左上）
+            card.Name = UiFactory.CreateText(button.transform, "Name", def.DisplayName, UiTheme.FontSizeCardTitle, UiTheme.Ink, TextAnchor.MiddleLeft);
+            SetAnchor(card.Name.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 0.5f), new Vector2(40f, -12f), new Vector2(90f, 22f));
 
-            card.Sub = UiFactory.CreateText(button.transform, "Sub", SubText(def), UiTheme.FontSizeCardSub, UiTheme.TextDim);
-            SetCenterAnchor(card.Sub.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -22f), new Vector2(150f, 16f));
+            // 费用（右上，金色）
+            var cost = UiFactory.CreateText(button.transform, "Cost", $"${def.Cost}", UiTheme.FontSizeCardTitle, UiTheme.Gold, TextAnchor.MiddleRight);
+            SetAnchor(cost.rectTransform, new Vector2(1f, 1f), new Vector2(1f, 0.5f), new Vector2(-10f, -12f), new Vector2(60f, 22f));
+
+            // 射程/伤害（底部，次级）
+            card.Sub = UiFactory.CreateText(button.transform, "Sub", SubText(def), UiTheme.FontSizeCardSub, UiTheme.InkDim, TextAnchor.MiddleLeft);
+            SetAnchor(card.Sub.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 0.5f), new Vector2(10f, 14f), new Vector2(148f, 18f));
 
             return card;
         }
@@ -168,6 +183,7 @@ namespace TowerDefense.UI
         {
             _livesText.text = $"生命 {gm.Lives}";
             _goldText.text = $"金币 {gm.Gold}";
+            _enemyText.text = $"敌人 {gm.EnemyCount}";
             _waveText.text = $"波次 {gm.CurrentWave}/{gm.TotalWaves}";
             _scoreText.text = $"得分 {gm.Score}";
             _stateText.text = StateText(gm.State);
@@ -193,8 +209,8 @@ namespace TowerDefense.UI
 
                 card.Button.interactable = affordable;
                 card.Bg.color = !affordable ? UiTheme.CardDisabled : selected ? UiTheme.CardSelected : UiTheme.CardBg;
-                card.Name.color = affordable ? UiTheme.TextPrimary : UiTheme.TextDim;
-                card.Sub.color = affordable ? UiTheme.TextDim : new Color(0.45f, 0.48f, 0.55f, 1f);
+                card.Name.color = affordable ? UiTheme.Ink : UiTheme.InkDim;
+                card.Sub.color = affordable ? UiTheme.InkDim : new Color(0.42f, 0.45f, 0.52f, 1f);
             }
         }
 
@@ -223,7 +239,7 @@ namespace TowerDefense.UI
         {
             rect.anchorMin = rect.anchorMax = new Vector2(0f, 1f);
             rect.pivot = new Vector2(0f, 0.5f);
-            rect.anchoredPosition = new Vector2(x, -28f);
+            rect.anchoredPosition = new Vector2(x, -UiTheme.TopBarHeight * 0.5f);
             rect.sizeDelta = new Vector2(width, 26f);
         }
 
@@ -231,6 +247,14 @@ namespace TowerDefense.UI
         {
             rect.anchorMin = rect.anchorMax = anchor;
             rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = anchoredPosition;
+            rect.sizeDelta = size;
+        }
+
+        private static void SetAnchor(RectTransform rect, Vector2 anchor, Vector2 pivot, Vector2 anchoredPosition, Vector2 size)
+        {
+            rect.anchorMin = rect.anchorMax = anchor;
+            rect.pivot = pivot;
             rect.anchoredPosition = anchoredPosition;
             rect.sizeDelta = size;
         }
@@ -266,9 +290,9 @@ namespace TowerDefense.UI
         {
             if (def.Damage <= 0f)
             {
-                return $"费用{def.Cost} 射程{def.RangeCells} 减速{Mathf.RoundToInt((1f - def.SlowFactor) * 100f)}%";
+                return $"射程{def.RangeCells} 减速{Mathf.RoundToInt((1f - def.SlowFactor) * 100f)}%";
             }
-            return $"费用{def.Cost} 射程{def.RangeCells} 伤害{Mathf.RoundToInt(def.Damage)}";
+            return $"射程{def.RangeCells} 伤害{Mathf.RoundToInt(def.Damage)}";
         }
     }
 }

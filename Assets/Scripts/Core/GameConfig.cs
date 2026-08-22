@@ -17,7 +17,7 @@ namespace TowerDefense.Core
 
         public const float CameraSize = 5.4f;
 
-        public static readonly Color BackgroundColor = new Color(0.06f, 0.07f, 0.10f);
+        public static readonly Color BackgroundColor = new Color(0.043f, 0.051f, 0.071f); // #0B0D12 深蓝黑战场底
         public static readonly Color GridColor = new Color(1f, 1f, 1f, 0.05f);
         public static readonly Color GridHoverColor = new Color(0.2f, 1f, 0.3f, 0.28f);
         public static readonly Color GridBlockedColor = new Color(1f, 0.30f, 0.30f, 0.40f);

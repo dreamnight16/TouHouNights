@@ -3,43 +3,60 @@ using UnityEngine;
 namespace TowerDefense.UI
 {
     /// <summary>
-    /// UGUI 视觉主题：集中配色、字号、布局尺寸，保证整体观感统一。
+    /// UGUI 视觉主题：方舟式「锐角工业 HUD + 冷描边」+ Phigros 式「评级色」。
     /// 所有矩形使用 CanvasScaler 的 1280×720 参考分辨率逻辑单位。
     /// </summary>
     public static class UiTheme
     {
         public static readonly Vector2 ReferenceResolution = new Vector2(1280f, 720f);
 
-        public const float TopBarHeight = 56f;
+        public const float TopBarHeight = 54f;
         public const float BottomBarHeight = 88f;
-
         public const float TowerCardWidth = 170f;
         public const float TowerCardHeight = 64f;
         public const float TowerCardGap = 12f;
 
-        // 配色
-        public static readonly Color PanelBg = new Color(0.09f, 0.10f, 0.14f, 0.95f);
-        public static readonly Color CardBg = new Color(0.20f, 0.26f, 0.35f, 1f);
-        public static readonly Color CardSelected = new Color(0.20f, 0.62f, 0.35f, 1f);
-        public static readonly Color CardDisabled = new Color(0.13f, 0.15f, 0.18f, 1f);
-        public static readonly Color ButtonBg = new Color(0.22f, 0.28f, 0.38f, 1f);
-        public static readonly Color ButtonHover = new Color(0.28f, 0.36f, 0.48f, 1f);
+        // 战场 / 面板 / 描边
+        public static readonly Color BattleBg = Hex("0B0D12");
+        public static readonly Color PanelBg = new Color(0.078f, 0.094f, 0.129f, 0.94f);
+        public static readonly Color PanelLine = Hex("333C4E");
+        public static readonly Color CardBg = new Color(0.13f, 0.16f, 0.21f, 1f);
+        public static readonly Color CardSelected = new Color(0.09f, 0.25f, 0.26f, 1f); // 青调选中
+        public static readonly Color CardDisabled = new Color(0.12f, 0.13f, 0.16f, 1f);
+        public static readonly Color ButtonBg = new Color(0.16f, 0.20f, 0.27f, 1f);
+        public static readonly Color ButtonHover = new Color(0.22f, 0.27f, 0.36f, 1f);
 
-        public static readonly Color TextPrimary = Color.white;
-        public static readonly Color TextDim = new Color(0.72f, 0.76f, 0.84f, 1f);
-        public static readonly Color Accent = new Color(0.55f, 0.85f, 1f, 1f);
+        // 文字 / 强调
+        public static readonly Color Ink = Hex("E7EAF0");
+        public static readonly Color InkDim = Hex("8A93A6");
+        public static readonly Color Accent = Hex("4CD6E0");
+        public static readonly Color EnemyRed = Hex("E5484D");
+        public static readonly Color Gold = Hex("F0B33C");
+        public static readonly Color Overlay = new Color(0f, 0f, 0f, 0.66f);
 
-        public static readonly Color PowerBar = new Color(0.55f, 0.85f, 1f, 1f);
-        public static readonly Color PowerBarBg = new Color(1f, 1f, 1f, 0.15f);
-        public static readonly Color LivesBar = new Color(0.30f, 1f, 0.35f, 1f);
-        public static readonly Color Overlay = new Color(0f, 0f, 0f, 0.62f);
+        // 进度条
+        public static readonly Color PowerBar = Accent;
+        public static readonly Color PowerBarBg = new Color(1f, 1f, 1f, 0.12f);
+
+        // Phigros 评级色
+        public static readonly Color GradePhi = Hex("F5D76E");
+        public static readonly Color GradeV = Hex("4CD6E0");
+        public static readonly Color GradeS = Hex("5FE39B");
+        public static readonly Color GradeA = Hex("6BA8F0");
+        public static readonly Color GradeB = Hex("F0A86B");
+        public static readonly Color GradeC = Hex("9AA1AE");
 
         // 字号
-        public const int FontSize = 20;
-        public const int FontSizeSmall = 15;
-        public const int FontSizeCardTitle = 18;
-        public const int FontSizeCardSub = 13;
-        public const int FontSizeGrade = 96;
+        public const int FontSize = 18;
+        public const int FontSizeSmall = 14;
+        public const int FontSizeCardTitle = 17;
+        public const int FontSizeCardSub = 12;
+        public const int FontSizeGrade = 120;
         public const int FontSizeTitle = 30;
+
+        private static Color Hex(string hex)
+        {
+            return ColorUtility.TryParseHtmlString("#" + hex, out var color) ? color : Color.white;
+        }
     }
 }

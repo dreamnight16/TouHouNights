@@ -74,6 +74,27 @@ namespace TowerDefense.UI
             return image;
         }
 
+        /// <summary>
+        /// 方舟式「1px 冷描边面板」：外层是描边色，内层面板底自动内缩 1px。
+        /// 返回外层（描边）便于定位。
+        /// </summary>
+        public static Image CreatePanel(Transform parent, string name)
+        {
+            var border = CreateImage(parent, name + "_Border", UiTheme.PanelLine);
+            var fill = CreateImage(border.transform, name, UiTheme.PanelBg);
+            Inset(fill.rectTransform, 1f);
+            return border;
+        }
+
+        /// <summary>把子矩形内缩 amount 像素（相对父），用于描边面板的内层。</summary>
+        public static void Inset(RectTransform rect, float amount)
+        {
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = new Vector2(amount, amount);
+            rect.offsetMax = new Vector2(-amount, -amount);
+        }
+
         public static Text CreateText(Transform parent, string name, string content, int fontSize, Color color, TextAnchor alignment = TextAnchor.MiddleCenter)
         {
             var go = new GameObject(name, typeof(RectTransform));

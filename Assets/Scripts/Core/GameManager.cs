@@ -153,7 +153,7 @@ namespace TowerDefense.Core
             var floor = new GameObject("Floor");
             floor.transform.SetParent(WorldRoot, false);
             var sr = floor.AddComponent<SpriteRenderer>();
-            sr.sprite = SpriteFactory.Square(1f, new Color(0.09f, 0.10f, 0.14f));
+            sr.sprite = SpriteFactory.Square(1f, new Color(0.06f, 0.07f, 0.10f));
             sr.sortingOrder = -10;
             floor.transform.localScale = new Vector3(GameConfig.WorldHalfWidth * 2f + 4f, GameConfig.WorldHalfHeight * 2f + 4f, 1f);
         }
