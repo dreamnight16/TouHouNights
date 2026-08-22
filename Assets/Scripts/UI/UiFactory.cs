@@ -93,7 +93,16 @@ namespace TowerDefense.UI
             var border = CreateRoundedImage(parent, name + "_Border", UiTheme.PanelLine);
             var fill = CreateRoundedImage(border.transform, name, UiTheme.PanelBg);
             Inset(fill.rectTransform, 1f);
+            AddShadow(border, new Vector2(0f, -4f), new Color(0f, 0f, 0f, 0.35f));
             return border;
+        }
+
+        /// <summary>给 Graphic 加一层柔和投影（Fluent Depth 的轻量实现）。</summary>
+        public static void AddShadow(Graphic graphic, Vector2 distance, Color color)
+        {
+            var shadow = graphic.gameObject.AddComponent<Shadow>();
+            shadow.effectColor = color;
+            shadow.effectDistance = distance;
         }
 
         /// <summary>把子矩形内缩 amount 像素（相对父），用于描边面板的内层。</summary>

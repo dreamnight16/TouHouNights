@@ -78,6 +78,10 @@ namespace TowerDefense.Core
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
+#if !UNITY_EDITOR
+            Screen.SetResolution(1920, 1080, true); // 独立运行默认 1080p 全屏，避免低分辨率
+#endif
+
             EnsureCamera();
             CreateHud();
             CreateWorld();

@@ -10,7 +10,7 @@ namespace TowerDefense.Util
     /// </summary>
     public static class SpriteFactory
     {
-        private const int Resolution = 128;
+        private const int Resolution = 256;
         private static readonly Dictionary<string, Sprite> Cache = new Dictionary<string, Sprite>();
         private static Sprite _roundedRect;
 
@@ -28,7 +28,7 @@ namespace TowerDefense.Util
         {
             if (_roundedRect != null) return _roundedRect;
 
-            const int res = 64;
+            const int res = 128;
             const int radius = 12;
 
             var tex = new Texture2D(res, res, TextureFormat.RGBA32, false)

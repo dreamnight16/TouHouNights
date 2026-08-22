@@ -27,50 +27,57 @@ namespace TowerDefense.UI
         {
             _root = new GameObject("ResultPanel", typeof(RectTransform));
             _root.transform.SetParent(canvasRoot, false);
-            UiFactory.Stretch(_root.GetComponent<RectTransform>()); // 根节点铺满全屏
+            UiFactory.Stretch(_root.GetComponent<RectTransform>());
             _canvasGroup = _root.AddComponent<CanvasGroup>();
 
             // 全屏遮罩，阻挡点击。
             var overlay = UiFactory.CreateImage(_root.transform, "Overlay", UiTheme.Overlay);
             UiFactory.SetStretch(overlay.rectTransform, Vector2.zero, Vector2.one, Vector2.zero, Vector2.zero);
 
-            // 锐角描边面板
+            // 左右分栏面板（左评级 / 右战报）
             var box = UiFactory.CreatePanel(_root.transform, "Box");
-            UiFactory.SetRect(box.rectTransform, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(560f, 460f));
-            var fill = box.transform; // 内层为 box 的子物体，直接当容器用
+            UiFactory.SetRect(box.rectTransform, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(640f, 420f));
+            var fill = box.transform;
 
-            // 评级「回声」（更大更淡，垫在评级后面）
+            // 左：评级
             _echoText = UiFactory.CreateText(fill, "GradeEcho", "S", 170, new Color(1f, 1f, 1f, 0.10f));
-            UiFactory.SetRect(_echoText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 120f), new Vector2(460f, 150f));
+            UiFactory.SetRect(_echoText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-160f, 55f), new Vector2(280f, 170f));
 
             _gradeText = UiFactory.CreateText(fill, "Grade", "S", UiTheme.FontSizeGrade, UiTheme.Accent);
-            UiFactory.SetRect(_gradeText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 120f), new Vector2(460f, 150f));
+            UiFactory.SetRect(_gradeText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-160f, 55f), new Vector2(280f, 170f));
 
-            // 同色细线
             _rule = UiFactory.CreateImage(fill, "Rule", UiTheme.Accent);
             _rule.raycastTarget = false;
-            UiFactory.SetRect(_rule.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 66f), new Vector2(340f, 2f));
+            UiFactory.SetRect(_rule.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-160f, -35f), new Vector2(240f, 2f));
 
             _titleText = UiFactory.CreateText(fill, "Title", "胜利！", UiTheme.FontSizeTitle, UiTheme.Ink);
-            UiFactory.SetRect(_titleText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 40f), new Vector2(400f, 36f));
+            UiFactory.SetRect(_titleText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-160f, -75f), new Vector2(280f, 36f));
 
             _ratingText = UiFactory.CreateText(fill, "Rating", "评分 0", UiTheme.FontSize, UiTheme.Accent);
-            UiFactory.SetRect(_ratingText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 12f), new Vector2(400f, 28f));
+            UiFactory.SetRect(_ratingText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-160f, -110f), new Vector2(280f, 28f));
 
             _badgeText = UiFactory.CreateText(fill, "Badge", string.Empty, UiTheme.FontSizeSmall, UiTheme.Gold);
-            UiFactory.SetRect(_badgeText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -16f), new Vector2(460f, 24f));
+            UiFactory.SetRect(_badgeText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-160f, -142f), new Vector2(280f, 24f));
 
-            // 双列战绩：左标签、右数值
+            // 中：分隔线
+            var divider = UiFactory.CreateImage(fill, "Divider", UiTheme.PanelLine);
+            divider.raycastTarget = false;
+            UiFactory.SetRect(divider.rectTransform, new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(2f, 300f));
+
+            // 右：战报
+            var header = UiFactory.CreateText(fill, "Header", "战报", UiTheme.FontSizeTitle, UiTheme.InkDim);
+            UiFactory.SetRect(header.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(160f, 120f), new Vector2(240f, 30f));
+
             _labelText = UiFactory.CreateText(fill, "Labels", string.Empty, UiTheme.FontSize, UiTheme.InkDim, TextAnchor.MiddleLeft);
-            UiFactory.SetRect(_labelText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-170f, -96f), new Vector2(160f, 160f));
+            UiFactory.SetRect(_labelText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(95f, 15f), new Vector2(100f, 160f));
 
             _valueText = UiFactory.CreateText(fill, "Values", string.Empty, UiTheme.FontSize, UiTheme.Ink, TextAnchor.MiddleRight);
-            UiFactory.SetRect(_valueText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(170f, -96f), new Vector2(160f, 160f));
+            UiFactory.SetRect(_valueText.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(220f, 15f), new Vector2(140f, 160f));
 
             var restart = UiFactory.CreateButton(fill, "Restart", "再来一局", UiTheme.Accent, UiTheme.FontSize, RestartGame);
             var label = restart.GetComponentInChildren<Text>();
             if (label != null) label.color = new Color(0.02f, 0.04f, 0.06f, 1f); // 强调色按钮上用深色文字
-            UiFactory.SetRect(restart.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0f, -190f), new Vector2(220f, 52f));
+            UiFactory.SetRect(restart.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0f, -178f), new Vector2(240f, 52f));
 
             _root.SetActive(false);
         }
