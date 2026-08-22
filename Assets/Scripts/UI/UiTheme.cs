@@ -16,15 +16,15 @@ namespace TowerDefense.UI
         public const float TowerCardHeight = 64f;
         public const float TowerCardGap = 12f;
 
-        // 战场 / 面板 / 描边
+        // 战场 / 面板 / 描边（Fluent 亚克力：半透明 + 柔和浅描边）
         public static readonly Color BattleBg = Hex("0B0D12");
-        public static readonly Color PanelBg = new Color(0.078f, 0.094f, 0.129f, 0.94f);
-        public static readonly Color PanelLine = Hex("333C4E");
-        public static readonly Color CardBg = new Color(0.13f, 0.16f, 0.21f, 1f);
-        public static readonly Color CardSelected = new Color(0.09f, 0.25f, 0.26f, 1f); // 青调选中
-        public static readonly Color CardDisabled = new Color(0.12f, 0.13f, 0.16f, 1f);
-        public static readonly Color ButtonBg = new Color(0.16f, 0.20f, 0.27f, 1f);
-        public static readonly Color ButtonHover = new Color(0.22f, 0.27f, 0.36f, 1f);
+        public static readonly Color PanelBg = new Color(0.10f, 0.13f, 0.18f, 0.62f);  // 亚克力半透明
+        public static readonly Color PanelLine = new Color(1f, 1f, 1f, 0.16f);          // 柔和浅描边
+        public static readonly Color CardBg = new Color(0.16f, 0.20f, 0.27f, 0.78f);
+        public static readonly Color CardSelected = new Color(0.15f, 0.42f, 0.45f, 0.88f); // 青调选中
+        public static readonly Color CardDisabled = new Color(0.12f, 0.13f, 0.16f, 0.70f);
+        public static readonly Color ButtonBg = new Color(0.20f, 0.26f, 0.35f, 0.85f);
+        public static readonly Color ButtonHover = new Color(0.27f, 0.34f, 0.45f, 0.92f);
 
         // 文字 / 强调
         public static readonly Color Ink = Hex("E7EAF0");

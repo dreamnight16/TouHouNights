@@ -12,11 +12,62 @@ namespace TowerDefense.Util
     {
         private const int Resolution = 128;
         private static readonly Dictionary<string, Sprite> Cache = new Dictionary<string, Sprite>();
+        private static Sprite _roundedRect;
 
         /// <summary>生成一个填满纹理的正方形 Sprite，边长 = size 世界单位。</summary>
         public static Sprite Square(float size, Color color)
         {
             return GetOrCreate("sq", size, color, (dx, dy) => 1f);
+        }
+
+        /// <summary>
+        /// 生成一个白色圆角矩形 UI 精灵（9-slice，带抗锯齿）。
+        /// 供 UGUI 的 Image 用 Sliced 模式拉伸，并用 Image.color 染色 —— Fluent 式圆角卡片/面板。
+        /// </summary>
+        public static Sprite RoundedRect()
+        {
+            if (_roundedRect != null) return _roundedRect;
+
+            const int res = 64;
+            const int radius = 12;
+
+            var tex = new Texture2D(res, res, TextureFormat.RGBA32, false)
+            {
+                wrapMode = TextureWrapMode.Clamp,
+                filterMode = FilterMode.Bilinear,
+            };
+
+            var pixels = new Color32[res * res];
+            float half = res * 0.5f;
+            float inner = half - radius;
+
+            for (int y = 0; y < res; y++)
+            {
+                for (int x = 0; x < res; x++)
+                {
+                    float px = x + 0.5f;
+                    float py = y + 0.5f;
+                    float dx = Mathf.Max(Mathf.Abs(px - half) - inner, 0f);
+                    float dy = Mathf.Max(Mathf.Abs(py - half) - inner, 0f);
+                    float dist = Mathf.Sqrt(dx * dx + dy * dy);
+                    float a = dist <= radius ? 1f : (dist <= radius + 1f ? radius + 1f - dist : 0f);
+                    pixels[y * res + x] = new Color(1f, 1f, 1f, a);
+                }
+            }
+
+            tex.SetPixels32(pixels);
+            tex.Apply();
+
+            _roundedRect = Sprite.Create(
+                tex,
+                new Rect(0, 0, res, res),
+                new Vector2(0.5f, 0.5f),
+                1f, // 1 像素 = 1 canvas 单位，让圆角半径在 UI 里可见
+                0,
+                SpriteMeshType.FullRect,
+                new Vector4(radius, radius, radius, radius));
+
+            return _roundedRect;
         }
 
         /// <summary>生成一个圆形 Sprite，直径 = 2 * radius 世界单位（带软边抗锯齿）。</summary>

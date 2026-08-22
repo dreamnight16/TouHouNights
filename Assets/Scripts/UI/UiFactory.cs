@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TowerDefense.Util;
 
 namespace TowerDefense.UI
 {
@@ -74,14 +75,23 @@ namespace TowerDefense.UI
             return image;
         }
 
+        /// <summary>创建圆角（Fluent 式）Image：白色圆角精灵 + Sliced 拉伸 + 颜色染色。</summary>
+        public static Image CreateRoundedImage(Transform parent, string name, Color color)
+        {
+            var image = CreateImage(parent, name, color);
+            image.sprite = SpriteFactory.RoundedRect();
+            image.type = Image.Type.Sliced;
+            return image;
+        }
+
         /// <summary>
         /// 方舟式「1px 冷描边面板」：外层是描边色，内层面板底自动内缩 1px。
         /// 返回外层（描边）便于定位。
         /// </summary>
         public static Image CreatePanel(Transform parent, string name)
         {
-            var border = CreateImage(parent, name + "_Border", UiTheme.PanelLine);
-            var fill = CreateImage(border.transform, name, UiTheme.PanelBg);
+            var border = CreateRoundedImage(parent, name + "_Border", UiTheme.PanelLine);
+            var fill = CreateRoundedImage(border.transform, name, UiTheme.PanelBg);
             Inset(fill.rectTransform, 1f);
             return border;
         }
@@ -117,6 +127,8 @@ namespace TowerDefense.UI
             go.transform.SetParent(parent, false);
 
             var image = go.AddComponent<Image>();
+            image.sprite = SpriteFactory.RoundedRect();
+            image.type = Image.Type.Sliced;
             image.color = bgColor;
 
             var button = go.AddComponent<Button>();
@@ -129,7 +141,7 @@ namespace TowerDefense.UI
                 selectedColor = bgColor,
                 disabledColor = new Color(0.5f, 0.5f, 0.5f, 0.5f),
                 colorMultiplier = 1f,
-                fadeDuration = 0.1f,
+                fadeDuration = 0.15f,
             };
 
             if (onClick != null)

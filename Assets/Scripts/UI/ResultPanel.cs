@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TowerDefense.Core;
@@ -12,6 +13,7 @@ namespace TowerDefense.UI
     public sealed class ResultPanel : MonoBehaviour
     {
         private GameObject _root;
+        private CanvasGroup _canvasGroup;
         private Text _echoText;
         private Text _gradeText;
         private Image _rule;
@@ -26,6 +28,7 @@ namespace TowerDefense.UI
             _root = new GameObject("ResultPanel", typeof(RectTransform));
             _root.transform.SetParent(canvasRoot, false);
             UiFactory.Stretch(_root.GetComponent<RectTransform>()); // 根节点铺满全屏
+            _canvasGroup = _root.AddComponent<CanvasGroup>();
 
             // 全屏遮罩，阻挡点击。
             var overlay = UiFactory.CreateImage(_root.transform, "Overlay", UiTheme.Overlay);
@@ -77,6 +80,7 @@ namespace TowerDefense.UI
             if (_root == null) return;
 
             _root.SetActive(true);
+            _canvasGroup.alpha = 0f;
 
             var color = GradeColor(result.Grade);
 
@@ -103,14 +107,33 @@ namespace TowerDefense.UI
                 $"{result.TotalKills}\n" +
                 $"{result.LeakedEnemies}\n" +
                 $"{result.LivesRemaining}";
+
+            StopAllCoroutines();
+            StartCoroutine(FadeIn());
         }
 
         public void Hide()
         {
-            if (_root != null)
+            if (_root == null) return;
+            StopAllCoroutines();
+            _canvasGroup.alpha = 0f;
+            _root.SetActive(false);
+        }
+
+        private IEnumerator FadeIn()
+        {
+            const float duration = 0.18f;
+            float elapsed = 0f;
+
+            while (elapsed < duration)
             {
-                _root.SetActive(false);
+                // 结算时 timeScale=0，用 unscaledDeltaTime 才能播放动画。
+                elapsed += Time.unscaledDeltaTime;
+                _canvasGroup.alpha = Mathf.Clamp01(elapsed / duration);
+                yield return null;
             }
+
+            _canvasGroup.alpha = 1f;
         }
 
         private static string AppendBadge(string current, string badge)

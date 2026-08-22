@@ -146,7 +146,7 @@ namespace TowerDefense.UI
             var card = new TowerCard { Type = type };
 
             // 外层 1px 描边
-            var border = UiFactory.CreateImage(parent, def.DisplayName + "_Border", UiTheme.PanelLine);
+            var border = UiFactory.CreateRoundedImage(parent, def.DisplayName + "_Border", UiTheme.PanelLine);
             border.raycastTarget = false;
             var borderRect = border.rectTransform;
             borderRect.anchorMin = borderRect.anchorMax = new Vector2(0.5f, 0f);
