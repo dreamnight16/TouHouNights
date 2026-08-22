@@ -49,8 +49,7 @@ namespace TowerDefense.UI
         private GameObject _towerInfoRoot;
         private Image _towerInfoAccent;
         private Text _towerInfoTitle;
-        private Text _towerInfoLabel;
-        private Text _towerInfoValue;
+        private Text _towerInfoStats;
         private Text _towerInfoRefund;
         private Button _towerInfoRetreat;
 
@@ -206,29 +205,30 @@ namespace TowerDefense.UI
             _towerInfoRoot.transform.SetParent(transform, false);
             UiFactory.Stretch(_towerInfoRoot.GetComponent<RectTransform>());
 
+            // 底部居中，位于塔卡片上方（参考方舟：详情面板在底部手牌区上方）
             var panel = UiFactory.CreatePanel(_towerInfoRoot.transform, "Panel");
-            UiFactory.SetRect(panel.rectTransform, new Vector2(1f, 0.5f), new Vector2(-16f, 0f), new Vector2(280f, 320f));
+            UiFactory.SetRect(panel.rectTransform, new Vector2(0.5f, 0f), new Vector2(0f, UiTheme.BottomBarHeight + 16f), new Vector2(520f, 120f));
 
             // 顶部职业色条
             _towerInfoAccent = UiFactory.CreateRoundedImage(panel.transform, "Accent", UiTheme.Accent);
             _towerInfoAccent.raycastTarget = false;
-            UiFactory.SetRect(_towerInfoAccent.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -3f), new Vector2(280f, 4f));
+            UiFactory.SetRect(_towerInfoAccent.rectTransform, new Vector2(0.5f, 1f), new Vector2(0f, -2f), new Vector2(520f, 3f));
 
-            _towerInfoTitle = UiFactory.CreateText(panel.transform, "Title", string.Empty, UiTheme.FontSizeTitle, UiTheme.Ink);
-            UiFactory.SetRect(_towerInfoTitle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 122f), new Vector2(240f, 34f));
+            // 塔名（左上）
+            _towerInfoTitle = UiFactory.CreateText(panel.transform, "Title", string.Empty, UiTheme.FontSize, UiTheme.Ink, TextAnchor.MiddleLeft);
+            SetAnchor(_towerInfoTitle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 0.5f), new Vector2(-225f, 30f), new Vector2(170f, 28f));
 
-            // 左标签 / 右数值
-            _towerInfoLabel = UiFactory.CreateText(panel.transform, "Labels", string.Empty, UiTheme.FontSizeSmall, UiTheme.InkDim, TextAnchor.MiddleLeft);
-            UiFactory.SetRect(_towerInfoLabel.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(-88f, 30f), new Vector2(110f, 130f));
+            // 返还信息（左）
+            _towerInfoRefund = UiFactory.CreateText(panel.transform, "Refund", string.Empty, UiTheme.FontSizeCardSub, UiTheme.Gold, TextAnchor.MiddleLeft);
+            SetAnchor(_towerInfoRefund.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 0.5f), new Vector2(-225f, -10f), new Vector2(280f, 18f));
 
-            _towerInfoValue = UiFactory.CreateText(panel.transform, "Values", string.Empty, UiTheme.FontSizeSmall, UiTheme.Ink, TextAnchor.MiddleRight);
-            UiFactory.SetRect(_towerInfoValue.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(88f, 30f), new Vector2(110f, 130f));
+            // 属性（左下）
+            _towerInfoStats = UiFactory.CreateText(panel.transform, "Stats", string.Empty, UiTheme.FontSizeSmall, UiTheme.Ink, TextAnchor.MiddleLeft);
+            SetAnchor(_towerInfoStats.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 0.5f), new Vector2(-225f, -34f), new Vector2(380f, 20f));
 
-            _towerInfoRefund = UiFactory.CreateText(panel.transform, "Refund", string.Empty, UiTheme.FontSizeCardSub, UiTheme.Gold);
-            UiFactory.SetRect(_towerInfoRefund.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -80f), new Vector2(240f, 20f));
-
+            // 撤退（右侧）
             var retreat = UiFactory.CreateButton(panel.transform, "Retreat", "撤退", UiTheme.EnemyRed, UiTheme.FontSize, RetreatSelected);
-            UiFactory.SetRect(retreat.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0f, -128f), new Vector2(220f, 44f));
+            UiFactory.SetRect(retreat.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(218f, 0f), new Vector2(84f, 48f));
             _towerInfoRetreat = retreat;
 
             _towerInfoRoot.SetActive(false);
@@ -247,28 +247,22 @@ namespace TowerDefense.UI
             _towerInfoRoot.SetActive(true);
             _towerInfoTitle.text = tower.Definition.DisplayName;
             _towerInfoAccent.color = tower.Definition.Color;
-            _towerInfoLabel.text = BuildTowerStatLabels(tower);
-            _towerInfoValue.text = BuildTowerStatValues(tower);
+            _towerInfoStats.text = BuildTowerStatsLine(tower);
             _towerInfoRefund.text = BuildRefundText(tower);
             _towerInfoRetreat.interactable = !gm.IsPaused;
         }
 
-        private static string BuildTowerStatLabels(Tower tower)
-        {
-            return tower.Definition.Damage <= 0f ? "生命\n效果\n射程" : "生命\n伤害\n攻速\n射程";
-        }
-
-        private static string BuildTowerStatValues(Tower tower)
+        private static string BuildTowerStatsLine(Tower tower)
         {
             var def = tower.Definition;
-            string hp = $"{Mathf.CeilToInt(tower.Health)}/{Mathf.CeilToInt(tower.MaxHealth)}";
+            string hp = $"生命 {Mathf.CeilToInt(tower.Health)}/{Mathf.CeilToInt(tower.MaxHealth)}";
 
             if (def.Damage <= 0f)
             {
-                return $"{hp}\n减速{Mathf.RoundToInt((1f - def.SlowFactor) * 100f)}%\n{def.RangeCells} 格";
+                return $"{hp}  效果 减速{Mathf.RoundToInt((1f - def.SlowFactor) * 100f)}%  射程 {def.RangeCells} 格";
             }
 
-            return $"{hp}\n{Mathf.RoundToInt(def.Damage)}\n{def.FireRate:0.#}/秒\n{def.RangeCells} 格";
+            return $"{hp}  伤害 {Mathf.RoundToInt(def.Damage)}  攻速 {def.FireRate:0.#}/秒  射程 {def.RangeCells} 格";
         }
 
         private static string BuildRefundText(Tower tower)
