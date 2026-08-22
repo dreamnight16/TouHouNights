@@ -41,6 +41,8 @@ namespace TowerDefense.Core
         private float _power;
         private int _totalKills;
         private int _leakedEnemies;
+        private int _speedIndex = 1; // 指向 SpeedLevels[1] = 1x
+        private bool _paused;
 
         public Transform WorldRoot { get; private set; }
         public MapSystem Map { get; private set; }
@@ -53,7 +55,8 @@ namespace TowerDefense.Core
         public int Gold => _gold;
         public int Lives => _lives;
         public int TotalEnemies => GameConfig.TotalEnemies;
-        public bool IsDoubleSpeed { get; private set; }
+        public float SpeedScale => SpeedLevels[_speedIndex];
+        public bool IsPaused => _paused;
         public int EnemyCount => _enemies.Count;
         public int Score => _score;
         public float Power => _power;
@@ -165,7 +168,7 @@ namespace TowerDefense.Core
             _enemies.Clear();
             _towers.Clear();
             WaveSpawner.Reset();
-            SetSpeed(false);
+            ResetSpeed();
         }
 
         // ---- 波次自动推进 ----
@@ -193,22 +196,39 @@ namespace TowerDefense.Core
             yield return new WaitUntil(() => WaveSpawner.IsOperationComplete && _enemies.Count == 0);
 
             State = GameState.Victory;
-            IsDoubleSpeed = false;
+            _paused = false;
             Time.timeScale = 0f; // 结束定格
         }
 
-        // ---- 速度 ----
+        // ---- 时间控制（暂停 + 多档变速，参考塔防设计建议）----
 
-        private void SetSpeed(bool doubleSpeed)
+        private static readonly float[] SpeedLevels = { 0.5f, 1f, 2f, 4f };
+
+        private void ResetSpeed()
         {
-            IsDoubleSpeed = doubleSpeed;
-            Time.timeScale = doubleSpeed ? 2f : 1f;
+            _speedIndex = 1; // 1x
+            _paused = false;
+            Time.timeScale = 1f;
         }
 
-        public void ToggleSpeed()
+        private void ApplyTimeScale()
+        {
+            Time.timeScale = _paused ? 0f : SpeedLevels[_speedIndex];
+        }
+
+        public void CycleSpeed()
         {
             if (State != GameState.Running) return;
-            SetSpeed(!IsDoubleSpeed);
+            _speedIndex = (_speedIndex + 1) % SpeedLevels.Length;
+            _paused = false;
+            ApplyTimeScale();
+        }
+
+        public void TogglePause()
+        {
+            if (State != GameState.Running) return;
+            _paused = !_paused;
+            ApplyTimeScale();
         }
 
         // ---- 经济 ----
@@ -268,7 +288,7 @@ namespace TowerDefense.Core
             StopGameLoop();
             StopBarrage();
             WaveSpawner.Reset();
-            IsDoubleSpeed = false;
+            _paused = false;
             Time.timeScale = 0f;
         }
 

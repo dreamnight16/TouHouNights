@@ -24,6 +24,9 @@ namespace TowerDefense.Actors
         public TowerDefinition Definition => _definition;
         public TowerType Type => _definition.Type;
         public Vector2Int Cell { get; private set; }
+        public float Health => _health;
+        public float MaxHealth => _maxHealth;
+        public float HealthRatio => _maxHealth > 0f ? _health / _maxHealth : 0f;
 
         public void Configure(TowerDefinition definition, Vector2Int cell, Vector2 position)
         {

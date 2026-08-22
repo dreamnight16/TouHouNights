@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using TowerDefense.Actors;
 using TowerDefense.Core;
 using TowerDefense.Data;
 
@@ -27,6 +28,7 @@ namespace TowerDefense.UI
         private Image _powerFill;
 
         private Text _speedLabel;
+        private Text _pauseLabel;
         private Text _targetingLabel;
         private Text _barrageLabel;
         private Button _barrageButton;
@@ -44,10 +46,15 @@ namespace TowerDefense.UI
         private ResultPanel _resultPanel;
         private bool _resultShown;
 
+        private GameObject _towerInfoRoot;
+        private Text _towerInfoTitle;
+        private Text _towerInfoStats;
+
         private void Awake()
         {
             BuildTopBar();
             BuildBottomBar();
+            BuildTowerInfoPanel();
             BuildResultPanel();
         }
 
@@ -58,6 +65,7 @@ namespace TowerDefense.UI
 
             RefreshTopBar(gm);
             RefreshCards(gm);
+            RefreshTowerInfo(gm);
             RefreshResult(gm);
         }
 
@@ -85,10 +93,11 @@ namespace TowerDefense.UI
 
             _stateText = CreateStat(top.transform, "State", 580f, 110f);
 
-            _speedLabel = CreateTopButton(top.transform, "Speed", "速度 1x", 432f, 96f, ToggleSpeed, out _);
-            _targetingLabel = CreateTopButton(top.transform, "Targeting", "索敌", 238f, 186f, CycleTargeting, out _);
-            _barrageLabel = CreateTopButton(top.transform, "Barrage", "弹幕", 120f, 110f, TriggerBarrage, out _barrageButton);
-            CreateTopButton(top.transform, "Restart", "重新开始", 16f, 96f, RestartGame, out _);
+            _speedLabel = CreateTopButton(top.transform, "Speed", "速度 1x", 378f, 80f, CycleSpeed, out _);
+            _pauseLabel = CreateTopButton(top.transform, "Pause", "暂停", 466f, 80f, TogglePause, out _);
+            _targetingLabel = CreateTopButton(top.transform, "Targeting", "索敌", 220f, 150f, CycleTargeting, out _);
+            _barrageLabel = CreateTopButton(top.transform, "Barrage", "弹幕", 112f, 100f, TriggerBarrage, out _barrageButton);
+            CreateTopButton(top.transform, "Restart", "重新开始", 16f, 88f, RestartGame, out _);
         }
 
         private Text CreateStat(Transform parent, string name, float x, float width)
@@ -177,6 +186,56 @@ namespace TowerDefense.UI
             _resultPanel.Build(transform);
         }
 
+        // ---- 塔信息面板（点击塔检视，含撤退）----
+
+        private void BuildTowerInfoPanel()
+        {
+            _towerInfoRoot = new GameObject("TowerInfoPanel", typeof(RectTransform));
+            _towerInfoRoot.transform.SetParent(transform, false);
+
+            var panel = UiFactory.CreatePanel(_towerInfoRoot.transform, "Panel");
+            UiFactory.SetRect(panel.rectTransform, new Vector2(1f, 0.5f), new Vector2(-16f, 0f), new Vector2(250f, 210f));
+
+            _towerInfoTitle = UiFactory.CreateText(panel.transform, "Title", string.Empty, UiTheme.FontSize, UiTheme.Accent);
+            UiFactory.SetRect(_towerInfoTitle.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, 70f), new Vector2(230f, 30f));
+
+            _towerInfoStats = UiFactory.CreateText(panel.transform, "Stats", string.Empty, UiTheme.FontSizeSmall, UiTheme.Ink, TextAnchor.UpperLeft);
+            UiFactory.SetRect(_towerInfoStats.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0f, -10f), new Vector2(220f, 100f));
+
+            var retreat = UiFactory.CreateButton(panel.transform, "Retreat", "撤退(50%)", UiTheme.EnemyRed, UiTheme.FontSize, RetreatSelected);
+            UiFactory.SetRect(retreat.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0f, -78f), new Vector2(180f, 44f));
+
+            _towerInfoRoot.SetActive(false);
+        }
+
+        private void RefreshTowerInfo(GameManager gm)
+        {
+            var tower = gm.TowerPlacer != null ? gm.TowerPlacer.SelectedTower : null;
+
+            if (tower == null)
+            {
+                if (_towerInfoRoot.activeSelf) _towerInfoRoot.SetActive(false);
+                return;
+            }
+
+            _towerInfoRoot.SetActive(true);
+            _towerInfoTitle.text = tower.Definition.DisplayName;
+            _towerInfoStats.text = BuildTowerStats(tower);
+        }
+
+        private static string BuildTowerStats(Tower tower)
+        {
+            var def = tower.Definition;
+            string hp = $"生命  {Mathf.CeilToInt(tower.Health)}/{Mathf.CeilToInt(tower.MaxHealth)}";
+
+            if (def.Damage <= 0f)
+            {
+                return $"{hp}\n效果  减速{Mathf.RoundToInt((1f - def.SlowFactor) * 100f)}%\n射程  {def.RangeCells} 格";
+            }
+
+            return $"{hp}\n伤害  {Mathf.RoundToInt(def.Damage)}\n攻速  {def.FireRate:0.#} 次/秒\n射程  {def.RangeCells} 格";
+        }
+
         // ---- 刷新 ----
 
         private void RefreshTopBar(GameManager gm)
@@ -189,7 +248,8 @@ namespace TowerDefense.UI
             _stateText.text = StateText(gm.State);
             _powerFill.fillAmount = gm.Power;
 
-            _speedLabel.text = gm.IsDoubleSpeed ? "速度 2x" : "速度 1x";
+            _speedLabel.text = $"速度 {gm.SpeedScale:0.#}x";
+            _pauseLabel.text = gm.IsPaused ? "继续" : "暂停";
             _targetingLabel.text = $"索敌：{TargetingText(gm.TargetingPriority)}";
 
             bool canBarrage = gm.CanBarrage && gm.State == GameState.Running;
@@ -259,9 +319,11 @@ namespace TowerDefense.UI
             rect.sizeDelta = size;
         }
 
-        private static void ToggleSpeed() => GameManager.Instance?.ToggleSpeed();
+        private static void CycleSpeed() => GameManager.Instance?.CycleSpeed();
+        private static void TogglePause() => GameManager.Instance?.TogglePause();
         private static void CycleTargeting() => GameManager.Instance?.CycleTargetingPriority();
         private static void TriggerBarrage() => GameManager.Instance?.TriggerBarrage();
+        private static void RetreatSelected() => GameManager.Instance?.TowerPlacer?.RetreatSelected();
         private static void RestartGame() => GameManager.Instance?.Restart();
 
         private static string StateText(GameState state)

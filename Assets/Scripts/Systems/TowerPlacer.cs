@@ -28,6 +28,7 @@ namespace TowerDefense.Systems
         private SpriteRenderer _hoverCell;
 
         public TowerType SelectedType => _selectedType;
+        public Tower SelectedTower { get; private set; }
 
         public void Init(Transform parent)
         {
@@ -46,6 +47,23 @@ namespace TowerDefense.Systems
         public void FreeCell(Vector2Int cell)
         {
             _occupiedTowers.Remove(cell);
+            if (SelectedTower != null && SelectedTower.Cell == cell)
+            {
+                SelectedTower = null;
+            }
+        }
+
+        public void ClearSelection()
+        {
+            SelectedTower = null;
+        }
+
+        public void RetreatSelected()
+        {
+            var tower = SelectedTower;
+            if (tower == null) return;
+            SelectedTower = null;
+            GameManager.Instance?.RetreatTower(tower);
         }
 
         private void Update()
@@ -84,7 +102,10 @@ namespace TowerDefense.Systems
                 if (occupied)
                 {
                     _hoverCell.color = GameConfig.GridRetreatColor;
-                    HideRangePreview();
+                    if (_occupiedTowers.TryGetValue(cell, out var occupiedTower))
+                    {
+                        UpdateRangePreview(cell, occupiedTower.Definition.RangeCells);
+                    }
                 }
                 else
                 {
@@ -101,10 +122,11 @@ namespace TowerDefense.Systems
             {
                 if (_occupiedTowers.TryGetValue(cell, out var tower))
                 {
-                    gm.RetreatTower(tower);
+                    SelectedTower = tower; // 选中查看，不立即撤退
                 }
                 else if (!mapBlocked)
                 {
+                    SelectedTower = null;
                     TryPlace(cell, definition);
                 }
             }
