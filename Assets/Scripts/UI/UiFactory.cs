@@ -137,7 +137,7 @@ namespace TowerDefense.UI
                 button.onClick.AddListener(() => onClick());
             }
 
-            var labelRect = CreateText(go.transform, "Label", label, fontSize, UiTheme.TextPrimary).rectTransform;
+            var labelRect = CreateText(go.transform, "Label", label, fontSize, UiTheme.Ink).rectTransform;
             Stretch(labelRect);
             return button;
         }
