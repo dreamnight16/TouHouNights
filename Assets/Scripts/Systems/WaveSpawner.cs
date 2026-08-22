@@ -7,28 +7,25 @@ using TowerDefense.Data;
 namespace TowerDefense.Systems
 {
     /// <summary>
-    /// 波次刷怪器：一个波次含多个刷怪组（SpawnGroup），可同时从多个红门出怪。
-    /// 用「剩余刷怪数 + 活跃协程数」双计数判定波次是否刷完。
+    /// 剿灭式刷怪器：按一条连续时间轴（AnnihilationSchedule）从多个红门持续刷怪，
+    /// 混合兵种、随时间变难。用「剩余刷怪数 + 活跃协程数」双计数判定是否刷完。
     /// </summary>
     public sealed class WaveSpawner : MonoBehaviour
     {
         private int _remainingSpawns;
         private int _activeSpawners;
 
-        public bool IsWaveComplete => _remainingSpawns <= 0 && _activeSpawners == 0;
+        public bool IsOperationComplete => _remainingSpawns <= 0 && _activeSpawners == 0;
 
-        public void StartWave(int waveIndex)
+        public void StartOperation()
         {
             Reset();
 
-            var wave = GameConfig.Waves[waveIndex];
-            float healthScale = 1f + waveIndex * 0.18f;
-
-            foreach (var group in wave.Groups)
+            foreach (var entry in GameConfig.AnnihilationSchedule)
             {
-                _remainingSpawns += group.Count;
+                _remainingSpawns += entry.Count;
                 _activeSpawners++;
-                StartCoroutine(SpawnGroup(group, healthScale));
+                StartCoroutine(SpawnEntryRoutine(entry));
             }
         }
 
@@ -39,17 +36,21 @@ namespace TowerDefense.Systems
             _activeSpawners = 0;
         }
 
-        private IEnumerator SpawnGroup(SpawnGroup group, float healthScale)
+        private IEnumerator SpawnEntryRoutine(SpawnEntry entry)
         {
-            var definition = GameConfig.Enemies[group.EnemyType];
-            var route = GameManager.Instance.Map.GetRouteWorld(group.RouteIndex);
-            var spawnPos = GameManager.Instance.Map.GetSpawnPosition(group.RouteIndex);
+            // 先等待条目自身设定的开始时间。
+            yield return new WaitForSeconds(entry.StartTime);
 
-            for (int i = 0; i < group.Count; i++)
+            var definition = GameConfig.Enemies[entry.EnemyType];
+            var route = GameManager.Instance.Map.GetRouteWorld(entry.RouteIndex);
+            var spawnPos = GameManager.Instance.Map.GetSpawnPosition(entry.RouteIndex);
+            float healthScale = 1f + entry.StartTime * GameConfig.AnnihilationHealthRamp;
+
+            for (int i = 0; i < entry.Count; i++)
             {
                 Enemy.Spawn(definition, healthScale, route, spawnPos);
                 _remainingSpawns--;
-                yield return new WaitForSeconds(group.SpawnInterval);
+                yield return new WaitForSeconds(entry.SpawnInterval);
             }
 
             _activeSpawners--;

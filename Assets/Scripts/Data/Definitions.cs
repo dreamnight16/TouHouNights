@@ -83,21 +83,15 @@ namespace TowerDefense.Data
         public Color Color;
     }
 
-    /// <summary>单个刷怪组：同一波次里从某个红门、以某种怪刷一组。</summary>
+    /// <summary>剿灭式刷怪条目：从开局第 StartTime 秒起，在指定红门按间隔刷 Count 个敌人。</summary>
     [Serializable]
-    public class SpawnGroup
+    public class SpawnEntry
     {
         public EnemyType EnemyType;
         public int RouteIndex;          // 走哪条正交路线（红门）
+        public float StartTime;         // 开局后第几秒开始
         public int Count;
         public float SpawnInterval;
-    }
-
-    /// <summary>单个波次 = 多个刷怪组（可同时从多个红门出怪）。</summary>
-    [Serializable]
-    public class WaveDefinition
-    {
-        public SpawnGroup[] Groups;
     }
 
     /// <summary>结算数据：游戏结束时展示东方 stage 风格战绩 + Phigros 风格评级。</summary>
@@ -108,8 +102,6 @@ namespace TowerDefense.Data
         public int TotalKills;
         public int LeakedEnemies;
         public int LivesRemaining;
-        public int WavesCleared;
-        public int TotalWaves;
         public int Rating;
         public string Grade;
     }

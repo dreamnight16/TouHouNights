@@ -96,13 +96,12 @@ namespace TowerDefense.UI
             if (result.LivesRemaining >= GameConfig.StartingLives) badges = AppendBadge(badges, "满血通关");
             _badgeText.text = badges;
 
-            _labelText.text = "得分\n击杀\n漏怪\n剩余生命\n通关波次";
+            _labelText.text = "得分\n击杀\n漏怪\n剩余生命";
             _valueText.text =
                 $"{result.Score}\n" +
                 $"{result.TotalKills}\n" +
                 $"{result.LeakedEnemies}\n" +
-                $"{result.LivesRemaining}\n" +
-                $"{result.WavesCleared}/{result.TotalWaves}";
+                $"{result.LivesRemaining}";
         }
 
         public void Hide()

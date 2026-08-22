@@ -184,7 +184,7 @@ namespace TowerDefense.UI
             _livesText.text = $"生命 {gm.Lives}";
             _goldText.text = $"金币 {gm.Gold}";
             _enemyText.text = $"敌人 {gm.EnemyCount}";
-            _waveText.text = $"波次 {gm.CurrentWave}/{gm.TotalWaves}";
+            _waveText.text = $"击杀 {gm.TotalKills}/{gm.TotalEnemies}";
             _scoreText.text = $"得分 {gm.Score}";
             _stateText.text = StateText(gm.State);
             _powerFill.fillAmount = gm.Power;

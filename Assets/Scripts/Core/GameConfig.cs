@@ -258,75 +258,51 @@ namespace TowerDefense.Core
             },
         };
 
-        // ---- 波次（多个刷怪组，可同时从多个红门出怪；血量随波次线性成长）----
-        public static readonly WaveDefinition[] Waves = new WaveDefinition[]
+        // ---- 剿灭式连续刷怪时间轴（混合兵种、多红门、随时间变难）----
+        public static readonly float AnnihilationHealthRamp = 0.004f;  // 每过 1 秒，敌人血量加成 +0.4%
+        public const int AnnihilationMilestoneInterval = 40;           // 每击杀 N 个触发一次里程碑奖励
+        public const int AnnihilationMilestoneGold = 20;               // 里程碑奖励金币
+
+        public static readonly SpawnEntry[] AnnihilationSchedule = new SpawnEntry[]
         {
-            new WaveDefinition
-            {
-                Groups = new SpawnGroup[]
-                {
-                    new SpawnGroup { EnemyType = EnemyType.Normal, RouteIndex = 0, Count = 3, SpawnInterval = 0.8f },
-                    new SpawnGroup { EnemyType = EnemyType.Normal, RouteIndex = 1, Count = 3, SpawnInterval = 0.8f },
-                }
-            },
-            new WaveDefinition
-            {
-                Groups = new SpawnGroup[]
-                {
-                    new SpawnGroup { EnemyType = EnemyType.Normal, RouteIndex = 2, Count = 4, SpawnInterval = 0.7f },
-                    new SpawnGroup { EnemyType = EnemyType.Fast,   RouteIndex = 0, Count = 4, SpawnInterval = 0.6f },
-                }
-            },
-            new WaveDefinition
-            {
-                Groups = new SpawnGroup[]
-                {
-                    new SpawnGroup { EnemyType = EnemyType.Fast, RouteIndex = 1, Count = 6, SpawnInterval = 0.5f },
-                    new SpawnGroup { EnemyType = EnemyType.Fast, RouteIndex = 2, Count = 4, SpawnInterval = 0.5f },
-                }
-            },
-            new WaveDefinition
-            {
-                Groups = new SpawnGroup[]
-                {
-                    new SpawnGroup { EnemyType = EnemyType.Tank,   RouteIndex = 0, Count = 2, SpawnInterval = 1.2f },
-                    new SpawnGroup { EnemyType = EnemyType.Normal, RouteIndex = 1, Count = 6, SpawnInterval = 0.6f },
-                    new SpawnGroup { EnemyType = EnemyType.Normal, RouteIndex = 2, Count = 6, SpawnInterval = 0.6f },
-                }
-            },
-            new WaveDefinition
-            {
-                Groups = new SpawnGroup[]
-                {
-                    new SpawnGroup { EnemyType = EnemyType.Tank, RouteIndex = 2, Count = 2, SpawnInterval = 1.2f },
-                    new SpawnGroup { EnemyType = EnemyType.Fast, RouteIndex = 0, Count = 6, SpawnInterval = 0.5f },
-                }
-            },
-            new WaveDefinition
-            {
-                Groups = new SpawnGroup[]
-                {
-                    new SpawnGroup { EnemyType = EnemyType.Fast, RouteIndex = 1, Count = 8, SpawnInterval = 0.45f },
-                    new SpawnGroup { EnemyType = EnemyType.Tank, RouteIndex = 0, Count = 2, SpawnInterval = 1.2f },
-                }
-            },
-            new WaveDefinition
-            {
-                Groups = new SpawnGroup[]
-                {
-                    new SpawnGroup { EnemyType = EnemyType.Tank, RouteIndex = 1, Count = 3, SpawnInterval = 1.2f },
-                    new SpawnGroup { EnemyType = EnemyType.Tank, RouteIndex = 2, Count = 3, SpawnInterval = 1.2f },
-                }
-            },
-            new WaveDefinition
-            {
-                Groups = new SpawnGroup[]
-                {
-                    new SpawnGroup { EnemyType = EnemyType.Normal, RouteIndex = 0, Count = 8, SpawnInterval = 0.45f },
-                    new SpawnGroup { EnemyType = EnemyType.Normal, RouteIndex = 1, Count = 8, SpawnInterval = 0.45f },
-                    new SpawnGroup { EnemyType = EnemyType.Fast,   RouteIndex = 2, Count = 6, SpawnInterval = 0.45f },
-                }
-            },
+            // 新手期（0~35s）：普通怪、慢节奏
+            new SpawnEntry { EnemyType = EnemyType.Normal, RouteIndex = 0, StartTime = 0f,   Count = 10, SpawnInterval = 1.2f },
+            new SpawnEntry { EnemyType = EnemyType.Normal, RouteIndex = 1, StartTime = 2f,   Count = 10, SpawnInterval = 1.2f },
+            new SpawnEntry { EnemyType = EnemyType.Normal, RouteIndex = 2, StartTime = 8f,   Count = 10, SpawnInterval = 1.0f },
+
+            // 成长期（30~80s）：普通 + 快速混合
+            new SpawnEntry { EnemyType = EnemyType.Normal, RouteIndex = 0, StartTime = 30f,  Count = 12, SpawnInterval = 0.8f },
+            new SpawnEntry { EnemyType = EnemyType.Fast,   RouteIndex = 1, StartTime = 32f,  Count = 10, SpawnInterval = 0.6f },
+            new SpawnEntry { EnemyType = EnemyType.Normal, RouteIndex = 2, StartTime = 40f,  Count = 12, SpawnInterval = 0.7f },
+            new SpawnEntry { EnemyType = EnemyType.Fast,   RouteIndex = 0, StartTime = 46f,  Count = 8,  SpawnInterval = 0.6f },
+
+            // 熟练期（70~130s）：快速 + 坦克混合
+            new SpawnEntry { EnemyType = EnemyType.Fast, RouteIndex = 1, StartTime = 70f,  Count = 14, SpawnInterval = 0.45f },
+            new SpawnEntry { EnemyType = EnemyType.Fast, RouteIndex = 2, StartTime = 72f,  Count = 12, SpawnInterval = 0.5f },
+            new SpawnEntry { EnemyType = EnemyType.Tank, RouteIndex = 0, StartTime = 82f,  Count = 4,  SpawnInterval = 1.2f },
+            new SpawnEntry { EnemyType = EnemyType.Fast, RouteIndex = 0, StartTime = 92f,  Count = 12, SpawnInterval = 0.45f },
+            new SpawnEntry { EnemyType = EnemyType.Tank, RouteIndex = 2, StartTime = 100f, Count = 4,  SpawnInterval = 1.1f },
+
+            // 职业期（120~190s）：重压混合
+            new SpawnEntry { EnemyType = EnemyType.Tank,   RouteIndex = 1, StartTime = 120f, Count = 5,  SpawnInterval = 1.0f },
+            new SpawnEntry { EnemyType = EnemyType.Fast,   RouteIndex = 0, StartTime = 122f, Count = 14, SpawnInterval = 0.4f },
+            new SpawnEntry { EnemyType = EnemyType.Normal, RouteIndex = 2, StartTime = 132f, Count = 16, SpawnInterval = 0.4f },
+            new SpawnEntry { EnemyType = EnemyType.Tank,   RouteIndex = 0, StartTime = 142f, Count = 5,  SpawnInterval = 0.9f },
+            new SpawnEntry { EnemyType = EnemyType.Fast,   RouteIndex = 1, StartTime = 152f, Count = 14, SpawnInterval = 0.4f },
+            new SpawnEntry { EnemyType = EnemyType.Tank,   RouteIndex = 2, StartTime = 162f, Count = 6,  SpawnInterval = 0.8f },
         };
+
+        public static int TotalEnemies
+        {
+            get
+            {
+                int total = 0;
+                foreach (var entry in AnnihilationSchedule)
+                {
+                    total += entry.Count;
+                }
+                return total;
+            }
+        }
     }
 }

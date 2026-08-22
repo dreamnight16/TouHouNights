@@ -37,12 +37,10 @@ namespace TowerDefense.Core
         private Coroutine _barrage;
         private int _gold;
         private int _lives;
-        private int _waveIndex;
         private int _score;
         private float _power;
         private int _totalKills;
         private int _leakedEnemies;
-        private int _wavesCleared;
 
         public Transform WorldRoot { get; private set; }
         public MapSystem Map { get; private set; }
@@ -54,9 +52,7 @@ namespace TowerDefense.Core
 
         public int Gold => _gold;
         public int Lives => _lives;
-        public int WaveIndex => _waveIndex;
-        public int TotalWaves => GameConfig.Waves.Length;
-        public int CurrentWave => _waveIndex + 1; // 1-based，与 HUD 显示一致
+        public int TotalEnemies => GameConfig.TotalEnemies;
         public bool IsDoubleSpeed { get; private set; }
         public int EnemyCount => _enemies.Count;
         public int Score => _score;
@@ -65,7 +61,6 @@ namespace TowerDefense.Core
         public float DamageMultiplier => 1f + _power * GameConfig.PowerDamageBonus;
         public int TotalKills => _totalKills;
         public int LeakedEnemies => _leakedEnemies;
-        public int WavesCleared => _wavesCleared;
 
         private void Awake()
         {
@@ -162,12 +157,10 @@ namespace TowerDefense.Core
         {
             _gold = GameConfig.StartingGold;
             _lives = GameConfig.StartingLives;
-            _waveIndex = 0;
             _score = 0;
             _power = 0f;
             _totalKills = 0;
             _leakedEnemies = 0;
-            _wavesCleared = 0;
             State = GameState.Running;
             _enemies.Clear();
             _towers.Clear();
@@ -196,14 +189,8 @@ namespace TowerDefense.Core
         {
             yield return new WaitForSeconds(2f); // 开局缓冲，期间仍可建塔
 
-            for (int i = 0; i < TotalWaves; i++)
-            {
-                _waveIndex = i;
-                WaveSpawner.StartWave(i);
-                yield return new WaitUntil(() => WaveSpawner.IsWaveComplete && _enemies.Count == 0);
-                _wavesCleared++; // 本波通关
-                yield return new WaitForSeconds(1.2f); // 波间短暂缓冲，仍可建塔
-            }
+            WaveSpawner.StartOperation();
+            yield return new WaitUntil(() => WaveSpawner.IsOperationComplete && _enemies.Count == 0);
 
             State = GameState.Victory;
             IsDoubleSpeed = false;
@@ -256,6 +243,12 @@ namespace TowerDefense.Core
             _score += reward * GameConfig.ScorePerGold;
             _power = Mathf.Min(GameConfig.MaxPower, _power + GameConfig.PowerPerKill);
             _totalKills++;
+
+            // 剿灭式里程碑奖励：每击杀 N 个额外发一笔金币。
+            if (_totalKills > 0 && _totalKills % GameConfig.AnnihilationMilestoneInterval == 0)
+            {
+                AddGold(GameConfig.AnnihilationMilestoneGold);
+            }
         }
 
         public void NotifyEnemyReachedBase(int damage)
@@ -464,12 +457,13 @@ namespace TowerDefense.Core
         /// <summary>计算结算数据与 Phigros 风格评级（Φ/V/S/A/B/C）。</summary>
         public GameResult GetResult()
         {
-            float clearProgress = TotalWaves > 0 ? (float)_wavesCleared / TotalWaves : 0f;
+            int totalEnemies = GameConfig.TotalEnemies;
+            float killProgress = totalEnemies > 0 ? (float)_totalKills / totalEnemies : 0f;
             float lifeRatio = GameConfig.StartingLives > 0 ? (float)_lives / GameConfig.StartingLives : 0f;
             float scoreFactor = Mathf.Clamp01(_score / (float)GameConfig.TargetScore);
 
-            int rating = Mathf.RoundToInt(100f * (0.4f * clearProgress + 0.4f * lifeRatio + 0.2f * scoreFactor));
-            bool perfect = clearProgress >= 1f && _leakedEnemies == 0;
+            int rating = Mathf.RoundToInt(100f * (0.4f * killProgress + 0.4f * lifeRatio + 0.2f * scoreFactor));
+            bool perfect = killProgress >= 1f && _leakedEnemies == 0;
 
             return new GameResult
             {
@@ -478,8 +472,6 @@ namespace TowerDefense.Core
                 TotalKills = _totalKills,
                 LeakedEnemies = _leakedEnemies,
                 LivesRemaining = _lives,
-                WavesCleared = _wavesCleared,
-                TotalWaves = TotalWaves,
                 Rating = rating,
                 Grade = GradeFromRating(rating, perfect),
             };
