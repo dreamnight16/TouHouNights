@@ -58,6 +58,8 @@ namespace TowerDefense.Core
         public float SpeedScale => SpeedLevels[_speedIndex];
         public bool IsPaused => _paused;
         public int EnemyCount => _enemies.Count;
+        public int TowerCount => _towers.Count;
+        public bool CanPlaceTower => _towers.Count < GameConfig.MaxTowers;
         public int Score => _score;
         public float Power => _power;
         public bool CanBarrage => _power >= GameConfig.MaxPower;

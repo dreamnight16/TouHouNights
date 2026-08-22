@@ -28,6 +28,7 @@ namespace TowerDefense.Core
         // ---- 经济 / 基地 ----
         public const int StartingGold = 160;
         public const int StartingLives = 10;
+        public const int MaxTowers = 8;   // 部署位上限（参考方舟：关卡内最多上场 8 名）
 
         // 塔被打败/主动撤退时的金币返还比例。
         public const float DefeatRefundRatio = 0.2f;   // 被打败返还 20%

@@ -22,9 +22,8 @@ namespace TowerDefense.UI
         private Text _livesText;
         private Text _goldText;
         private Text _enemyText;
-        private Text _waveText;
-        private Text _scoreText;
-        private Text _stateText;
+        private Text _killText;
+        private Text _towersText;
         private Image _powerFill;
 
         private Text _speedLabel;
@@ -81,20 +80,18 @@ namespace TowerDefense.UI
 
             float cy = -UiTheme.TopBarHeight * 0.5f;
 
-            _livesText = CreateStat(top.transform, "Lives", 16f, 64f);
-            _goldText = CreateStat(top.transform, "Gold", 82f, 80f);
-            _enemyText = CreateStat(top.transform, "Enemy", 164f, 80f);
-            _waveText = CreateStat(top.transform, "Wave", 246f, 100f);
-            _scoreText = CreateStat(top.transform, "Score", 348f, 88f);
+            _livesText = CreateStatChip(top.transform, "Lives", UiTheme.EnemyRed, 16f, 40f);
+            _goldText = CreateStatChip(top.transform, "Gold", UiTheme.Gold, 90f, 48f);
+            _enemyText = CreateStatChip(top.transform, "Enemy", UiTheme.EnemyRed, 172f, 44f);
+            _killText = CreateStatChip(top.transform, "Kills", UiTheme.Accent, 252f, 82f);
+            _towersText = CreateStatChip(top.transform, "Towers", UiTheme.GradeS, 368f, 60f);
 
-            var powerLabel = UiFactory.CreateText(top.transform, "PowerLabel", "P点", UiTheme.FontSizeSmall, UiTheme.InkDim, TextAnchor.MiddleLeft);
-            SetLeftAnchor(powerLabel.rectTransform, 440f, 40f);
+            var powerLabel = UiFactory.CreateText(top.transform, "PowerLabel", "P", UiTheme.FontSizeSmall, UiTheme.InkDim, TextAnchor.MiddleLeft);
+            SetLeftAnchor(powerLabel.rectTransform, 452f, 30f);
 
             var powerBar = UiFactory.CreateProgressBar(top.transform, "PowerBar", UiTheme.PowerBar, UiTheme.PowerBarBg);
-            SetCenterAnchor(powerBar.background.rectTransform, new Vector2(0f, 1f), new Vector2(531f, cy), new Vector2(90f, 14f));
+            SetCenterAnchor(powerBar.background.rectTransform, new Vector2(0f, 1f), new Vector2(521f, cy), new Vector2(70f, 14f));
             _powerFill = powerBar.fill;
-
-            _stateText = CreateStat(top.transform, "State", 580f, 110f);
 
             _speedLabel = CreateTopButton(top.transform, "Speed", "速度 1x", 378f, 80f, CycleSpeed, out _);
             _pauseLabel = CreateTopButton(top.transform, "Pause", "暂停", 466f, 80f, TogglePause, out _);
@@ -103,11 +100,19 @@ namespace TowerDefense.UI
             CreateTopButton(top.transform, "Restart", "重新开始", 16f, 88f, RestartGame, out _);
         }
 
-        private Text CreateStat(Transform parent, string name, float x, float width)
+        private Text CreateStatChip(Transform parent, string name, Color iconColor, float x, float valueWidth)
         {
-            var text = UiFactory.CreateText(parent, name, string.Empty, UiTheme.FontSize, UiTheme.Ink, TextAnchor.MiddleLeft);
-            SetLeftAnchor(text.rectTransform, x, width);
-            return text;
+            var icon = UiFactory.CreateImage(parent, name + "_Icon", iconColor);
+            icon.raycastTarget = false;
+            var irt = icon.rectTransform;
+            irt.anchorMin = irt.anchorMax = new Vector2(0f, 1f);
+            irt.pivot = new Vector2(0f, 0.5f);
+            irt.anchoredPosition = new Vector2(x, -UiTheme.TopBarHeight * 0.5f);
+            irt.sizeDelta = new Vector2(12f, 12f);
+
+            var value = UiFactory.CreateText(parent, name, string.Empty, UiTheme.FontSize, UiTheme.Ink, TextAnchor.MiddleLeft);
+            SetLeftAnchor(value.rectTransform, x + 18f, valueWidth);
+            return value;
         }
 
         private Text CreateTopButton(Transform parent, string name, string label, float rightMargin, float width, Action onClick, out Button button)
@@ -259,12 +264,11 @@ namespace TowerDefense.UI
 
         private void RefreshTopBar(GameManager gm)
         {
-            _livesText.text = $"生命 {gm.Lives}";
-            _goldText.text = $"金币 {gm.Gold}";
-            _enemyText.text = $"敌人 {gm.EnemyCount}";
-            _waveText.text = $"击杀 {gm.TotalKills}/{gm.TotalEnemies}";
-            _scoreText.text = $"得分 {gm.Score}";
-            _stateText.text = StateText(gm.State);
+            _livesText.text = $"{gm.Lives}";
+            _goldText.text = $"{gm.Gold}";
+            _enemyText.text = $"{gm.EnemyCount}";
+            _killText.text = $"{gm.TotalKills}/{gm.TotalEnemies}";
+            _towersText.text = $"{gm.TowerCount}/{GameConfig.MaxTowers}";
             _powerFill.fillAmount = gm.Power;
 
             _speedLabel.text = $"速度 {gm.SpeedScale:0.#}x";
@@ -345,17 +349,6 @@ namespace TowerDefense.UI
         private static void TriggerBarrage() => GameManager.Instance?.TriggerBarrage();
         private static void RetreatSelected() => GameManager.Instance?.TowerPlacer?.RetreatSelected();
         private static void RestartGame() => GameManager.Instance?.Restart();
-
-        private static string StateText(GameState state)
-        {
-            switch (state)
-            {
-                case GameState.Running: return "进行中";
-                case GameState.GameOver: return "游戏失败";
-                case GameState.Victory: return "胜利";
-                default: return state.ToString();
-            }
-        }
 
         private static string TargetingText(TargetingPriority priority)
         {

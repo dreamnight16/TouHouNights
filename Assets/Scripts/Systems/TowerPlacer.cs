@@ -97,6 +97,7 @@ namespace TowerDefense.Systems
             bool inBounds = cell.x >= MinCellX && cell.x <= MaxCellX && cell.y >= MinCellY && cell.y <= MaxCellY;
             bool mapBlocked = inBounds && gm.Map.IsCellBlocked(cell);
             bool occupied = inBounds && _occupiedTowers.ContainsKey(cell);
+            bool atLimit = !gm.CanPlaceTower;
 
             var definition = GameConfig.Towers[_selectedType];
 
@@ -115,7 +116,7 @@ namespace TowerDefense.Systems
                 }
                 else
                 {
-                    _hoverCell.color = mapBlocked ? GameConfig.GridBlockedColor : GameConfig.GridHoverColor;
+                    _hoverCell.color = (mapBlocked || atLimit) ? GameConfig.GridBlockedColor : GameConfig.GridHoverColor;
                     UpdateRangePreview(cell, definition.RangeCells);
                 }
             }
@@ -130,7 +131,7 @@ namespace TowerDefense.Systems
                 {
                     SelectedTower = tower; // 选中查看，不立即撤退
                 }
-                else if (!mapBlocked)
+                else if (!mapBlocked && !atLimit)
                 {
                     SelectedTower = null;
                     TryPlace(cell, definition);
@@ -198,7 +199,7 @@ namespace TowerDefense.Systems
         private void TryPlace(Vector2Int cell, TowerDefinition definition)
         {
             var gm = GameManager.Instance;
-            if (gm == null || !gm.TrySpendGold(definition.Cost)) return;
+            if (gm == null || !gm.CanPlaceTower || !gm.TrySpendGold(definition.Cost)) return;
 
             var position = gm.Map.CellToWorld(cell);
             var go = new GameObject(definition.DisplayName);
