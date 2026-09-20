@@ -1,0 +1,24 @@
+.reports is not a valid directory name. Please make sure there are no unallowed characters in the name.
+.reports is not a valid directory name. Please make sure there are no unallowed characters in the name.
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.5/staging' branch; Version is '6000.5.9f1 (b57deb96f08d) revision 11894251'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-DreamNight" at "2026-09-10T04:58:28.2255739Z"
+OS: 'Windows 11  (10.0.26200) CoreCountrySpecific' Language: 'zh' Physical Memory: 31928 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-09-10T04:58:28Z
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.5.9f1\Editor\Unity.exe
+-batchmode
+-quit
+-projectPath
+C:/Users/DreamNight/Documents/01My/personal/TowerDefenseUnity
+-executeMethod
+BattleUiVerification.Run
+-logFile
+C:/Users/DreamNight/Documents/01My/personal/TowerDefenseUnity/.reports/menu-compile.log
+Successfully changed project path to: C:/Users/DreamNight/Documents/01My/personal/TowerDefenseUnity
+C:/Users/DreamNight/Documents/01My/personal/TowerDefenseUnity
+Exiting without the bug reporter. Application will terminate with return code 1

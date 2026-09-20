@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>结界终端 · BARRIER TERMINAL — HUD 重构预览</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Rajdhani:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#070a0e;
+    --bg-1:#0e1219;
+    --bg-2:#141a23;
+    --surface:rgba(20,25,33,.92);
+    --surface-2:rgba(28,35,46,.95);
+    --surface-3:rgba(36,45,58,.96);
+    --line:rgba(125,145,165,.16);
+    --line-2:rgba(150,170,190,.30);
+    --accent:#27cdf5;          /* 方舟青蓝 */
+    --accent-2:#5fe0ff;
+    --accent-deep:#15799b;
+    --accent-glow:rgba(39,205,245,.45);
+    --gold:#ffd24a;
+    --gold-glow:rgba(255,210,74,.42);
+    --danger:#ff5a4d;
+    --danger-glow:rgba(255,90,77,.40);
+    --green:#5ed4a6;
+    --text:#eaf2f8;
+    --text-dim:#8b99a9;
+    --text-faint:#586676;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    background:
+      radial-gradient(120% 90% at 50% -10%, #11202b 0%, var(--bg-1) 42%, var(--bg-0) 100%);
+    font-family:"Noto Sans SC",sans-serif;
+    color:var(--text);
+    display:flex;align-items:center;justify-content:center;
+    min-height:100vh;overflow:hidden;
+  }
+  /* 缩放舞台：以 1280x720 为设计基准，等比适配视口（对应 Unity matchWidthOrHeight=0 锁宽） */
+  #stage-wrap{position:relative;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;}
+  #stage{
+    position:relative;width:1280px;height:720px;flex:none;
+    background:
+      radial-gradient(80% 60% at 50% 38%, rgba(40,70,95,.20) 0%, rgba(10,14,20,0) 60%),
+      linear-gradient(180deg, #0c1018 0%, #090c12 100%);
+    box-shadow:0 40px 120px rgba(0,0,0,.6), inset 0 0 200px rgba(0,0,0,.5);
+    overflow:hidden;
+  }
+  /* 战场占位：暗示下方是 3D 战场，让 HUD 像浮在游戏之上 */
+  #battlefield{position:absolute;inset:0;
+    background:
+      repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 1px, transparent 1px 46px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 1px, transparent 1px 46px),
+      radial-gradient(50% 40% at 50% 60%, rgba(39,205,245,.06), transparent 70%);
+    opacity:.8;
+  }
+  #battlefield::after{content:"";position:absolute;inset:0;
+    background:radial-gradient(60% 50% at 50% 55%, transparent 55%, rgba(0,0,0,.55) 100%);}
+  /* 全局噪点 + 扫描线质感 */
+  #grain{position:absolute;inset:0;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");}
+  #scan{position:absolute;inset:0;pointer-events:none;opacity:.35;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);}
+
+  /* ---------- 通用面板语言（方舟式：炭灰玻璃 + 直角 + 发丝描边 + 顶部高光 + 角标） ---------- */
+  .panel{
+    position:relative;
+    background:linear-gradient(180deg, var(--surface-2), var(--surface));
+    border:1px solid var(--line);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 6px 22px rgba(0,0,0,.45);
+  }
+  .panel::before{ /* 顶缘高光：内部光感 */
+    content:"";position:absolute;left:0;right:0;top:0;height:1px;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent);
+    opacity:.7;
+  }
+  /* L 型角标（四角截取框） */
+  .corners{position:absolute;inset:0;pointer-events:none;}
+  .corners i{position:absolute;width:10px;height:10px;border:1.5px solid var(--accent);opacity:.55;}
+  .corners i.tl{left:-1px;top:-1px;border-right:0;border-bottom:0;}
+  .corners i.tr{right:-1px;top:-1px;border-left:0;border-bottom:0;}
+  .corners i.bl{left:-1px;bottom:-1px;border-right:0;border-top:0;}
+  .corners i.br{right:-1px;bottom:-1px;border-left:0;border-top:0;}
+
+  .label{font-family:"Rajdhani",sans-serif;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--text-faint);font-size:11px;}
+  .num{font-family:"Rajdhani",sans-serif;font-weight:700;line-height:1;}
+
+  /* =========================================================
+     顶栏 · 战局状态层
+     ========================================================= */
+  #topbar{position:absolute;top:0;left:0;width:1280px;height:64px;}
+  #topbar .band{
+    position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(18,23,31,.97), rgba(10,13,19,.93));
+    border-bottom:1px solid var(--line);
+  }
+  #topbar .accentline{position:absolute;left:0;right:0;bottom:0;height:2px;
+    background:linear-gradient(90deg, transparent, var(--accent) 18%, var(--accent-2) 50%, var(--accent) 82%, transparent);
+    box-shadow:0 0 12px var(--accent-glow);opacity:.9;}
+
+  /* 左：灵力 */
+  .spirit{position:absolute;left:16px;top:8px;width:168px;height:48px;display:flex;align-items:center;gap:12px;padding:0 14px;}
+  .spirit .ic{width:30px;height:30px;flex:none;position:relative;}
+  .spirit .ic::before{content:"";position:absolute;inset:0;border:1.5px solid var(--gold);transform:rotate(45deg);box-shadow:0 0 14px var(--gold-glow);}
+  .spirit .ic::after{content:"";position:absolute;inset:8px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 14px var(--gold-glow);}
+  .spirit .meta{display:flex;flex-direction:column;gap:1px;}
+  .spirit .v{font-family:"Rajdhani";font-weight:700;font-size:28px;color:var(--gold);line-height:.95;text-shadow:0 0 16px var(--gold-glow);}
+  .spirit .k{font-family:"Rajdhani";font-weight:600;letter-spacing:.16em;font-size:10px;color:var(--text-dim);text-transform:uppercase;}
+
+  /* 中：幕次模块 */
+  .round{position:absolute;left:50%;top:7px;transform:translateX(-50%);width:268px;height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
+  .round .wave{font-family:"Cinzel",serif;font-weight:700;font-size:23px;letter-spacing:.14em;color:var(--accent);text-shadow:0 0 18px var(--accent-glow);line-height:1;}
+  .round .title{font-family:"Noto Sans SC";font-weight:500;font-size:13px;color:var(--text);letter-spacing:.3em;}
+  .round .bar{width:200px;height:2px;margin-top:4px;background:rgba(255,255,255,.10);position:relative;overflow:hidden;}
+  .round .bar i{position:absolute;left:0;top:0;bottom:0;width:42%;background:linear-gradient(90deg,var(--accent),var(--accent-2));box-shadow:0 0 8px var(--accent-glow);}
+
+  /* 右簇 */
+  .rcell{position:absolute;top:8px;height:48px;display:flex;align-items:center;gap:9px;padding:0 14px;}
+  .rcell .ic{width:22px;height:22px;flex:none;}
+  .rcell .col{display:flex;flex-direction:column;gap:1px;}
+  .rcell .v{font-family:"Rajdhani";font-weight:700;font-size:22px;line-height:.9;}
+  .rcell .k{font-family:"Rajdhani";font-weight:600;letter-spacing:.16em;font-size:9.5px;color:var(--text-faint);text-transform:uppercase;}
+  .divider{position:absolute;top:14px;height:36px;width:1px;background:linear-gradient(180deg,transparent,var(--line-2),transparent);}
+
+  /* 流速分段 */
+  .speed{position:absolute;top:8px;height:48px;display:flex;align-items:center;gap:6px;padding:0 6px;}
+  .speed button{width:38px;height:34px;background:rgba(255,255,255,.03);border:1px solid var(--line);color:var(--text-dim);
+    font-family:"Rajdhani";font-weight:700;font-size:15px;cursor:pointer;transition:.15s;letter-spacing:.02em;}
+  .speed button:hover{border-color:var(--line-2);color:var(--text);}
+  .speed button.on{background:linear-gradient(180deg,rgba(39,205,245,.22),rgba(39,205,245,.08));border-color:var(--accent);color:var(--accent-2);box-shadow:0 0 16px var(--accent-glow), inset 0 0 10px rgba(39,205,245,.25);text-shadow:0 0 10px var(--accent-glow);}
+
+  .pbtn{position:absolute;top:8px;height:48px;width:64px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;}
+  .pbtn .lab{font-family:"Rajdhani";font-weight:700;letter-spacing:.14em;font-size:13px;color:var(--text);text-transform:uppercase;}
+
+  /* =========================================================
+     底栏 · 部署层
+     ========================================================= */
+  #bottombar{position:absolute;bottom:0;left:0;width:1280px;height:122px;}
+  #bottombar .band{position:absolute;inset:0;
+    background:linear-gradient(0deg, rgba(18,23,31,.97), rgba(10,13,19,.92));
+    border-top:1px solid var(--line);}
+  #bottombar .accentline{position:absolute;left:0;right:0;top:0;height:2px;
+    background:linear-gradient(90deg, transparent, var(--accent) 22%, var(--accent-2) 50%, var(--accent) 78%, transparent);
+    box-shadow:0 0 12px var(--accent-glow);opacity:.85;}
+
+  .lcluster{position:absolute;left:16px;top:30px;width:150px;height:64px;display:flex;flex-direction:column;justify-content:center;gap:10px;}
+  .lcluster .count{font-family:"Rajdhani";font-weight:600;letter-spacing:.12em;font-size:12px;color:var(--text-dim);text-transform:uppercase;}
+  .lcluster .count b{color:var(--text);font-weight:700;font-size:15px;}
+  .tbtn{height:30px;padding:0 14px;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.03);border:1px solid var(--line);cursor:pointer;transition:.15s;align-self:flex-start;}
+  .tbtn:hover{border-color:var(--line-2);}
+  .tbtn .d{width:7px;height:7px;background:var(--accent);transform:rotate(45deg);box-shadow:0 0 8px var(--accent-glow);}
+  .tbtn .t{font-family:"Noto Sans SC";font-weight:500;font-size:12px;color:var(--text);}
+
+  /* 卡组：居中 */
+  #cards{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);display:flex;gap:14px;}
+  .card{position:relative;width:118px;height:92px;cursor:pointer;transition:transform .18s, box-shadow .18s, border-color .18s;overflow:visible;}
+  .card .face{position:absolute;inset:0;
+    background:linear-gradient(180deg, var(--surface-3), var(--surface));
+    border:1px solid var(--line);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 6px 20px rgba(0,0,0,.5);}
+  .card .top{position:absolute;left:0;right:0;top:0;height:3px;background:var(--tc);box-shadow:0 0 10px var(--tc);opacity:.85;}
+  .card .glow{position:absolute;left:-10px;right:-10px;top:-8px;bottom:-8px;background:radial-gradient(60% 60% at 50% 45%, var(--tc-glow), transparent 70%);opacity:0;transition:opacity .2s;pointer-events:none;}
+  .card .icon{position:absolute;left:50%;top:30px;transform:translateX(-50%);width:34px;height:34px;display:flex;align-items:center;justify-content:center;}
+  .card .icon .glyph{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 30%, var(--tc-2), var(--tc) 70%);box-shadow:0 0 16px var(--tc-glow);}
+  .card .name{position:absolute;left:0;right:0;top:54px;text-align:center;font-family:"Noto Sans SC";font-weight:500;font-size:12.5px;color:var(--text);letter-spacing:.04em;}
+  .card .cost{position:absolute;left:9px;bottom:8px;display:flex;align-items:center;gap:4px;font-family:"Rajdhani";font-weight:700;font-size:14px;color:var(--gold);}
+  .card .cost .c{width:11px;height:11px;background:var(--gold);transform:rotate(45deg);box-shadow:0 0 8px var(--gold-glow);}
+  .card .role{position:absolute;right:9px;bottom:9px;font-family:"Rajdhani";font-weight:600;letter-spacing:.1em;font-size:10px;color:var(--text-faint);text-transform:uppercase;}
+  .card .badge{position:absolute;left:5px;top:6px;width:18px;height:16px;display:flex;align-items:center;justify-content:center;background:var(--accent);color:#04141b;font-family:"Rajdhani";font-weight:700;font-size:11px;box-shadow:0 0 10px var(--accent-glow);}
+  .card .corners i{border-color:var(--tc);opacity:.4;}
+  .card:hover{transform:translateY(-4px);}
+  .card:hover .face{border-color:var(--line-2);}
+  .card:hover .glow{opacity:.5;}
+  .card.sel{transform:translateY(-6px);}
+  .card.sel .face{border-color:var(--accent);box-shadow:0 0 26px var(--accent-glow), inset 0 0 16px rgba(39,205,245,.18);}
+  .card.sel .glow{opacity:.9;}
+  .card.dim .face{opacity:.55;}
+  .card.dim .icon .glyph{filter:saturate(.4) brightness(.8);}
+
+  /* 右：弹幕 P 环 */
+  .barrage{position:absolute;right:16px;top:18px;width:86px;height:86px;}
+  .barrage .ring{position:absolute;inset:0;border-radius:50%;
+    background:conic-gradient(var(--accent) 0% 64%, rgba(255,255,255,.08) 64% 100%);
+    -webkit-mask:radial-gradient(transparent 56%, #000 57%);mask:radial-gradient(transparent 56%, #000 57%);
+    box-shadow:0 0 22px var(--accent-glow);}
+  .barrage .core{position:absolute;inset:14px;border:1px solid var(--line);background:linear-gradient(180deg,var(--surface-3),var(--surface));display:flex;align-items:center;justify-content:center;}
+  .barrage .g{font-family:"Cinzel";font-weight:700;font-size:30px;color:var(--accent);text-shadow:0 0 16px var(--accent-glow);}
+  .barrage .hint{position:absolute;left:0;right:0;bottom:-16px;text-align:center;font-family:"Rajdhani";font-weight:600;letter-spacing:.14em;font-size:10px;color:var(--text-faint);text-transform:uppercase;}
+  .barrage .corners i{border-color:var(--gold);opacity:.45;}
+
+  .tag{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);font-family:"Rajdhani";font-weight:600;letter-spacing:.3em;font-size:10px;color:var(--text-faint);text-transform:uppercase;opacity:.7;}
+</style>
+</head>
+<body>
+<div id="stage-wrap">
+  <div id="stage">
+    <div id="battlefield"></div>
+
+    <!-- ===================== 顶栏 ===================== -->
+    <div id="topbar">
+      <div class="band"></div>
+      <div class="accentline"></div>
+
+      <!-- 灵力 -->
+      <div class="spirit panel">
+        <div class="corners"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+        <div class="ic"></div>
+        <div class="meta">
+          <div class="v">320</div>
+          <div class="k">灵力 · Energy</div>
+        </div>
+      </div>
+
+      <!-- 幕次 -->
+      <div class="round panel">
+        <div class="corners"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+        <div class="wave">WAVE&nbsp;I</div>
+        <div class="title">序章</div>
+        <div class="bar"><i></i></div>
+      </div>
+
+      <!-- 敌影 -->
+      <div class="rcell" style="right:430px;">
+        <div class="ic" style="position:relative;"><div style="position:absolute;inset:3px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent-glow);"></div><div style="position:absolute;inset:7px;border-radius:50%;background:#0c1018;"></div></div>
+        <div class="col"><div class="v" style="color:var(--text);">12/30</div><div class="k">敌影 · Foes</div></div>
+      </div>
+
+      <!-- 结界 -->
+      <div class="rcell" style="right:330px;">
+        <div class="ic" style="position:relative;color:var(--danger);">
+          <svg viewBox="0 0 24 24" width="22" height="22" style="filter:drop-shadow(0 0 8px var(--danger-glow));"><path fill="var(--danger)" d="M12 21s-7-4.6-9.2-9C1.3 8.6 3 5 6.4 5 8.6 5 10 6.4 12 8.6 14 6.4 15.4 5 17.6 5 21 5 22.7 8.6 21.2 12 19 16.4 12 21 12 21z"/></svg>
+        </div>
+        <div class="col"><div class="v" style="color:var(--text);">20</div><div class="k">结界 · Barrier</div></div>
+      </div>
+
+      <div class="divider" style="right:312px;"></div>
+
+      <!-- 流速 -->
+      <div class="speed" style="right:150px;">
+        <button>0.5</button>
+        <button class="on">1</button>
+        <button>2</button>
+        <button>4</button>
+      </div>
+
+      <!-- 静止 -->
+      <div class="pbtn panel" style="right:16px;">
+        <div class="corners"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+        <div class="lab">静止</div>
+      </div>
+    </div>
+
+    <!-- ===================== 底栏 ===================== -->
+    <div id="bottombar">
+      <div class="band"></div>
+      <div class="accentline"></div>
+
+      <div class="lcluster">
+        <div class="count">符卡 <b>0</b> / 12</div>
+        <div class="tbtn"><div class="d"></div><div class="t">索敌 · 最近</div></div>
+      </div>
+
+      <div id="cards"></div>
+
+      <div class="barrage">
+        <div class="ring"></div>
+        <div class="core panel">
+          <div class="corners"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+          <div class="g">P</div>
+        </div>
+        <div class="hint">弹幕 · Barrage</div>
+      </div>
+
+      <div class="tag">BARRIER TERMINAL · 结界终端</div>
+    </div>
+
+    <div id="grain"></div>
+    <div id="scan"></div>
+  </div>
+</div>
+
+<script>
+  // 符卡数据（与 GameConfig.Towers 对应：颜色/费用/职业）
+  const CARDS = [
+    {n:"速符·鸦羽", c:"#2bd1ff", en:"RAVEN",  cost:60,  role:"单体", key:1},
+    {n:"闪符·贯星", c:"#e8b23d", en:"PIERCE", cost:100, role:"单体", key:2},
+    {n:"爆符·红莲", c:"#f2783b", en:"LOTUS",  cost:130, role:"群攻", key:3},
+    {n:"冰符·霜华", c:"#57c4e8", en:"FROST",  cost:80,  role:"辅助", key:4},
+    {n:"曦符·甘霖", c:"#5ed4a6", en:"JADE",   cost:100, role:"医疗", key:5},
+  ];
+  const wrap = document.getElementById('cards');
+  CARDS.forEach((d,i)=>{
+    const el = document.createElement('div');
+    el.className = 'card' + (i===0?' sel':'');
+    el.style.setProperty('--tc', d.c);
+    el.style.setProperty('--tc-2', d.c);
+    el.style.setProperty('--tc-glow', d.c+'66');
+    el.innerHTML = `
+      <div class="glow"></div>
+      <div class="face"></div>
+      <div class="top"></div>
+      <div class="corners"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i></div>
+      <div class="badge">${d.key}</div>
+      <div class="icon"><div class="glyph"></div></div>
+      <div class="name">${d.n}</div>
+      <div class="cost"><span class="c"></span>${d.cost}</div>
+      <div class="role">${d.role}</div>`;
+    el.addEventListener('click',()=>{
+      document.querySelectorAll('.card').forEach(c=>c.classList.remove('sel'));
+      el.classList.add('sel');
+    });
+    wrap.appendChild(el);
+  });
+
+  // 流速分段
+  document.querySelectorAll('.speed button').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('.speed button').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+    });
+  });
+</script>
+</body>
+</html>

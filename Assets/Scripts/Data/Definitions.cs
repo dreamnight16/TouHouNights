@@ -9,7 +9,8 @@ namespace TowerDefense.Data
         Gun,      // 机枪塔：单体、高射速
         Sniper,   // 狙击塔：单体高伤、长射程
         Missile,  // 导弹塔：追踪子弹 + AOE
-        Slow      // 减速塔：范围减速
+        Slow,     // 减速塔：范围减速
+        Heal      // 治疗塔：范围内持续修复友方塔
     }
 
     /// <summary>敌人类型。</summary>
@@ -17,7 +18,8 @@ namespace TowerDefense.Data
     {
         Normal,
         Fast,
-        Tank
+        Tank,
+        Boss      // Boss：超高血量、高伤害、移动慢，击杀奖励丰厚
     }
 
     /// <summary>子弹飞行行为。</summary>
@@ -58,6 +60,9 @@ namespace TowerDefense.Data
         public float SlowFactor;        // 减速比例（0~1，越小越慢）
         public float SlowDuration;      // 减速持续时间（秒）
 
+        public float HealPerSecond;     // 治疗塔：每秒为范围内友方塔修复的生命（0 = 非治疗）
+        public int HealRadiusCells;     // 治疗塔：生效半径（格子数，Chebyshev 距离）
+
         public Color Color;             // 塔身颜色
         public Color ProjectileColor;   // 子弹颜色
     }
@@ -73,7 +78,7 @@ namespace TowerDefense.Data
         public float Speed;
         public float Radius;            // 碰撞半径（用于手动命中检测）
 
-        public int GoldReward;
+        public int SpiritReward;        // 击破后回复的灵力（部署费用）：按敌影威胁度分级
         public int DamageToBase;        // 到达终点后对基地造成的伤害
 
         public float AttackDamage;      // 对防御塔的单次伤害
@@ -83,15 +88,27 @@ namespace TowerDefense.Data
         public Color Color;
     }
 
-    /// <summary>剿灭式刷怪条目：从开局第 StartTime 秒起，在指定红门按间隔刷 Count 个敌人。</summary>
+    /// <summary>轮内刷怪条目：从本轮开始后第 StartTime 秒起，在指定红门按间隔刷 Count 个敌人。</summary>
     [Serializable]
     public class SpawnEntry
     {
         public EnemyType EnemyType;
         public int RouteIndex;          // 走哪条正交路线（红门）
-        public float StartTime;         // 开局后第几秒开始
+        public float StartTime;         // 轮内相对开始时间（秒）
         public int Count;
         public float SpawnInterval;
+    }
+
+    /// <summary>
+    /// 一轮（波）：以「刷完 + 场上清空」为轮界。标题用于换波横幅；Entries 的 StartTime 为轮内相对偏移。
+    /// 这样每轮有明确的结束与开始，轮与轮之间的区分一目了然。
+    /// </summary>
+    [Serializable]
+    public class RoundDef
+    {
+        public string Title;            // Stage 中文幕名（如「侵入加深」）
+        public string Eng;              // 英文卷标（如「WAVE II」）
+        public SpawnEntry[] Entries;    // 本轮刷怪条目
     }
 
     /// <summary>结算数据：游戏结束时展示东方 stage 风格战绩 + Phigros 风格评级。</summary>
@@ -104,5 +121,7 @@ namespace TowerDefense.Data
         public int LivesRemaining;
         public int Rating;
         public string Grade;
+        public int BestCombo;      // 本局最佳连击
+        public bool NewRecord;     // 刷新结界纪录
     }
 }

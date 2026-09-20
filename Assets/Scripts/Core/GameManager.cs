@@ -12,6 +12,7 @@ namespace TowerDefense.Core
 {
     public enum GameState
     {
+        Menu,
         Running,   // 建造与战斗并行，无独立阶段
         GameOver,
         Victory
@@ -19,7 +20,7 @@ namespace TowerDefense.Core
 
     /// <summary>
     /// 游戏总控：持有经济、生命、敌人/塔注册表、空间哈希、懒删除堆与全局索敌策略，
-    /// 负责相机、地图、UI、刷怪器、放置器的组装；波次由协程自动推进（无需手动开波）。
+    /// 负责相机、地图、UI、刷怪器、放置器的组装；各 Stage 由协程自动推进（无需手动开关幕）。
     /// </summary>
     public sealed class GameManager : MonoBehaviour
     {
@@ -35,28 +36,38 @@ namespace TowerDefense.Core
 
         private Coroutine _gameLoop;
         private Coroutine _barrage;
-        private int _gold;
+        private int _spirit;          // 灵力：部署符卡唯一的资源
         private int _lives;
         private int _score;
         private float _power;
         private int _totalKills;
         private int _leakedEnemies;
+        private int _combo;
+        private int _bestCombo;
         private int _speedIndex = 1; // 指向 SpeedLevels[1] = 1x
         private bool _paused;
+        private float _incomeClock;
+        private GameObject _battleCanvas;
+        private FrontEndUi _frontEnd;
+        public bool IsPractice { get; private set; }
+        public int StartStage { get; private set; }
+        public int PracticeSpirit => GameConfig.PracticeStartingSpirit(StartStage);
 
         public Transform WorldRoot { get; private set; }
         public MapSystem Map { get; private set; }
         public TowerPlacer TowerPlacer { get; private set; }
         public WaveSpawner WaveSpawner { get; private set; }
 
-        public GameState State { get; private set; } = GameState.Running;
+        public GameState State { get; private set; } = GameState.Menu;
         public TargetingPriority TargetingPriority { get; private set; } = TargetingPriority.Nearest;
 
-        public int Gold => _gold;
+        public int Spirit => _spirit;
         public int Lives => _lives;
         public int TotalEnemies => GameConfig.TotalEnemies;
         public float SpeedScale => SpeedLevels[_speedIndex];
+        public int SpeedIndex => _speedIndex;
         public bool IsPaused => _paused;
+        public bool IsBarrageActive => _barrage != null;
         public int EnemyCount => _enemies.Count;
         public int TowerCount => _towers.Count;
         public bool CanPlaceTower => _towers.Count < GameConfig.MaxTowers;
@@ -66,6 +77,9 @@ namespace TowerDefense.Core
         public float DamageMultiplier => 1f + _power * GameConfig.PowerDamageBonus;
         public int TotalKills => _totalKills;
         public int LeakedEnemies => _leakedEnemies;
+        public int Combo => _combo;
+        public int BestCombo => _bestCombo;
+        public int BestScore => PlayerPrefs.GetInt("td_best_score", 0);
 
         private void Awake()
         {
@@ -79,18 +93,35 @@ namespace TowerDefense.Core
             DontDestroyOnLoad(gameObject);
 
 #if !UNITY_EDITOR
-            Screen.SetResolution(1920, 1080, true); // 独立运行默认 1080p 全屏，避免低分辨率
+            Screen.SetResolution(1920, 1080, PlayerPrefs.GetInt("td_fullscreen", 1) != 0); // 独立运行默认 1080p 全屏，避免低分辨率
 #endif
 
             EnsureCamera();
+            gameObject.AddComponent<BattleMusic>();
             CreateHud();
             CreateWorld();
             ResetState();
-            StartGame();
+            State = GameState.Menu;
+            Time.timeScale = 0f;
+            WorldRoot.gameObject.SetActive(false);
+            _battleCanvas.SetActive(false);
+            var menuCanvas = UiFactory.CreateCanvas();
+            menuCanvas.name = "FrontEndCanvas";
+            menuCanvas.sortingOrder = 20;
+            _frontEnd = menuCanvas.gameObject.AddComponent<FrontEndUi>();
+            _frontEnd.Init(this);
         }
 
         private void Update()
         {
+            if (State != GameState.Running) return;
+            _incomeClock += Time.deltaTime;
+            if (_incomeClock >= 1f)
+            {
+                int ticks = Mathf.FloorToInt(_incomeClock);
+                _incomeClock -= ticks;
+                AddSpirit(ticks * GameConfig.SpiritRegenPerSecond);
+            }
             // 每帧重建空间哈希与懒删除堆，供索敌/AOE/减速/子弹重锁定查询使用。
             _spatialGrid.Rebuild(_enemies);
             _lowestHealthHeap.Rebuild(_enemies);
@@ -110,12 +141,28 @@ namespace TowerDefense.Core
                 cam = camGo.AddComponent<Camera>();
             }
 
-            // 无论场景中是否已有相机，都强制配置为俯视正交相机。
-            cam.orthographic = true;
-            cam.orthographicSize = GameConfig.CameraSize;
+            // 透视相机：位于地图下缘前方、视线微微上仰 → 近大远小（下大上小）。
+            cam.orthographic = false;
+            cam.fieldOfView = GameConfig.CameraFov;
             cam.backgroundColor = GameConfig.BackgroundColor;
             cam.clearFlags = CameraClearFlags.SolidColor;
-            cam.transform.position = new Vector3(0f, 0f, -10f);
+            cam.transform.position = GameConfig.CameraPosition;
+            cam.transform.LookAt(GameConfig.CameraLookAt);
+
+            // 屏幕震动 + 屏幕模糊（真·毛玻璃背景，供 UI 亚克力材质采样）
+            if (cam.GetComponent<ScreenShake>() == null)
+            {
+                cam.gameObject.AddComponent<ScreenShake>();
+            }
+            if (cam.GetComponent<ScreenBlurFx>() == null)
+            {
+                cam.gameObject.AddComponent<ScreenBlurFx>();
+            }
+            // 方舟式手持漂移：只动旋转、不动位置，与 ScreenShake（独占位置）不冲突。
+            if (cam.GetComponent<CameraDrift>() == null)
+            {
+                cam.gameObject.AddComponent<CameraDrift>();
+            }
 
             // 抗锯齿：消除精灵边缘锯齿。
             QualitySettings.antiAliasing = 8;
@@ -125,8 +172,12 @@ namespace TowerDefense.Core
         private void CreateHud()
         {
             var canvas = UiFactory.CreateCanvas();
+            _battleCanvas = canvas.gameObject;
             UiFactory.EnsureEventSystem();
-            canvas.gameObject.AddComponent<HudController>();
+            // BattleUiRoot 是新版“结界作战档案”唯一入口。依赖在装配点注入，
+            // 表现层不再自行读取 GameManager.Instance。
+            var battleUi = canvas.gameObject.AddComponent<BattleUiRoot>();
+            battleUi.Init(this);
         }
 
         private void CreateWorld()
@@ -139,6 +190,8 @@ namespace TowerDefense.Core
             var root = new GameObject("WorldRoot");
             WorldRoot = root.transform;
 
+            // 夜色先铺底（天幕 / 星野 / 地平雾 / 樱瓣），棋盘再压在上面。
+            WorldAmbience.Create(WorldRoot);
             BuildFloor();
 
             var mapGo = new GameObject("MapSystem");
@@ -154,26 +207,40 @@ namespace TowerDefense.Core
             var spawnerGo = new GameObject("WaveSpawner");
             spawnerGo.transform.SetParent(WorldRoot, false);
             WaveSpawner = spawnerGo.AddComponent<WaveSpawner>();
+
+            // 战场氛围光尘（ParticleSystem）
+            AmbientDust.Create(WorldRoot);
         }
 
+        /// <summary>
+        /// 地面收束。原来的「一大块纯色 Abyss 方板」被夜色天幕取代了 ——
+        /// 方板的水平边长只有视野的 2/3，左右会留下两条笔直的硬边，把战场切成
+        /// 「贴图 + 黑板」。现在底色由 <see cref="WorldAmbience"/> 的天幕渐变整幅铺满，
+        /// 这里只负责最后压一层暗角，把视线收回棋盘中央。
+        /// </summary>
         private void BuildFloor()
         {
-            var floor = new GameObject("Floor");
-            floor.transform.SetParent(WorldRoot, false);
-            var sr = floor.AddComponent<SpriteRenderer>();
-            sr.sprite = SpriteFactory.Square(1f, new Color(0.06f, 0.07f, 0.10f));
-            sr.sortingOrder = -10;
-            floor.transform.localScale = new Vector3(GameConfig.WorldHalfWidth * 2f + 4f, GameConfig.WorldHalfHeight * 2f + 4f, 1f);
+            var vignette = new GameObject("Vignette");
+            vignette.transform.SetParent(WorldRoot, false);
+            var vsr = vignette.AddComponent<SpriteRenderer>();
+            vsr.sprite = SpriteFactory.Vignette(new Color(0f, 0f, 0f, 0.55f));
+            vsr.sortingOrder = WorldArt.LayerFloor + 1;
+            vignette.transform.localScale = new Vector3(
+                GameConfig.WorldHalfWidth * 2f + 4f, GameConfig.WorldHalfHeight * 2f + 4f, 1f);
         }
 
         private void ResetState()
         {
-            _gold = GameConfig.StartingGold;
+            _spirit = IsPractice ? PracticeSpirit : GameConfig.StartingSpirit;
+            _incomeClock = 0;
+            TargetingPriority = TargetingPriority.Nearest;
             _lives = GameConfig.StartingLives;
             _score = 0;
             _power = 0f;
             _totalKills = 0;
             _leakedEnemies = 0;
+            _combo = 0;
+            _bestCombo = 0;
             State = GameState.Running;
             _enemies.Clear();
             _towers.Clear();
@@ -181,7 +248,7 @@ namespace TowerDefense.Core
             ResetSpeed();
         }
 
-        // ---- 波次自动推进 ----
+        // ---- Stage 自动推进 ----
 
         private void StartGame()
         {
@@ -200,9 +267,9 @@ namespace TowerDefense.Core
 
         private IEnumerator GameLoop()
         {
-            yield return new WaitForSeconds(2f); // 开局缓冲，期间仍可建塔
+            yield return new WaitForSeconds(GameConfig.OpeningDelay); // 留出初始部署时间
 
-            WaveSpawner.StartOperation();
+            WaveSpawner.StartOperation(StartStage, IsPractice);
             yield return new WaitUntil(() => WaveSpawner.IsOperationComplete && _enemies.Count == 0);
 
             State = GameState.Victory;
@@ -234,6 +301,15 @@ namespace TowerDefense.Core
             ApplyTimeScale();
         }
 
+        /// <summary>直接设置速度档位（HUD 分段按钮用）。</summary>
+        public void SetSpeedIndex(int index)
+        {
+            if (State != GameState.Running) return;
+            _speedIndex = Mathf.Clamp(index, 0, SpeedLevels.Length - 1);
+            _paused = false;
+            ApplyTimeScale();
+        }
+
         public void TogglePause()
         {
             if (State != GameState.Running) return;
@@ -241,18 +317,22 @@ namespace TowerDefense.Core
             ApplyTimeScale();
         }
 
-        // ---- 经济 ----
+        // ---- 灵力（部署费用）----
 
-        public bool TrySpendGold(int amount)
+        /// <summary>部署符卡时扣除灵力；灵力不足则拒绝部署。</summary>
+        public bool TrySpendSpirit(int amount)
         {
-            if (_gold < amount) return false;
-            _gold -= amount;
+            if (_spirit < amount) return false;
+            _spirit -= amount;
             return true;
         }
 
-        public void AddGold(int amount)
+        /// <summary>
+        /// 回复灵力：自然回复 / 击破敌影 / 符卡离场返还都走这里，统一受上限约束。
+        /// </summary>
+        public void AddSpirit(int amount)
         {
-            _gold += amount;
+            _spirit = Mathf.Min(GameConfig.MaxSpirit, _spirit + amount);
         }
 
         // ---- 敌人生命周期 ----
@@ -267,23 +347,36 @@ namespace TowerDefense.Core
             _enemies.Remove(enemy);
         }
 
-        public void NotifyEnemyKilled(Enemy enemy, int reward)
+        /// <summary>
+        /// 击破敌影：按敌影类型回复灵力（数值取自 EnemyDefinition.SpiritReward，已按威胁度分级），
+        /// 同时推进得分、连击与剿灭里程碑。
+        /// </summary>
+        public void NotifyEnemyKilled(Enemy enemy, int spirit)
         {
-            AddGold(reward);
-            _score += reward * GameConfig.ScorePerGold;
+            AddSpirit(spirit);
+            _score += spirit * GameConfig.ScorePerSpirit;
             _power = Mathf.Min(GameConfig.MaxPower, _power + GameConfig.PowerPerKill);
             _totalKills++;
+            _combo++;
+            if (_combo > _bestCombo) _bestCombo = _combo;
 
-            // 剿灭式里程碑奖励：每击杀 N 个额外发一笔金币。
+            // 连击激励：每 10 连击额外灵力（节奏与爽点）
+            if (_combo > 0 && _combo % 10 == 0)
+            {
+                AddSpirit(2);
+            }
+
+            // 剿灭式里程碑奖励：每击破 N 只敌影额外发一笔灵力。
             if (_totalKills > 0 && _totalKills % GameConfig.AnnihilationMilestoneInterval == 0)
             {
-                AddGold(GameConfig.AnnihilationMilestoneGold);
+                AddSpirit(GameConfig.AnnihilationMilestoneSpirit);
             }
         }
 
         public void NotifyEnemyReachedBase(int damage)
         {
             _leakedEnemies++;
+            _combo = 0; // 漏怪打断连击
             _lives -= damage;
             if (_lives <= 0)
             {
@@ -336,19 +429,26 @@ namespace TowerDefense.Core
             return best;
         }
 
-        /// <summary>主动撤退塔，返还 50% 金币。</summary>
+        /// <summary>主动撤退符卡：按造价返还 50% 灵力，让换阵不至于一次误判毁掉整局。</summary>
         public void RetreatTower(Tower tower)
         {
             if (tower == null) return;
-            AddGold(Mathf.RoundToInt(tower.Definition.Cost * GameConfig.RetreatRefundRatio));
+            int refund = Mathf.RoundToInt(tower.Definition.Cost * GameConfig.RetreatRefundRatio);
+            AddSpirit(refund);
+            FloatingTextView.SpawnWorld(tower.transform.position + Vector3.up * 0.45f,
+                "灵力 +" + refund, TdTheme.Spirit, 0.9f, 14);
             RemoveTower(tower);
         }
 
-        /// <summary>塔被敌人击毁，返还 20% 金币。</summary>
+        /// <summary>符卡被敌影击毁：只返还 20% 灵力，作为「没守住」的惩罚。</summary>
         public void OnTowerDefeated(Tower tower)
         {
             if (tower == null) return;
-            AddGold(Mathf.RoundToInt(tower.Definition.Cost * GameConfig.DefeatRefundRatio));
+            int refund = Mathf.RoundToInt(tower.Definition.Cost * GameConfig.DefeatRefundRatio);
+            AddSpirit(refund);
+            FloatingTextView.SpawnWorld(tower.transform.position + Vector3.up * 0.45f,
+                "灵力 +" + refund, TdTheme.Spirit, 0.9f, 14);
+            ScreenShake.Shake(0.09f, 0.35f);
             RemoveTower(tower);
         }
 
@@ -446,17 +546,21 @@ namespace TowerDefense.Core
             return best;
         }
 
-        public void DamageEnemiesInRadius(Vector2 center, float radius, float damage)
+        // 返回命中敌人数量：既供 Projectile 统计 AOE 命中数，也让 BOOM 知道一次命中了多少目标。
+        public int DamageEnemiesInRadius(Vector2 center, float radius, float damage)
         {
             _spatialGrid.QueryCircle(center, radius + 0.5f, _queryBuffer);
+            int hitCount = 0;
             for (int i = 0; i < _queryBuffer.Count; i++)
             {
                 var enemy = _queryBuffer[i];
                 if (Vector2.Distance(center, enemy.transform.position) <= radius + enemy.Radius)
                 {
                     enemy.TakeDamage(damage);
+                    hitCount++;
                 }
             }
+            return hitCount;
         }
 
         public void ApplySlowInRange(Vector2 center, int rangeCells, float factor, float duration)
@@ -465,6 +569,19 @@ namespace TowerDefense.Core
             for (int i = 0; i < _queryBuffer.Count; i++)
             {
                 _queryBuffer[i].ApplySlow(factor, duration);
+            }
+        }
+
+        /// <summary>治疗塔：每一帧对范围内友方塔回血（治疗塔不奶自己，避免变成永动机）。</summary>
+        public void HealTowersInRange(Vector2 center, int rangeCells, float healing)
+        {
+            if (healing <= 0f) return;
+
+            foreach (var tower in _towers)
+            {
+                if (tower == null || tower.Type == TowerType.Heal) continue;
+                if (Chebyshev(center, (Vector2)tower.transform.position) > rangeCells) continue;
+                tower.Heal(healing);
             }
         }
 
@@ -487,13 +604,21 @@ namespace TowerDefense.Core
         /// <summary>计算结算数据与 Phigros 风格评级（Φ/V/S/A/B/C）。</summary>
         public GameResult GetResult()
         {
-            int totalEnemies = GameConfig.TotalEnemies;
+            int totalEnemies = IsPractice ? GameConfig.RoundEnemyCount(StartStage) : GameConfig.TotalEnemies;
             float killProgress = totalEnemies > 0 ? (float)_totalKills / totalEnemies : 0f;
             float lifeRatio = GameConfig.StartingLives > 0 ? (float)_lives / GameConfig.StartingLives : 0f;
             float scoreFactor = Mathf.Clamp01(_score / (float)GameConfig.TargetScore);
 
             int rating = Mathf.RoundToInt(100f * (0.4f * killProgress + 0.4f * lifeRatio + 0.2f * scoreFactor));
             bool perfect = killProgress >= 1f && _leakedEnemies == 0;
+
+            // 结界纪录
+            bool isNew = !IsPractice && _score > BestScore;
+            if (isNew)
+            {
+                PlayerPrefs.SetInt("td_best_score", _score);
+                PlayerPrefs.Save();
+            }
 
             return new GameResult
             {
@@ -504,6 +629,8 @@ namespace TowerDefense.Core
                 LivesRemaining = _lives,
                 Rating = rating,
                 Grade = GradeFromRating(rating, perfect),
+                BestCombo = _bestCombo,
+                NewRecord = isNew,
             };
         }
 
@@ -522,9 +649,11 @@ namespace TowerDefense.Core
         /// <summary>P点攒满后触发弹幕射击：范围扫射 + 跟踪弹，持续数秒。</summary>
         public void TriggerBarrage()
         {
-            if (State != GameState.Running || !CanBarrage) return;
+            if (State != GameState.Running || _paused || !CanBarrage) return;
             _power = 0f;
             StopBarrage();
+            Sfx.Barrage();
+            ScreenShake.Shake(0.05f, 0.30f);
             _barrage = StartCoroutine(BarrageRoutine());
         }
 
@@ -583,15 +712,49 @@ namespace TowerDefense.Core
             }
         }
 
-        public void Restart()
+        public void BeginRun(int stage = 0, bool practice = false)
         {
             StopGameLoop();
             StopBarrage();
+            if (WaveSpawner != null) WaveSpawner.Reset();
+            IsPractice = practice;
+            StartStage = practice ? Mathf.Clamp(stage, 0, GameConfig.Rounds.Length - 1) : 0;
             _enemies.Clear();
             _towers.Clear();
+            if (WorldRoot != null) WorldRoot.gameObject.SetActive(false);
             CreateWorld();
             ResetState();
+            _frontEnd.gameObject.SetActive(false);
+            _battleCanvas.SetActive(true);
+            GetComponent<BattleMusic>().FollowBattle(StartStage);
             StartGame();
+        }
+
+        public void ReturnToMenu()
+        {
+            StopGameLoop();
+            StopBarrage();
+            WaveSpawner.Reset();
+            State = GameState.Menu;
+            _paused = false;
+            Time.timeScale = 0f;
+            WorldRoot.gameObject.SetActive(false);
+            _battleCanvas.SetActive(false);
+            _frontEnd.gameObject.SetActive(true);
+            _frontEnd.ShowHome();
+        }
+
+        public void GrantRoundSupply()
+        {
+            AddSpirit(GameConfig.RoundClearSpirit);
+            foreach (var tower in _towers)
+                if (tower != null) tower.Heal(tower.MaxHealth * GameConfig.RoundRepairRatio);
+        }
+
+        public void Restart()
+        {
+            if (State == GameState.Menu) return;
+            BeginRun(StartStage, IsPractice);
         }
     }
 }

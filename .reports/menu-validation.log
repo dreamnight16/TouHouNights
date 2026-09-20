@@ -1,0 +1,1070 @@
+.reports is not a valid directory name. Please make sure there are no unallowed characters in the name.
+.reports is not a valid directory name. Please make sure there are no unallowed characters in the name.
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.5/staging' branch; Version is '6000.5.9f1 (b57deb96f08d) revision 11894251'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-DreamNight" at "2026-09-10T05:04:09.1673853Z"
+OS: 'Windows 11  (10.0.26200) CoreCountrySpecific' Language: 'zh' Physical Memory: 31928 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-09-10T05:04:09Z
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.5.9f1\Editor\Unity.exe
+-batchmode
+-noUpm
+-projectPath
+C:/Users/DreamNight/Documents/01My/personal/TowerDefenseUnity/.reports/validation-project
+-executeMethod
+MenuFlowVerification.Run
+-logFile
+C:/Users/DreamNight/Documents/01My/personal/TowerDefenseUnity/.reports/menu-validation.log
+Successfully changed project path to: C:/Users/DreamNight/Documents/01My/personal/TowerDefenseUnity/.reports/validation-project
+C:/Users/DreamNight/Documents/01My/personal/TowerDefenseUnity/.reports/validation-project
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-remapper-allocator-initial-capacity=32768"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-main-allocator-mimalloc-enabled=0"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+Logging is directed to a specific file, skipping project log.Player connection [8624]  Target information:
+
+Player connection [8624]  * "[IP] 10.161.162.125 [Port] 55505 [Flags] 2 [Guid] 293755997 [EditorId] 293755997 [Version] 1048832 [Id] WindowsEditor(7,DNT-ROG) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [8624]  * "[IP] 100.70.23.8 [Port] 55505 [Flags] 2 [Guid] 293755997 [EditorId] 293755997 [Version] 1048832 [Id] WindowsEditor(7,DNT-ROG) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [8624]  * "[IP] 198.18.0.1 [Port] 55505 [Flags] 2 [Guid] 293755997 [EditorId] 293755997 [Version] 1048832 [Id] WindowsEditor(7,DNT-ROG) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [8624]  * "[IP] 10.163.162.190 [Port] 55505 [Flags] 2 [Guid] 293755997 [EditorId] 293755997 [Version] 1048832 [Id] WindowsEditor(7,DNT-ROG) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [8624] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [8624] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Library Redirect Path: Library/
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Initialize engine version: 6000.5.9f1 (b57deb96f08d)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path C:/Users/DreamNight/Documents/01My/personal/TowerDefenseUnity/.reports/validation-project/Assets
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+d3d12: failed to query info queue interface (0x80004002).
+Direct3D:
+    Version:         Direct3D 12 [level 12.2]
+    Renderer:        NVIDIA GeForce RTX 5070 Ti Laptop GPU (ID=0x2f58)
+    Vendor:          NVIDIA
+    VRAM:            11944 MB
+    App VRAM Budget: 11176 MB
+    Driver:          32.0.16.1656
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/BCLExtensions/runtime/netstandard2.1'
+Mono path[2] = 'C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56728
+CodeReloadManager initialized
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+Registered in 0.002154 seconds.
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+Package Manager log level set to [2]
+[Package Manager] Failed to launch server process. Reason: Unity was launched with the -noUpm command-line argument
+[Package Manager] Unable to send message (not connected to server process).
+[Package Manager] Cannot connect to Unity Package Manager local server
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:False
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.377 seconds
+Domain Reload Profiling: 732ms
+	BeginReloadAssembly (73ms)
+		CreateAndSetChildDomain (6ms)
+	RebuildCommonClasses (4ms)
+	RebuildNativeTypeToScriptingClass (12ms)
+	initialDomainReloadingComplete (52ms)
+	LoadAllAssembliesAndSetupDomain (213ms)
+		LoadAssemblies (64ms)
+		AnalyzeDomain (150ms)
+			TypeCache.Refresh (149ms)
+				TypeCache.ScanAssembly (138ms)
+	FinalizeReload (378ms)
+		SetupLoadedEditorAssemblies (0ms)
+			BeforeProcessingInitializeOnLoad (66ms)
+			ProcessInitializeOnLoadAttributes (67ms)
+			ProcessInitializeOnLoadMethodAttributes (187ms)
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Error: HandshakeResponse reported an error:
+	ResponseCode: 505
+	ResponseStatus: Unsupported protocol version '1.18.3'.
+[Licensing::Module] Error: Failed to handshake to channel: "LicenseClient-DreamNight"
+[Licensing::IpcConnector] LicenseClient-DreamNight channel disconnected successfully.
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-DreamNight-6000.5.9" at "2026-09-10T05:04:10.4695707Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 50916, path: "C:/Program Files/Unity/Hub/Editor/6000.5.9f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.3+d7ffd15
+  Session Id:              7277f47c783d487998e0d51fa5090c7b
+  Correlation Id:          53bb9deced10d3bb8a6463f8618b1958
+  External correlation Id: 5433556580860641157
+  Machine Id:              lpR/o6WFQFljK/3tZlA5ZACwwJc=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-DreamNight-6000.5.9" (connect: 0.00s, validation: 0.00s, handshake: 0.01s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-DreamNight-6000.5.9-notifications" at "2026-09-10T05:04:10.476233Z"
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: 18968485699489-UnityPersXXXX
+  Product: Unity Personal
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.00
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 1.31s
+[Licensing::Module] Licensing is initialized (took 0.06s).
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[ScriptCompilation] Requested script compilation because: Assembly Definition File(s) changed
+[ScriptCompilation] Requested script compilation because: AssetDatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.5.9f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/DreamNight/Documents/01My/personal/TowerDefenseUnity/.reports/validation-project
+DisplayProgressbar: Compiling Scripts
+ExitCode: 4 Duration: 0s301ms
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
+*** Tundra requires additional run (0.27 seconds), 1 items updated, 161 evaluated
+[Script Updater] Failed to resolve 'Normal' expression : Assets/TextMesh Pro/Examples & Extras/Scripts/TeleType.cs (27,64). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/RevealLight.cs (16,17). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'name' expression : Assets/Scripts/UI/UiFont.cs (106,23). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'onClick' expression : Assets/Scripts/UI/UiButtonFx.cs (27,25). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/UiFactory.cs (51,49). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/UiFactory.cs (151,23). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/UiFactory.cs (155,41). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'onClick' expression : Assets/Scripts/UI/UiFactory.cs (239,24). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/UiFactory.cs (254,24). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/BattleUiRoot.Primitives.cs (10,17). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/BattleUiRoot.Primitives.cs (11,24). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/BattleUiRoot.Primitives.cs (22,24). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'None' expression : Assets/Scripts/UI/BattleUiRoot.Primitives.cs (33,73). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'onClick' expression : Assets/Scripts/UI/BattleUiRoot.Primitives.cs (44,39). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/TdKit.cs (88,23). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/TdKit.cs (97,23). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/TdKit.cs (106,23). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/TdKit.cs (114,23). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/TdKit.cs (123,23). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/TdKit.cs (138,23). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/TdKit.cs (185,60). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/TdKit.cs (189,24). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/RoundedRectImage.cs (16,44). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'width' expression : Assets/Scripts/UI/RoundedRectImage.cs (79,42). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'height' expression : Assets/Scripts/UI/RoundedRectImage.cs (80,42). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/RadialProgressImage.cs (11,47). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'width' expression : Assets/Scripts/UI/RadialProgressImage.cs (52,55). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'height' expression : Assets/Scripts/UI/RadialProgressImage.cs (52,81). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'content' expression : Assets/Scripts/UI/FrontEndUi.cs (126,57). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'content' expression : Assets/Scripts/UI/FrontEndUi.cs (128,53). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/FrontEndUi.cs (187,24). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'onClick' expression : Assets/Scripts/UI/FrontEndUi.cs (211,20). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'None' expression : Assets/Scripts/UI/BattleUiRoot.Views.cs (193,78). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'onClick' expression : Assets/Scripts/UI/BattleUiRoot.Views.cs (194,25). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/BattleUiRoot.cs (22,20). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/BattleUiRoot.cs (26,20). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/BattleUiRoot.cs (46,17). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/BattleUiRoot.cs (59,17). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/BattleUiRoot.cs (60,17). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/TerminalResult.cs (22,17). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'height' expression : Assets/Scripts/UI/TerminalResult.cs (400,59). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'height' expression : Assets/Scripts/UI/TerminalResult.cs (401,52). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/HudDeployBar.cs (20,20). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/HudDeployBar.cs (21,20). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/HudDeployBar.cs (39,17). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'None' expression : Assets/Scripts/UI/HudDeployBar.cs (114,60). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'onClick' expression : Assets/Scripts/UI/HudDeployBar.cs (115,25). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'None' expression : Assets/Scripts/UI/HudDeployBar.cs (161,63). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'onClick' expression : Assets/Scripts/UI/HudDeployBar.cs (162,28). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/HudUnitCard.cs (29,17). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/HudUnitCard.cs (30,17). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'None' expression : Assets/Scripts/UI/HudUnitCard.cs (119,60). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'onClick' expression : Assets/Scripts/UI/HudUnitCard.cs (120,25). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/HudEnemyInspector.cs (34,17). This may cause expected updates to not be applied.
+[Script Updater] Failed to resolve 'Image' expression : Assets/Scripts/UI/HudEnemyInspector.cs (35,17). This may cause expected updates to not be applied.
+[ApiUpdater] Total time: 1229ms, Parse response file: 41ms, Collect updater configs: 77ms, Update: 1111ms, Save: 0ms Files: 0 modified / 53 visited / 87 total (Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll).
+Starting: C:\Program Files\Unity\Hub\Editor\6000.5.9f1\Editor\Data\netcorerun\netcorerun.exe "C:\Program Files\Unity\Hub\Editor\6000.5.9f1\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1900b0aE.dag.json" "Library/Bee/1900b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
+WorkingDir: C:/Users/DreamNight/Documents/01My/personal/TowerDefenseUnity/.reports/validation-project
+ExitCode: 0 Duration: 0s201ms
+Starting: C:\Program Files\Unity\Hub\Editor\6000.5.9f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1900b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
+WorkingDir: C:/Users/DreamNight/Documents/01My/personal/TowerDefenseUnity/.reports/validation-project
+ExitCode: 0 Duration: 4s251ms
+Finished compiling graph: 225 nodes, 1813 flattened edges (1719 ToBuild, 16 ToUse), maximum node priority 108
+[156/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.InternalAPIEngineBridge.004.rsp2
+[157/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.dll.mvfrm.rsp
+[158/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.rsp
+[159/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.InternalAPIEngineBridge.004.rsp
+[160/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.UnityAdditionalFile.txt
+[161/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.UnityAdditionalFile.txt
+[162/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.rsp2
+[163/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.InternalAPIEngineBridge.004.dll.mvfrm.rsp
+[164/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.dll.mvfrm.rsp
+[165/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.Editor.UnityAdditionalFile.txt
+[166/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.Editor.rsp2
+[167/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.rsp
+[168/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.rsp2
+[169/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.Analytics.rsp2
+[170/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.Analytics.UnityAdditionalFile.txt
+[171/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.Editor.dll.mvfrm.rsp
+[172/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.UnityAdditionalFile.txt
+[173/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.Analytics.dll.mvfrm.rsp
+[174/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.Editor.rsp
+[175/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.Analytics.rsp
+[176/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.rsp
+[177/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.dll.mvfrm.rsp
+[178/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.rsp2
+[179/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll.mvfrm.rsp
+[180/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll.mvfrm.rsp
+[181/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Unity.InternalAPIEngineBridge.004.UnityAdditionalFile.txt
+[182/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.rsp
+[183/222    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.rsp
+[184/222    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.dll.mvfrm
+[185/222    0s] Csc Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.dll (+2 others)
+[186/222    0s] CopyFiles Library/ScriptAssemblies/UnityEngine.UI.pdb
+[187/222    0s] CopyFiles Library/ScriptAssemblies/UnityEngine.UI.dll
+[188/222    0s] MovedFromExtractor Library/Bee/artifacts/mvdfrm/UnityEngine.UI.ref.dll_08FEAA520A2EFD60.mvfrm
+[189/222    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.dll.mvfrm
+[190/222    0s] Csc Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.dll (+2 others)
+[191/222    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.pdb
+[192/222    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.dll
+[193/222    0s] MovedFromExtractor Library/Bee/artifacts/mvdfrm/UnityEditor.UI.ref.dll_4C98D3F7040CD4F5.mvfrm
+[194/222    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.InternalAPIEngineBridge.004.dll.mvfrm
+[195/222    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.InternalAPIEngineBridge.004.dll (+2 others)
+[196/222    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.004.pdb
+[197/222    0s] CopyFiles Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.004.dll
+[198/222    0s] MovedFromExtractor Library/Bee/artifacts/mvdfrm/Unity.InternalAPIEngineBridge.004.ref.dll_9F91F1CFF2D20E26.mvfrm
+[199/222    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.dll.mvfrm
+[200/222    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.dll (+2 others)
+[201/222    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.pdb
+[202/222    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.dll
+[203/222    0s] MovedFromExtractor Library/Bee/artifacts/mvdfrm/Unity.TextMeshPro.ref.dll_84A4293DBDD182DB.mvfrm
+[204/222    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.Editor.dll.mvfrm
+[205/222    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.Analytics.dll.mvfrm
+[206/222    0s] Csc Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.Analytics.dll (+2 others)
+[207/222    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.Analytics.dll
+[208/222    0s] CopyFiles Library/ScriptAssemblies/UnityEditor.UI.Analytics.pdb
+[209/222    0s] MovedFromExtractor Library/Bee/artifacts/mvdfrm/UnityEditor.UI.Analytics.ref.dll_3B64A5A3A726AD5D.mvfrm
+[210/222    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Unity.TextMeshPro.Editor.dll (+2 others)
+[211/222    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.Editor.pdb
+[212/222    0s] MovedFromExtractor Library/Bee/artifacts/mvdfrm/Unity.TextMeshPro.Editor.ref.dll_159E061D77A10B86.mvfrm
+[213/222    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll.mvfrm
+[214/222    0s] MovedFromExtractor-Combine Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll.mvfrm
+[215/222    0s] CopyFiles Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll
+[216/222    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll (+2 others)
+Assets\Scripts\Effects\BattleMusic.cs(33,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Scripts\Effects\BattleMusic.cs(38,25): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Scripts\Util\SpriteFactory.cs(179,19): warning CS0219: The variable 'half' is assigned but its value is never used
+[217/222    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.pdb
+[218/222    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.dll
+[219/222    0s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp-Editor.dll (+2 others)
+Assets\Editor\BattleUiPlayVerification.cs(35,22): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Editor\MenuFlowVerification.cs(53,20): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+
+Assets\Editor\MenuFlowVerification.cs(88,18): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+[220/222    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+[221/222    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp-Editor.pdb
+*** Tundra build success (4.23 seconds), 66 items updated, 222 evaluated
+Assets\Scripts\Effects\BattleMusic.cs(33,17): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Scripts\Effects\BattleMusic.cs(38,25): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Scripts\Util\SpriteFactory.cs(179,19): warning CS0219: The variable 'half' is assigned but its value is never used
+Assets\Editor\BattleUiPlayVerification.cs(35,22): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Editor\MenuFlowVerification.cs(53,20): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Assets\Editor\MenuFlowVerification.cs(88,18): warning CS0618: 'Object.FindFirstObjectByType<T>()' is obsolete: 'FindFirstObjectByType has been deprecated because it relies on instance ID ordering. Use FindAnyObjectByType instead, which does not depend on ordering.'
+Total cache size 2011508
+Total cache size after purge 2011508, took 00:00:00.0127275
+AssetDatabase: script compilation time: 7.012085s
+Begin MonoManager ReloadAssembly
+Importing 'GUID: 00000000000000001000000000000000 - Path: Assets' with importer (DefaultImporter)
+Imported 'GUID: 00000000000000001000000000000000' -> (Import Result ID: 'd4b99c274a2bfd195a0fab07a219813d') in 0.016 seconds [static dependencies only]. Details - ImportResultOutputID=931399766a3d35f20ee4474945b75a67 DependenciesID=b70de132a7282aafa7414a97dcffc9e1 StaticDependenciesID=f5f353ad10b41c84dbd766055d9989c6 
+Importing 'GUID: 00000000000000002000000000000000 - Path: ProjectSettings/InputManager.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 00000000000000002000000000000000' -> (Import Result ID: '122dd9edfa1375de805a66904857642d') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=0290babc70dea6fa2c98f564a251f1f8 DependenciesID=e13aed5572a9dfc6d157cca70707a022 StaticDependenciesID=233ebbccf2adc0a5c1ca8885eb2bc052 
+Importing 'GUID: 00000000000000003000000000000000 - Path: ProjectSettings/TagManager.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 00000000000000003000000000000000' -> (Import Result ID: 'e7f16330ab18354fa5c6c22588bd6b9e') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=fd6696bcbef029973bb12ace65e33982 DependenciesID=f35365170e5d58c444badbe1c8e8a4fc StaticDependenciesID=bcd866a7c3956a26e77b74cfbc6210b0 
+Importing 'GUID: 00000000000000004000000000000000 - Path: ProjectSettings/ProjectSettings.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 00000000000000004000000000000000' -> (Import Result ID: '360de9af9ec917019a32607ab0c3d829') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=276a810dac73e1f29404d5e5f692e214 DependenciesID=f7afb08ace6a412febb03daddeacc911 StaticDependenciesID=da7aab363bc310c274f786f065e9c4a7 
+Importing 'GUID: 00000000000000006000000000000000 - Path: ProjectSettings/AudioManager.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 00000000000000006000000000000000' -> (Import Result ID: '222655a7ee09c701162a4a03301f329d') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=acca44841ee8003c72d524064efb6e35 DependenciesID=1c867fc2eb1e33cbab379e9914026e24 StaticDependenciesID=c60a58a77039892abca1222b4524d2f6 
+Importing 'GUID: 00000000000000007000000000000000 - Path: ProjectSettings/TimeManager.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 00000000000000007000000000000000' -> (Import Result ID: 'b7cea43959c5a70f6cafb9d7bbf07204') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=bcbe57e6eed4f14d697ceae3e9a4ee48 DependenciesID=b41fcbca90521a4ef76dc45abd5ee30f StaticDependenciesID=de80ff743d967013c06205e8643638c7 
+Importing 'GUID: 00000000000000008000000000000000 - Path: ProjectSettings/DynamicsManager.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 00000000000000008000000000000000' -> (Import Result ID: '01117e187546a80035e1d4d46e76d0d3') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=af765d07e318cf68f695edacf91778bd DependenciesID=a72988d2a4e3c003a30c86e53a954198 StaticDependenciesID=7292a8773e09fece8a4831b39fe2006c 
+Importing 'GUID: 00000000000000009000000000000000 - Path: ProjectSettings/QualitySettings.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 00000000000000009000000000000000' -> (Import Result ID: '88b1caad7788adf2b3f6920226537fe1') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=7b12711da11c94ad897442b4820d3f7b DependenciesID=253c850b96121a2945831e0885510615 StaticDependenciesID=3c048ebdf1fe67a565e3878bb03d32b6 
+Importing 'GUID: 0000000000000000b000000000000000 - Path: ProjectSettings/EditorBuildSettings.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 0000000000000000b000000000000000' -> (Import Result ID: '2e292a13dea8a88f7a8fdfa7e245ba03') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=4647dd083cfc32cebcd7526e8846440c DependenciesID=3dbde5f0d39015c9d271c66bfeeb76cc StaticDependenciesID=bb1b3efeaa1814676e759f4b719a3637 
+Importing 'GUID: 0000000000000000c000000000000000 - Path: ProjectSettings/EditorSettings.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 0000000000000000c000000000000000' -> (Import Result ID: '27524ee8e486f2ffa050ba352ec7e2de') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=fc08cc28cef36a03227c22ef67b54535 DependenciesID=a67e6951b1ff849fa93892b67cc04f3f StaticDependenciesID=6659f09da2fad0badc637a74ebfda2e2 
+Importing 'GUID: 00000000000000004100000000000000 - Path: ProjectSettings/NavMeshAreas.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 00000000000000004100000000000000' -> (Import Result ID: '46b5ec913a38468a6faec06896eae508') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=90afd57cd2fd79df9534381ff5673272 DependenciesID=45d1aa60824ee9d69c2ca37e825a726b StaticDependenciesID=768cfffea40bf388eb2d762e3a890cea 
+Importing 'GUID: 00000000000000005100000000000000 - Path: ProjectSettings/Physics2DSettings.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 00000000000000005100000000000000' -> (Import Result ID: 'f668ca342e7e36520c736e6ebc6d382e') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=51a8098361d5b0c1ab07bfc06e51f152 DependenciesID=cd9e79e3e3be26effd12085751c8f2bc StaticDependenciesID=4736f57993cccbae888eab25ec373e17 
+Importing 'GUID: 00000000000000006100000000000000 - Path: ProjectSettings/GraphicsSettings.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 00000000000000006100000000000000' -> (Import Result ID: '5bb79f5634c411213397437dc71f837f') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=f9600466f06a676b7a4f639f6629ea48 DependenciesID=472884dae36dd4fa4029e0bfee54bb70 StaticDependenciesID=ce3f9b9b0558aee0455f15fbe1679d2d 
+Importing 'GUID: 00000000000000007100000000000000 - Path: ProjectSettings/ClusterInputManager.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 00000000000000007100000000000000' -> (Import Result ID: '6012ce5603f09e577aed0b98e99b19f6') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=8ce0cedd10b8cd8471ed9838bfc872ed DependenciesID=2eeb3818bb72d92466f5f953bb62736b StaticDependenciesID=c84399ef936c24c7ddc46cfba0d9b6f9 
+Importing 'GUID: 0000000000000000a100000000000000 - Path: ProjectSettings/UnityConnectSettings.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 0000000000000000a100000000000000' -> (Import Result ID: '33ae2595f4bf6fdbcda99d991731ec59') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=1989c27f310e62ee2c72d63f16a698d0 DependenciesID=95e5490b10cfbf0a98389d7a454554a7 StaticDependenciesID=e5799262eb4150d572a91320e9a15e14 
+Importing 'GUID: 0000000000000000b100000000000000 - Path: ProjectSettings/PresetManager.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 0000000000000000b100000000000000' -> (Import Result ID: '28ecaa07aa0626f067ead5bd138d0a69') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=d271a469f14af9d29dbd89abc966f7ef DependenciesID=8e056439a10f7126afa94c46042b091c StaticDependenciesID=7b53acc339a522b0da4196921a41418e 
+Importing 'GUID: 0000000000000000c100000000000000 - Path: ProjectSettings/VFXManager.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 0000000000000000c100000000000000' -> (Import Result ID: '500a0c5a3eb90d0a1d5ec47a16bbfe30') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=d5b1cc1b236d3087c4a5fc9e9cb18618 DependenciesID=ffec35c0b81aa3428ad4fd0a1cdbca40 StaticDependenciesID=73a7f55396d42bbd23b84f522c611c91 
+Importing 'GUID: 0000000000000000d100000000000000 - Path: ProjectSettings/VersionControlSettings.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 0000000000000000d100000000000000' -> (Import Result ID: '81e35fcbfa4800506724c99876c7088b') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=0a19189542c4b1aa9afad4d76b36cbef DependenciesID=29b26ee47832bf1b39596302c61ef4b2 StaticDependenciesID=b5510de9c562b6e15681a7bd79c2c32e 
+Importing 'GUID: 0000000000000000f100000000000000 - Path: ProjectSettings/MemorySettings.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 0000000000000000f100000000000000' -> (Import Result ID: '88500ba79cde7c30808df8a48958ca4a') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=078c9215d0d3f7dcc6c2ea9c2e21e93e DependenciesID=ccf9b4b9d211e303124b03d2e71bc35a StaticDependenciesID=b66940920b2e41cc5165287b32b299d0 
+Importing 'GUID: 00000000000000000200000000000000 - Path: ProjectSettings/MultiplayerManager.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 00000000000000000200000000000000' -> (Import Result ID: '6e3bb7f61b2e132c4c79fbeb19a1d328') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=cc8bc420ff0fb13a9534be625b324364 DependenciesID=64d1db0c7eff66154c45d867da4ad13d StaticDependenciesID=5a00061f5d03ec70885cdd29485be38f 
+Importing 'GUID: 00000000000000001200000000000000 - Path: ProjectSettings/PhysicsCoreProjectSettings2D.asset' with importer (LibraryAssetImporter)
+Imported 'GUID: 00000000000000001200000000000000' -> (Import Result ID: '7db99f4ef78df8eea254cce16e190be4') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=07b8874da21d0d67c4347d012422ba62 DependenciesID=c35a41b4dbc5a4a21cd219ec06d595b2 StaticDependenciesID=d7f6b6ebc14df93041ab7a97c0c9c64b 
+Importing 'GUID: 00000000000000002300000000000000 - Path: Library/BuildInstructions' with importer (DefaultImporter)
+Imported 'GUID: 00000000000000002300000000000000' -> (Import Result ID: 'd414f514f549833c39aae7152c59aeb3') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=d2da4dbe7433590953d90148eb4e1f22 DependenciesID=f91b153018f3a82b66ea2319cf957f42 StaticDependenciesID=ef352f98b66d8f5b312774c3ee71f599 
+Importing 'GUID: 10fcd4585457862458cdf3b0aa36cae6 - Path: Assets/Editor' with importer (DefaultImporter)
+Imported 'GUID: 10fcd4585457862458cdf3b0aa36cae6' -> (Import Result ID: '8ea9580dc1274df05ff3b0b954e29ef5') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=b79729321712f800d7c023f524c1cd5c DependenciesID=737d7decafcaed7805271be905220537 StaticDependenciesID=6e46848b534df8974bb783c8fa15ed5e 
+Importing 'GUID: 51c1ccd1aad9d4b40be722a6380db748 - Path: Assets/Scripts' with importer (DefaultImporter)
+Imported 'GUID: 51c1ccd1aad9d4b40be722a6380db748' -> (Import Result ID: '60d05e357ba29c675ee90924dc3c50a3') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=c3cd9949c13625123e65deaee78c8ddb DependenciesID=a336693a781f18b0db50dc43b6d9c77e StaticDependenciesID=72fc57bc74cf85e5ce9ceecb02e1bd8c 
+Importing 'GUID: a5122f89586c8bb4da425de3d8b9d9ae - Path: Assets/ValidationUGUI' with importer (DefaultImporter)
+Imported 'GUID: a5122f89586c8bb4da425de3d8b9d9ae' -> (Import Result ID: 'fc04a0251b19d884515feebfaea88800') in 0.007 seconds [static dependencies only]. Details - ImportResultOutputID=f5f1824b82b42052b6c49b241e6828a4 DependenciesID=1672858fd63b3a966776c97ad08fb476 StaticDependenciesID=f8310ecfb0689c1a5243497f33f376b0 
+Importing 'GUID: f54d1bd14bd3ca042bd867b519fee8cc - Path: Assets/TextMesh Pro' with importer (DefaultImporter)
+Imported 'GUID: f54d1bd14bd3ca042bd867b519fee8cc' -> (Import Result ID: 'd4fd9b1ca05b757cabd102c68bd86e56') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=557aa16bff1fbbdf58ca7fb84f237fd8 DependenciesID=f3ee7790fc215e3be3fd45bc8ea5facb StaticDependenciesID=8f70ffb719c5bfc167cc02e7aee3ad70 
+Importing 'GUID: ddc64d0704460a747adf85302641b4f8 - Path: Assets/Resources' with importer (DefaultImporter)
+Imported 'GUID: ddc64d0704460a747adf85302641b4f8' -> (Import Result ID: '3e62dfe1d6dfbcce962df609f4cd4c3a') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=7ef2787c3605e7e58f3393ec66d383a3 DependenciesID=b112ac995eb73b0177006af88a859523 StaticDependenciesID=9f7bd276af69998e5ea7986f1d17ee56 
+Importing 'GUID: 51fc40166094dd34db656aeb9d8c197f - Path: Assets/Scripts/Effects' with importer (DefaultImporter)
+Imported 'GUID: 51fc40166094dd34db656aeb9d8c197f' -> (Import Result ID: '545147b68a39944c0f3eef829f647446') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=db221d9850380826a31f780f556f4cf5 DependenciesID=6e319ffdfd66ed848eabb66176f28c6f StaticDependenciesID=109e1b4686a34d58dc727d11456f1ee8 
+Importing 'GUID: 237d414ab7b871b46be9efbef2b2304e - Path: Assets/Scripts/Actors' with importer (DefaultImporter)
+Imported 'GUID: 237d414ab7b871b46be9efbef2b2304e' -> (Import Result ID: 'b670cc1f8f5b7b76f554b61c85e5dd6d') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=8c8178e6b818a9e67d5aefbefa59c57b DependenciesID=12cc03ca83ff297c58026d199c20d6f7 StaticDependenciesID=d6dfbad9ff642089fce36389406bbdb9 
+Importing 'GUID: a3808b9b9d018b840933b78efa5d127c - Path: Assets/Resources/Audio' with importer (DefaultImporter)
+Imported 'GUID: a3808b9b9d018b840933b78efa5d127c' -> (Import Result ID: '02785d482d0232616c87127a5b273a34') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=0b2c83dcf1e775fd35f6c9d45cb0ae96 DependenciesID=48eac9cdf804dc4189d96b10059768e4 StaticDependenciesID=72a510eb792816712a2eb3b53ef30a01 
+Importing 'GUID: 243e06394e614e5d99fab26083b707fa - Path: Assets/TextMesh Pro/Resources' with importer (DefaultImporter)
+Imported 'GUID: 243e06394e614e5d99fab26083b707fa' -> (Import Result ID: 'ef00b145461ec19f647b40a2113a5ca8') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=382f7cc76f7e0ef44c3e00e0c51ddb0e DependenciesID=36998bb349b027c9e8b67140f16b3cb1 StaticDependenciesID=02b5d08ad14cc622d5f45054d454bf74 
+Importing 'GUID: 341ed1a9c4358cb4fa5177d4c1a2a839 - Path: Assets/Scripts/Util' with importer (DefaultImporter)
+Imported 'GUID: 341ed1a9c4358cb4fa5177d4c1a2a839' -> (Import Result ID: '2a487a2df5246bf2e423be0614f6f09b') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=c49ee878501e590ae1ba7b775d041048 DependenciesID=e87a5702a09d5e6a86f4e56ec4f5f144 StaticDependenciesID=10416ffa6b6664b35ef8d1de5c370a54 
+Importing 'GUID: b8d4c57502d054e438c4b6e6cb67299a - Path: Assets/Scripts/Data' with importer (DefaultImporter)
+Imported 'GUID: b8d4c57502d054e438c4b6e6cb67299a' -> (Import Result ID: '155a3490e8cd5bdfb750503a5d1e3d28') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=80fd95663b73c48aa70f49c86190c202 DependenciesID=cd7a38d421cc97b89fe7a33bd096b368 StaticDependenciesID=b9207447443f0bc82a687b5aaf886bb0 
+Importing 'GUID: a9ce1366d190ed94b9e3aa5091cbc987 - Path: Assets/Scripts/UI' with importer (DefaultImporter)
+Imported 'GUID: a9ce1366d190ed94b9e3aa5091cbc987' -> (Import Result ID: 'ca88a16a7ad6c34c0839126db59a2967') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=da3f7e239456488a68268323f5ddf9f7 DependenciesID=3148f274546cb65acef1036db48c898a StaticDependenciesID=b68f67787ca937541dbb0684c0eb9381 
+Importing 'GUID: c97fd5f42e45fbc418d143175eef6276 - Path: Assets/Scripts/Core' with importer (DefaultImporter)
+Imported 'GUID: c97fd5f42e45fbc418d143175eef6276' -> (Import Result ID: 'db007a677ae2b2a1f9eb8a2ba0b5ae47') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=fd1743f7a2b85fa12c66a5cf455f34be DependenciesID=23cb9336c9602782868dedf6633c2a7f StaticDependenciesID=2b3913e01f42d708a033bb35a7bd751c 
+Importing 'GUID: e9f693669af91aa45ad615fc681ed29f - Path: Assets/TextMesh Pro/Shaders' with importer (DefaultImporter)
+Imported 'GUID: e9f693669af91aa45ad615fc681ed29f' -> (Import Result ID: 'b8803603879be26ff0888666e7b759c7') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=c55828ba2a08028dd91c5ff527d45c01 DependenciesID=9027da1bece4fdd0207b4dda20ab6cad StaticDependenciesID=8cb8e29fc46af2115b7fd86ae90de419 
+Importing 'GUID: 4adf4d06bdec1494991c79b031a86647 - Path: Assets/ValidationUGUI/Editor' with importer (DefaultImporter)
+Imported 'GUID: 4adf4d06bdec1494991c79b031a86647' -> (Import Result ID: 'b0d715a6c32208f9026f0959fcdd7a42') in 0.006 seconds [static dependencies only]. Details - ImportResultOutputID=b639c6b9ceff01704de49269f8708f29 DependenciesID=b569d039ee2a5e65a84b0348094fe13b StaticDependenciesID=23c93fe6fbe3bdb24faeba57b74514c5 
+Importing 'GUID: 6ab70aee4d56447429c680537fbf93ed - Path: Assets/TextMesh Pro/Fonts' with importer (DefaultImporter)
+Imported 'GUID: 6ab70aee4d56447429c680537fbf93ed' -> (Import Result ID: '2c204e78c746eac843d52b02ca25dbbd') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=f0bff5ce80c71aee7b4896349cd22958 DependenciesID=3ba7359ddb2f899d31a2653bc33c8bc4 StaticDependenciesID=adc964bc9f3f042a7c4f4633e1117830 
+Importing 'GUID: aba94b3c67f49334eac596f6a472c7da - Path: Assets/ValidationUGUI/Runtime' with importer (DefaultImporter)
+Imported 'GUID: aba94b3c67f49334eac596f6a472c7da' -> (Import Result ID: '915608f1c032485300e2750b02f49bee') in 0.008 seconds [static dependencies only]. Details - ImportResultOutputID=e8042f52b2b0289c20e721d75c17c151 DependenciesID=e4d86bed27b3eaada392f4e3230f4bcd StaticDependenciesID=30ca8e5ad25f86b5066ed8e853d1b70e 
+Importing 'GUID: ac19a0f40f2379444ab05d30ff97f08d - Path: Assets/Resources/Fonts' with importer (DefaultImporter)
+Imported 'GUID: ac19a0f40f2379444ab05d30ff97f08d' -> (Import Result ID: '16abd3902f32f5a72bcfa7c829114e74') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=531239268acb61e28b743f2c4bf21d74 DependenciesID=aaaaa9149e1cfa159b9e9da76eb43ab3 StaticDependenciesID=7a3af785a48e90ea383e812bdeb205a4 
+Importing 'GUID: ad80d4102b837f24abbf182a571d299b - Path: Assets/Scripts/Systems' with importer (DefaultImporter)
+Imported 'GUID: ad80d4102b837f24abbf182a571d299b' -> (Import Result ID: '8938be713a334ed18a86b4deaf3d5439') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=5bbaa766c5a8fd5394eb8c00754fbfd2 DependenciesID=6aa78b8f6dec2d46f68924f5c908cae6 StaticDependenciesID=93cf7a3f90870af76789f981b0fa52e3 
+Importing 'GUID: ce51c8e33b734b4db6086586558c53a3 - Path: Assets/TextMesh Pro/Examples & Extras' with importer (DefaultImporter)
+Imported 'GUID: ce51c8e33b734b4db6086586558c53a3' -> (Import Result ID: '6a42e728fd8226d8b3083dc76839470e') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=4620fffe42de35562a155a9722c23d59 DependenciesID=e7986f656d0279f0a4a2fa1267602a86 StaticDependenciesID=2ad5d8629379a940fcce19962ae59b89 
+Importing 'GUID: 10d1425d9e87841d9a9deafe9e93a6f2 - Path: Assets/ValidationUGUI/Editor/TMP' with importer (DefaultImporter)
+Imported 'GUID: 10d1425d9e87841d9a9deafe9e93a6f2' -> (Import Result ID: '8708328cbf28df61684caa55623b3885') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=fcd24172dfd83eb509fc77e803a18eea DependenciesID=118ebc83ee37102a1f28b70c5c580676 StaticDependenciesID=cf920a545198a55e0504ecae22d62c7e 
+Importing 'GUID: 701e577af2ba48b689972d42efb95456 - Path: Assets/TextMesh Pro/Examples & Extras/Sprites' with importer (DefaultImporter)
+Imported 'GUID: 701e577af2ba48b689972d42efb95456' -> (Import Result ID: '9d87c5f5aa8c29f001821fae8fea5ea7') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=2495265332e88f52c02b8b7f068ae6a2 DependenciesID=914c25bf5d69732390ac42ce6bb2bed4 StaticDependenciesID=3940c728879df45c602494d8ab68b45e 
+Importing 'GUID: 619aadd8f276341ca84d7ad5a9c6db21 - Path: Assets/ValidationUGUI/Runtime/TMP' with importer (DefaultImporter)
+Imported 'GUID: 619aadd8f276341ca84d7ad5a9c6db21' -> (Import Result ID: 'afb8719eeeb003e025df5e618692349c') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=8ba3c278c33727d9fc8cf73ab4ee1324 DependenciesID=63a75bcf16d77c4b39c71a99c1b125a8 StaticDependenciesID=849fa23fe9b8eb9d1eb8c132ba321c8f 
+Importing 'GUID: 731f1baa9d144a9897cb1d341c2092b8 - Path: Assets/TextMesh Pro/Resources/Fonts & Materials' with importer (DefaultImporter)
+Imported 'GUID: 731f1baa9d144a9897cb1d341c2092b8' -> (Import Result ID: 'b252f681c35d0d2088b4883a296b8e63') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=cf24996e50fb4ab70ff6e0410592c4d4 DependenciesID=89bffa68c49831b788171ba9da209bd7 StaticDependenciesID=df9eaa22b1a1322255e4e990d60519d2 
+Importing 'GUID: c52726d811a9f66459355df6b0c3977b - Path: Assets/ValidationUGUI/Editor/Analytics' with importer (DefaultImporter)
+Imported 'GUID: c52726d811a9f66459355df6b0c3977b' -> (Import Result ID: '4f5f2630b61ed6fd54ce8df0429a158d') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=a4fcbdcd7e8b14801fa5403679319dc4 DependenciesID=66691aa143e1c309cf0dfeb6b593a764 StaticDependenciesID=2cadf9ba87d96ceec4063ee823508c48 
+Importing 'GUID: b63e0053080646b9819789bf3bf9fa17 - Path: Assets/TextMesh Pro/Examples & Extras/Fonts' with importer (DefaultImporter)
+Imported 'GUID: b63e0053080646b9819789bf3bf9fa17' -> (Import Result ID: 'bf9c2c76bf41d08247c848ad4445306d') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=271216bdf149c53863a961919741dd5b DependenciesID=7f39f90f18ec71728d42c9f64dbcbc96 StaticDependenciesID=bfcf2b760eaeb091cfbf998090951192 
+Importing 'GUID: d6d3a169ad794942a21da6a552d62f6f - Path: Assets/TextMesh Pro/Examples & Extras/Resources' with importer (DefaultImporter)
+Imported 'GUID: d6d3a169ad794942a21da6a552d62f6f' -> (Import Result ID: '97d363004e190e6847e743c387a9b9be') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=50c13d3eb216b98139e0d2c2b1b33795 DependenciesID=b92c95955d358c11552b4dd4ad62213f StaticDependenciesID=642a1387ebb710efa3d81f80251519cf 
+Importing 'GUID: 278b6073a5bdd4362acd72ca43ff9e0d - Path: Assets/ValidationUGUI/Editor/UGUI' with importer (DefaultImporter)
+Imported 'GUID: 278b6073a5bdd4362acd72ca43ff9e0d' -> (Import Result ID: 'b65c3fbcff3f2a14e2f7fc9703277489') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=32981cfd7c53e5ac7cdf5f6f6552ea5d DependenciesID=3158490c12981d4b8b82d60c75011fa9 StaticDependenciesID=a8ddf4853bba96bb18566ecdc9aa49c9 
+Importing 'GUID: 1817d28a5343b4ec19b4ec7903730e2c - Path: Assets/ValidationUGUI/Runtime/UGUI' with importer (DefaultImporter)
+Imported 'GUID: 1817d28a5343b4ec19b4ec7903730e2c' -> (Import Result ID: '28ebe7ffdaa10980bfe22f5670b8a4b1') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=b06f593c5ff66d4aa68f7839745ff577 DependenciesID=6b4d9364fca287ded8f93a91c9fbcd0e StaticDependenciesID=ac0a7978296cd6fe55a7d82dd0fe4c72 
+Importing 'GUID: 5808953df7a24274a851aa6dee52d30e - Path: Assets/TextMesh Pro/Examples & Extras/Materials' with importer (DefaultImporter)
+Imported 'GUID: 5808953df7a24274a851aa6dee52d30e' -> (Import Result ID: '26b1553cfb5178d5a601a641d9bf30da') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=4f4ec4db18510022ca9f0fae9b7db45c DependenciesID=9a713814345fd43d911238f8407670ee StaticDependenciesID=c342888448a596fbc23ca642346621f6 
+Importing 'GUID: 3979ce59e55144c89a2b3b3f8dcf7fd3 - Path: Assets/TextMesh Pro/Examples & Extras/Scripts' with importer (DefaultImporter)
+Imported 'GUID: 3979ce59e55144c89a2b3b3f8dcf7fd3' -> (Import Result ID: '93cc78439dba4d8fdd5c8fc3c6f00aba') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=6989d8b9045c18ef2af9b5205f5d1d2b DependenciesID=a4fbb199b6986a4e3aba3e49cf142e4d StaticDependenciesID=1f990ed667e9aa67669dc70cdb2133d8 
+Importing 'GUID: 4aecb92fff08436c8303b10eab8da368 - Path: Assets/TextMesh Pro/Resources/Style Sheets' with importer (DefaultImporter)
+Imported 'GUID: 4aecb92fff08436c8303b10eab8da368' -> (Import Result ID: 'fafa9f77c1567ec5e4740001105370ea') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=f378c55f2a9550ce27e4502ec7e8aa57 DependenciesID=e81a7a7d2e9c0361fd701b32925ffd2b StaticDependenciesID=6e5688f42ecba5e1ebc5d30c342d9875 
+Importing 'GUID: bab3a29ab4f214742a44add41efffb7d - Path: Assets/ValidationUGUI/Runtime/InternalBridge' with importer (DefaultImporter)
+Imported 'GUID: bab3a29ab4f214742a44add41efffb7d' -> (Import Result ID: '7a8135d849742846d2c2fd2c9d683a5f') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=86a5c7933efe546e3f374d55a299b47f DependenciesID=fbdd678a7e56a422ed1a029d38692264 StaticDependenciesID=c54241660f7fb8b0a39aa26a88fd783c 
+Importing 'GUID: 5bff2544887143f5807c7d5059d07f79 - Path: Assets/TextMesh Pro/Examples & Extras/Prefabs' with importer (DefaultImporter)
+Imported 'GUID: 5bff2544887143f5807c7d5059d07f79' -> (Import Result ID: '31adf7760be780053cf257addef58417') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=eb40c7ce7086c4ae21c4ee46b0722dba DependenciesID=0b340ad383450b3797d7f34631a06ddd StaticDependenciesID=cee80f174328a3a013e7fc0f46a0741a 
+Importing 'GUID: db1090641b3241f6995b587eb21637bc - Path: Assets/TextMesh Pro/Examples & Extras/Scenes' with importer (DefaultImporter)
+Imported 'GUID: db1090641b3241f6995b587eb21637bc' -> (Import Result ID: '84e4ad8f1a75f8858532672d5e345e53') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=e05307aa749106c9fd0d9b1713ec2900 DependenciesID=62039e583e267f4d05faa8ecdd3d596d StaticDependenciesID=759bfd05df7a9118abac81ab2cf9a7b4 
+Importing 'GUID: 6e5c6d5e25574122a7a12dbdbbeed156 - Path: Assets/TextMesh Pro/Examples & Extras/Textures' with importer (DefaultImporter)
+Imported 'GUID: 6e5c6d5e25574122a7a12dbdbbeed156' -> (Import Result ID: '65916538865fb9dae15e42a335896345') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=797ac745a14be9ed4ccefaec7bd19b8a DependenciesID=35b7205143c81e4df53288754986d2bc StaticDependenciesID=e29378e27dc17bf300ea3210fb82bcd2 
+Importing 'GUID: 32e2186f4598cff489784aae586f2215 - Path: Assets/ValidationUGUI/Runtime/UGUI/Properties' with importer (DefaultImporter)
+Imported 'GUID: 32e2186f4598cff489784aae586f2215' -> (Import Result ID: 'a4fa8a202089e4e38ffd35b2aceba9f2') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=a60620db748042d095a7e923ff9e81ec DependenciesID=29abe4d5c70a3cab55780be7afc28651 StaticDependenciesID=37e028ebbafd218ea2f48481c017692c 
+Importing 'GUID: 742654cad2425334696ba6ed4495cfef - Path: Assets/ValidationUGUI/Runtime/UGUI/UI' with importer (DefaultImporter)
+Imported 'GUID: 742654cad2425334696ba6ed4495cfef' -> (Import Result ID: '214963f89d2c98a4d47a96da00523865') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=8f485f614be7a5de5c0d226177544e64 DependenciesID=b92a948bb9194529100be37b103ec974 StaticDependenciesID=cd1ff474f988f20490826137cffb5f24 
+Importing 'GUID: 853edc343b78a7c4c81cbb3851d48c0a - Path: Assets/ValidationUGUI/Editor/UGUI/UI' with importer (DefaultImporter)
+Imported 'GUID: 853edc343b78a7c4c81cbb3851d48c0a' -> (Import Result ID: 'ec9e20b1ea9a49f658d9fa6c6962d32e') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=817852a677c79b120ebfea9b2a6e2b87 DependenciesID=79f97859125414c29c6ba9a4e653b8ce StaticDependenciesID=4aaf54f230fccba85ce7d11d2062e4c6 
+Importing 'GUID: f525580684527b147b70cf94aaa70dbc - Path: Assets/ValidationUGUI/Editor/UGUI/EventSystem' with importer (DefaultImporter)
+Imported 'GUID: f525580684527b147b70cf94aaa70dbc' -> (Import Result ID: '503dae1663cf62a77e97545d7d89784f') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=edff13cc3063d13a3ad3adc5db6eeaf3 DependenciesID=bb59f4f82082c110cf9ccd41ed4faff6 StaticDependenciesID=aa14fb5c00f4da727b0cdd162f3814d5 
+Importing 'GUID: 77417b0f4cf6d334f916c64448d24133 - Path: Assets/ValidationUGUI/Editor/Analytics/IAnalytic' with importer (DefaultImporter)
+Imported 'GUID: 77417b0f4cf6d334f916c64448d24133' -> (Import Result ID: '8577b055294de718e077383bddee17e1') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=ece3f7a2bcd50b0789c1d53c4fb48926 DependenciesID=48f07f911ef7b8c497ceb42169e65e23 StaticDependenciesID=34e127aa7aad971e092343ad35b3295a 
+Importing 'GUID: a7eaeb4188c60454faf0a41c253b505c - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/28 - HDRP Shader Example' with importer (DefaultImporter)
+Imported 'GUID: a7eaeb4188c60454faf0a41c253b505c' -> (Import Result ID: '9188fc8799dfc81d86beab3a2d3ac092') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=a8ec7e12006924b8b3e9bbf427f3e850 DependenciesID=3e230d90b238e127b8221158a8aeee61 StaticDependenciesID=504963e135cd46879215d832337bd45a 
+Importing 'GUID: 3ac6db30e75b49b282a3564110579f27 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Sprite Assets' with importer (DefaultImporter)
+Imported 'GUID: 3ac6db30e75b49b282a3564110579f27' -> (Import Result ID: '8a89f00e4694a7fe92249c83c77bab00') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=add9baebb2aa03d16a1fd51eba195899 DependenciesID=4182d37762a51b8307f050b3031248fa StaticDependenciesID=e617a55a4231311865ce8222ab7c0eed 
+Importing 'GUID: ea7c31b5b377c314db28ad3fabbbd38d - Path: Assets/ValidationUGUI/Editor/TMP/PropertyDrawers' with importer (DefaultImporter)
+Imported 'GUID: ea7c31b5b377c314db28ad3fabbbd38d' -> (Import Result ID: '1253449bde90abcb05a4b2b14a2f40f0') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=95a87702fc86b39cbacf451c7f177369 DependenciesID=82670ba9e873d0176b45fff0c6a3db52 StaticDependenciesID=73c20b06169bd391f900a2de2b544a5f 
+Importing 'GUID: eecc124dc0b994047aac97ccf8c8ed0a - Path: Assets/ValidationUGUI/Editor/TMP/HDRP' with importer (DefaultImporter)
+Imported 'GUID: eecc124dc0b994047aac97ccf8c8ed0a' -> (Import Result ID: '68fe675c6c7da0c40da5c8706557562c') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=1fe5e75746ef34eb01ea21b850a03ce1 DependenciesID=5e117309c233aeb39a66001d65bf9818 StaticDependenciesID=e1242befd0cb0c1458957540299bc7d8 
+Importing 'GUID: 4f1e85c79acf49968737939ce8b445c7 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials' with importer (DefaultImporter)
+Imported 'GUID: 4f1e85c79acf49968737939ce8b445c7' -> (Import Result ID: '015cb8db871e1604000725fd9451eb13') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=046ce3a1316d7439074715a5a5d37024 DependenciesID=e2c49e50b105930accd31dc12c72af45 StaticDependenciesID=57377660d358922e5c246562754191d8 
+Importing 'GUID: 7f422cd1388b01047a58cd07c7a23d9d - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Color Gradient Presets' with importer (DefaultImporter)
+Imported 'GUID: 7f422cd1388b01047a58cd07c7a23d9d' -> (Import Result ID: '75a838fd88791eea39f86ecba5ab17dd') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=1aa78d49e02a5e29cbe5689a065c54c5 DependenciesID=80bc74dcddc1b9c8679e97ace6537aee StaticDependenciesID=a3af2150169ef3069df9b6abeeffa076 
+Importing 'GUID: 7f27709c942d91541be1fd6aa5cb3d78 - Path: Assets/ValidationUGUI/Runtime/UGUI/EventSystem' with importer (DefaultImporter)
+Imported 'GUID: 7f27709c942d91541be1fd6aa5cb3d78' -> (Import Result ID: 'e3e5447bc814225c9ffb86fec055295e') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=43bd66607a2454aa18f8b68ac3e488a7 DependenciesID=38f074c914d00cf0e16df398572c98ad StaticDependenciesID=76f7efdd162f1762cf9a2584070abad1 
+Importing 'GUID: cf97e54bcd5479a46bdbade48da047cc - Path: Assets/ValidationUGUI/Editor/UGUI/Properties' with importer (DefaultImporter)
+Imported 'GUID: cf97e54bcd5479a46bdbade48da047cc' -> (Import Result ID: 'd1aaaaae6281709961ec0689d01960ac') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=4d90aedc7e855070ad84cb498caa8788 DependenciesID=1cc5983ced7537ebf9cc500ee6e7c8a4 StaticDependenciesID=b242d281c1355d98c02cd733912256d3 
+Importing 'GUID: 12c42068351bb084abde965d725b9887 - Path: Assets/ValidationUGUI/Runtime/UGUI/UI/Core' with importer (DefaultImporter)
+Imported 'GUID: 12c42068351bb084abde965d725b9887' -> (Import Result ID: '43fd6240606946e2492936009901c803') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=317bf4c76346e7a88f5e1b45cd3b91f9 DependenciesID=db02f20422bff5d8649b71d222a5ae0d StaticDependenciesID=3d9382640805ecc8a05d7ec47b298d54 
+Importing 'GUID: b3cdabf2f1e76854d8aab5930305d70d - Path: Assets/ValidationUGUI/Runtime/UGUI/EventSystem/EventData' with importer (DefaultImporter)
+Imported 'GUID: b3cdabf2f1e76854d8aab5930305d70d' -> (Import Result ID: '2769feb38e095a7e8741f930116edadd') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=c9d722ac87bb07ad64c80480bc0c3487 DependenciesID=c2c94e50f2eef08ed7216716ae5da0d5 StaticDependenciesID=a3ddf1f5a18f02bb8a5d178d57319c19 
+Importing 'GUID: 5472815444de2ce45bf2053a4af04b9d - Path: Assets/ValidationUGUI/Runtime/UGUI/UI/Animation' with importer (DefaultImporter)
+Imported 'GUID: 5472815444de2ce45bf2053a4af04b9d' -> (Import Result ID: 'b00c9ce455c1feded3dc09b5a6648967') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=02387668f373194356ec29799a11d5d0 DependenciesID=3e78464c4375c97f6c00defadac231b1 StaticDependenciesID=b08420d2c64702a8652bdf526e342560 
+Importing 'GUID: 46646a5562f14984690c85ee7b946bc9 - Path: Assets/ValidationUGUI/Runtime/UGUI/EventSystem/Raycasters' with importer (DefaultImporter)
+Imported 'GUID: 46646a5562f14984690c85ee7b946bc9' -> (Import Result ID: '234f92b0e3cf2df4dd5492ac443c1f5c') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=db9398800965861d01f2bd43cf496132 DependenciesID=6dfaf08a49bb0163ce0509362c703f2b StaticDependenciesID=3f8792b1f1ac78c435ccfb1fb64aeabb 
+Importing 'GUID: bc9aa6d5a7945f34882c442e9e201537 - Path: Assets/ValidationUGUI/Editor/UGUI/UI/PropertyDrawers' with importer (DefaultImporter)
+Imported 'GUID: bc9aa6d5a7945f34882c442e9e201537' -> (Import Result ID: '94372a17ac65b19103079fbf3702a0f3') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=63c8cf390e7a4e4d540c9298ab92bed8 DependenciesID=e9d3255755d48a582380248eee29bc66 StaticDependenciesID=e65079aa78b0d8572706e586ccb74e7c 
+Importing 'GUID: 5dc64c943466a44498be3b620c743b45 - Path: Assets/ValidationUGUI/Runtime/UGUI/EventSystem/UIElements' with importer (DefaultImporter)
+Imported 'GUID: 5dc64c943466a44498be3b620c743b45' -> (Import Result ID: 'e8f42d2f31626690f13bb80841a54921') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=fd828e0499fcd47e19fa0a0b494b1491 DependenciesID=79127338a5c13fa84cf39a5414d22fc8 StaticDependenciesID=fcd90f5b321b599c1ac520201a4a1839 
+Importing 'GUID: 8e78f8a8575e4a04f8337a54e241cdc5 - Path: Assets/ValidationUGUI/Runtime/UGUI/EventSystem/InputModules' with importer (DefaultImporter)
+Imported 'GUID: 8e78f8a8575e4a04f8337a54e241cdc5' -> (Import Result ID: '03651eafc1f7b167f217a7b9d542a0c6') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=84df937fc484b7ab7b594c4d33eb072c DependenciesID=8ac3493bfa914af1e8d3f01878fa297c StaticDependenciesID=eadc370d854c330f337eb1b7a7be66db 
+Importing 'GUID: d63dd1a776d383248a21ec2a8a6e7868 - Path: Assets/ValidationUGUI/Runtime/UGUI/UI/Core/Utility' with importer (DefaultImporter)
+Imported 'GUID: d63dd1a776d383248a21ec2a8a6e7868' -> (Import Result ID: '2eb8e9a16f13731db9e2d1fe4c3c981f') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=c238abcbd70b2a0dc4dc3ba9d2c6093d DependenciesID=daabe81c4c44caa35dd0f26b2b867364 StaticDependenciesID=4ad9b6f4d006a5cf2c8e26f8661c2294 
+Importing 'GUID: 27ed3e221887b3544bd9d6505d4a789f - Path: Assets/ValidationUGUI/Runtime/UGUI/UI/Core/Culling' with importer (DefaultImporter)
+Imported 'GUID: 27ed3e221887b3544bd9d6505d4a789f' -> (Import Result ID: 'd3e8f7d9175a68d933e1a16b315c4fc1') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=56abe916306638a477b6ac3ba6307677 DependenciesID=9605105849fdfbc010a50f08324266eb StaticDependenciesID=4be71aedc9e6a448655fec461112fcee 
+Importing 'GUID: f8ed4321a98682942b9980996131cf26 - Path: Assets/ValidationUGUI/Runtime/UGUI/UI/Core/SpecializedCollections' with importer (DefaultImporter)
+Imported 'GUID: f8ed4321a98682942b9980996131cf26' -> (Import Result ID: '739cbc192ac13cdfd02051b52853b92a') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=d35aeaf4a8cadeb54cb7cfa1c1e01dd1 DependenciesID=c1d197430a25d7f437fef8bed3d924c0 StaticDependenciesID=d3973a57dd2d15ea2774273df9650488 
+Importing 'GUID: 1999349e7f492c947bb6eb70f624382e - Path: Assets/ValidationUGUI/Runtime/UGUI/UI/Core/Layout' with importer (DefaultImporter)
+Imported 'GUID: 1999349e7f492c947bb6eb70f624382e' -> (Import Result ID: '3c555a5a1eccc9e0d8ee3c0113267dc2') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=1a984b17ea58808f819e522d983d3a34 DependenciesID=97fbc89ae918130132616e3b3b10bcf2 StaticDependenciesID=3ded4312b59864ab02f8ba2d119ec79c 
+Importing 'GUID: 7c6295db74da28645bf49db58b7c9c65 - Path: Assets/ValidationUGUI/Runtime/UGUI/UI/Core/MaterialModifiers' with importer (DefaultImporter)
+Imported 'GUID: 7c6295db74da28645bf49db58b7c9c65' -> (Import Result ID: 'e7736ac374982290b6ce0837b3f8a0a3') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=d3c51eb5e7281175d51c01db2a8fe935 DependenciesID=9ef00a23da818626df348df6075d3c35 StaticDependenciesID=eb6fa335f0837c7f9b2fc3b2d0155f21 
+Importing 'GUID: cfa73a847eeff06448bb50a8ac6a94e0 - Path: Assets/ValidationUGUI/Runtime/UGUI/UI/Core/VertexModifiers' with importer (DefaultImporter)
+Imported 'GUID: cfa73a847eeff06448bb50a8ac6a94e0' -> (Import Result ID: '9585c6555567fbf62cab3e462f0922ae') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=ba0a329ea4dd35886e4a78d8110278b1 DependenciesID=d0c7fdf14efce3b29cba5c29a597b0d1 StaticDependenciesID=7dcbf999d7268fbe4858fb3ff5e69080 
+Importing 'GUID: 6055be8ebefd69e48b49212b09b47b2f - Path: Assets/ValidationUGUI/Runtime/TMP/Unity.TextMeshPro.asmdef' with importer (AssemblyDefinitionImporter)
+Imported 'GUID: 6055be8ebefd69e48b49212b09b47b2f' -> (Import Result ID: 'b15424de3bf38202fb082181c8731844') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=541b2a82a300c713c8a02120fb24a4f9 DependenciesID=cccdcc6e91e1806decf5c7d40956e288 StaticDependenciesID=fc0f2a0a28c6982ce4ecc9b407800a0e 
+Importing 'GUID: 43b111c4a445f446abd2c02e77750ff5 - Path: Assets/ValidationUGUI/Runtime/InternalBridge/Unity.InternalAPIEngineBridge.004.asmdef' with importer (AssemblyDefinitionImporter)
+Imported 'GUID: 43b111c4a445f446abd2c02e77750ff5' -> (Import Result ID: '401de1f962a758d51a1de08c81f6cd9a') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=8c3a5df3965578a47b17aa72b16192f2 DependenciesID=63b4212e711f01176c8ecfb680875160 StaticDependenciesID=c272e23e455befebe93940c729d11737 
+Importing 'GUID: 8394c018a82352f41ae354f7bdad54e3 - Path: Assets/ValidationUGUI/Editor/Analytics/UnityEditor.UI.Analytics.asmdef' with importer (AssemblyDefinitionImporter)
+Imported 'GUID: 8394c018a82352f41ae354f7bdad54e3' -> (Import Result ID: '5f23c95933e2e72847752f1975b01fdb') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=6d32872d2527bee86ba217c72ed92cc2 DependenciesID=fefff6fa5f4f9e5d88eea5e19c987a42 StaticDependenciesID=c4c76dd520faf1acd3fa0386fe926c3d 
+Importing 'GUID: 343deaaf83e0cee4ca978e7df0b80d21 - Path: Assets/ValidationUGUI/Editor/UGUI/UnityEditor.UI.asmdef' with importer (AssemblyDefinitionImporter)
+Imported 'GUID: 343deaaf83e0cee4ca978e7df0b80d21' -> (Import Result ID: 'cbca1c363850f7944b9325b3690199e1') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=80f05667bf02ba97735e00fb392e42b7 DependenciesID=212dc8266471c80a18f9ed01e6c15a3b StaticDependenciesID=4d18829651646562fe653ae47bdfb838 
+Importing 'GUID: 6546d7765b4165b40850b3667f981c26 - Path: Assets/ValidationUGUI/Editor/TMP/Unity.TextMeshPro.Editor.asmdef' with importer (AssemblyDefinitionImporter)
+Imported 'GUID: 6546d7765b4165b40850b3667f981c26' -> (Import Result ID: '7f3a17455aca231f3d6b2ff2591ed346') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=36008b569067be9a06f56cb2b5d49597 DependenciesID=fa6f3ced3bcb67023f3172d7f6c027f3 StaticDependenciesID=503ae92566f2bccec93afe511fb64823 
+Importing 'GUID: 2bafac87e7f4b9b418d9448d219b01ab - Path: Assets/ValidationUGUI/Runtime/UGUI/UnityEngine.UI.asmdef' with importer (AssemblyDefinitionImporter)
+Imported 'GUID: 2bafac87e7f4b9b418d9448d219b01ab' -> (Import Result ID: '62385ad23dd14ebb9d732e67873dddcd') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=7ddcc014db2fd7397dc46e3d6a9725db DependenciesID=9cc5c23ae6c1b1374c68dccc88a16fd6 StaticDependenciesID=8a0cc998de3ecaeff5e2afffeac520e4 
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+[Package Manager] Failed to launch server process. Reason: Unity was launched with the -noUpm command-line argument
+[Package Manager] Unable to send message (not connected to server process).
+[Package Manager] Cannot connect to Unity Package Manager local server
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.331 seconds
+Domain Reload Profiling: 749ms
+	BeginReloadAssembly (191ms)
+		DisableScriptedObjects (22ms)
+		CreateAndSetChildDomain (48ms)
+	RebuildCommonClasses (9ms)
+	RebuildNativeTypeToScriptingClass (14ms)
+	initialDomainReloadingComplete (40ms)
+	LoadAllAssembliesAndSetupDomain (163ms)
+		LoadAssemblies (111ms)
+		AnalyzeDomain (32ms)
+			TypeCache.Refresh (15ms)
+				TypeCache.ScanAssembly (8ms)
+			BuildScriptInfoCaches (11ms)
+			ResolveRequiredComponents (4ms)
+	FinalizeReload (332ms)
+		SetupLoadedEditorAssemblies (0ms)
+			BeforeProcessingInitializeOnLoad (65ms)
+			ProcessInitializeOnLoadAttributes (50ms)
+			ProcessInitializeOnLoadMethodAttributes (48ms)
+			AfterProcessingInitializeOnLoad (8ms)
+		AwakeInstancesAfterBackupRestoration (24ms)
+Importing 'GUID: 00000000000000005000000000000000 - Path: Library/BuildPlayer.prefs' with importer (DefaultImporter)
+Imported 'GUID: 00000000000000005000000000000000' -> (Import Result ID: '968deb36040bbb7258278f93cba63355') in 0.008 seconds [static dependencies only]. Details - ImportResultOutputID=1f9c19b30680da8dab47159f77a4e657 DependenciesID=08a1ec4b674aa66bb1ce753815d843ed StaticDependenciesID=d072ca1f0d6ee50a54e7e140cc588a10 
+Importing 'GUID: 124c112a6e8f1a54e8b0870e881b56d8 - Path: Assets/TextMesh Pro/Shaders/TMP_SDF-URP Unlit.shadergraph' with importer (DefaultImporter)
+Imported 'GUID: 124c112a6e8f1a54e8b0870e881b56d8' -> (Import Result ID: 'f66cdddccb4ba5d3bc0f3b1f7e7ef011') in 0.029 seconds [static dependencies only]. Details - ImportResultOutputID=3bdb64179b1687430e17c372a60e230c DependenciesID=ca73b62f31587a7e454654bb68743e32 StaticDependenciesID=a4e7610fe346bdb66ea8aa3f4b304e24 
+Importing 'GUID: a3d800b099a06e0478fb790c5e79057a - Path: Assets/TextMesh Pro/Shaders/TMP_SDF-URP Lit.shadergraph' with importer (DefaultImporter)
+Imported 'GUID: a3d800b099a06e0478fb790c5e79057a' -> (Import Result ID: 'a05a70b3561386f6ed72a7073e02b34d') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=b0737424a86d17413e22efd4b05d14d9 DependenciesID=8b08c5bce12bbcd190fe38858fe851b5 StaticDependenciesID=4785e4c8aa9a8f9ea1a1f1983e97741b 
+Importing 'GUID: f63d574838ccfb44f84acc05fed0af48 - Path: Assets/TextMesh Pro/Shaders/TMP_SDF-HDRP UNLIT.shadergraph' with importer (DefaultImporter)
+Imported 'GUID: f63d574838ccfb44f84acc05fed0af48' -> (Import Result ID: 'a5f50f8982c70517821ccc164f41f7b6') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=a002d4f71fdb3e63c9f70062605785b3 DependenciesID=7a25674cef41ee0e0c15514a7eebbfbd StaticDependenciesID=c5853e2c66ec0ef3a23c47c7def6183d 
+Importing 'GUID: ca2ed216f98028c4dae6c5224a952b3c - Path: Assets/TextMesh Pro/Shaders/TMP_SDF-HDRP LIT.shadergraph' with importer (DefaultImporter)
+Imported 'GUID: ca2ed216f98028c4dae6c5224a952b3c' -> (Import Result ID: '2597769969910a027e31ecca13389d49') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=ee6afe84a6b089e251dcb4d1d57cee2b DependenciesID=3dec6b0f14970b8570a1367e08a864d0 StaticDependenciesID=64de452eac1572ecdbf49540e6ee9903 
+Importing 'GUID: 50f52f9274434ecfb34dd87f0836f323 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/21 - Script Example.unity' with importer (DefaultImporter)
+Imported 'GUID: 50f52f9274434ecfb34dd87f0836f323' -> (Import Result ID: 'dc2346d936e54e221f8cdefbad171e33') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=00de304fa399c98ed8bac38d9fe9b6e9 DependenciesID=b395ead9a888da5f336cbf497f2cec38 StaticDependenciesID=66b32ffb5341c42c149b1b50965159b3 
+Importing 'GUID: 70615243e2be4a81afaab9bf5d273d65 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/05 - Style Tags.unity' with importer (DefaultImporter)
+Imported 'GUID: 70615243e2be4a81afaab9bf5d273d65' -> (Import Result ID: '57facfa0ed519c8279366c4f0d4da086') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=6b21f7fac96364750062a6c1c9c42f4a DependenciesID=1a88036460b2db960338eec3c38580b7 StaticDependenciesID=64a7b586a4e76530e3cfd13305e2c937 
+Importing 'GUID: 21a509e1d3cd49978623fa564adb6f02 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/03 - Line Justification.unity' with importer (DefaultImporter)
+Imported 'GUID: 21a509e1d3cd49978623fa564adb6f02' -> (Import Result ID: 'e3ffb008a805183c6275f9e1257e6db1') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=3cbcb01241f53514cff2f039128b0b2b DependenciesID=b3488b03765a219f0e991c7a3e830e6e StaticDependenciesID=b57e0e486ae1c568e8edffd84f5b015a 
+Importing 'GUID: 22a2fba786ad4c40ac0ba09f0b933100 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/14 - Multi Font & Sprites.unity' with importer (DefaultImporter)
+Imported 'GUID: 22a2fba786ad4c40ac0ba09f0b933100' -> (Import Result ID: '05e655f9fd641126309adf938ba15d3c') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=92e216fe1208c058cb07d40565e54914 DependenciesID=829ecb02c1e00e9320436c73b707990f StaticDependenciesID=4888b167799b89f913d3d133eb74a905 
+Importing 'GUID: 6250f98e58fe4abbaada5d84b7ca846d - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/22 - Basic Scripting Example.unity' with importer (DefaultImporter)
+Imported 'GUID: 6250f98e58fe4abbaada5d84b7ca846d' -> (Import Result ID: '0c8701fbf0a6d80949615abec928ff20') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=a7fe3df0b666b2be087591dcc38bfa1f DependenciesID=0979f73e29579fbfd30ee71121232498 StaticDependenciesID=be85a6aca7b37dd4888ea7dce80f6f07 
+Importing 'GUID: 03f9d74cec8e4b94a29d2dfd177c821b - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/18 - ScrollRect & Masking & Layout.unity' with importer (DefaultImporter)
+Imported 'GUID: 03f9d74cec8e4b94a29d2dfd177c821b' -> (Import Result ID: 'e9e0e66068c81b47e29aa744c837a790') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=13709df2a874195b8c192ae17d31065f DependenciesID=47b13e2029446720b4ad7cb0c98712e9 StaticDependenciesID=fb0d790d2b837917ccb808bcf8b02cc0 
+Importing 'GUID: 03ec435d4b7140e9b2d87f79136d8374 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/07 - Superscript & Subscript Example.unity' with importer (DefaultImporter)
+Imported 'GUID: 03ec435d4b7140e9b2d87f79136d8374' -> (Import Result ID: '33a8776b774f4272d3bf18783ce81296') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=8d7ae68f5e72da530d98dcdd99bdc26b DependenciesID=ab6bdf916c6c60c218fe09a2382d55e2 StaticDependenciesID=0a931ee4cfe90c58d747826d7b2bfdca 
+Importing 'GUID: 337f92480dd24675aae9e79210fb1ad9 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/20 - Input Field with Scrollbar.unity' with importer (DefaultImporter)
+Imported 'GUID: 337f92480dd24675aae9e79210fb1ad9' -> (Import Result ID: 'a7c43ba6709d79a267215f4855c2f1aa') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=867fc0a6c3db602bc3a8b3bd21bca6dd DependenciesID=0fc11bf8c38530d3582683b40ed6ef27 StaticDependenciesID=bd90f34718ef6258620ecd6aa20224e8 
+Importing 'GUID: c3f814e1d12c45568daf3dd9a86a0e61 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/10 - Bullets & Numbered List Example.unity' with importer (DefaultImporter)
+Imported 'GUID: c3f814e1d12c45568daf3dd9a86a0e61' -> (Import Result ID: 'b169d66e3b61649e02bfc85e5404d3e1') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=b2d343b99b7562fde33e24ddb8d192ed DependenciesID=f4ff9ff4cc95a5b0435a3a0bf2ad23c2 StaticDependenciesID=eb4b214274ff89270f739fac79558eeb 
+Importing 'GUID: 349f38d3606449708c7340d26740e1e2 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/09 - Margin Tag Example.unity' with importer (DefaultImporter)
+Imported 'GUID: 349f38d3606449708c7340d26740e1e2' -> (Import Result ID: 'b9841b054bc2c2567898dff6dbca1987') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=3f3cbd7cdd0ccf7b15b267e50ecf15f2 DependenciesID=e26689ae94f6cbdad40035d28d7cc233 StaticDependenciesID=afebf3b0c4aeb24ce729bf0d8e724ebd 
+Importing 'GUID: 54e994244b4b467e8583cf2da6dcc716 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/23 - Animating Vertex Attributes.unity' with importer (DefaultImporter)
+Imported 'GUID: 54e994244b4b467e8583cf2da6dcc716' -> (Import Result ID: '7ec5b3940413b9af30cde92891afc40d') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=526ce4aa14d0c08dc956a3744b864057 DependenciesID=2ff0ed1def48c2bdb416afc701b26a21 StaticDependenciesID=81c0179b48dad8df244660a2452de69a 
+Importing 'GUID: 84ed36ad77dd4956b2ffe3769f759879 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/11 - The Style Tag.unity' with importer (DefaultImporter)
+Imported 'GUID: 84ed36ad77dd4956b2ffe3769f759879' -> (Import Result ID: 'cf2e2d4720265fb6f888e7d2bd1dd766') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=8fe03bd5cc8db8f72975e063ca101c18 DependenciesID=4fea20f899f25b57df62108f91bb1e6b StaticDependenciesID=28e61023e96c0b6c5e776920b5578d95 
+Importing 'GUID: 9442cda25baa4a0bb544c4d095b00caa - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/16 - Linked text overflow mode example.unity' with importer (DefaultImporter)
+Imported 'GUID: 9442cda25baa4a0bb544c4d095b00caa' -> (Import Result ID: '03e3bc9cecc2dde4fe7a2e251152cd10') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=08f7e90e44c68c6321a02aaf388bf4fb DependenciesID=5eb5686bbbd184eda6ed2c31e67f95bb StaticDependenciesID=90145715d37e3d3059db2ffbba666059 
+Importing 'GUID: 251716609f634449bfe8ce75c0ed78fe - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/02 - Multi-line TextMesh Pro.unity' with importer (DefaultImporter)
+Imported 'GUID: 251716609f634449bfe8ce75c0ed78fe' -> (Import Result ID: '1aec66590f1aeddaf99f61ee3b045af9') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=fe4ee1a7e95758452ee583f10cde925e DependenciesID=89da8e0e2d6c4b6f0c565d962557a69d StaticDependenciesID=e0f5ebafac7bdef9cbaddc0845d99d4b 
+Importing 'GUID: 16177da2e3254cee91944756d5f8ddd3 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/Benchmark (Floating Text).unity' with importer (DefaultImporter)
+Imported 'GUID: 16177da2e3254cee91944756d5f8ddd3' -> (Import Result ID: '42f1a738d44555b24d360001dea57fe5') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=47cd31cecb7810aa9f63473022e166ca DependenciesID=669ee21b4963531b6666d1affdcbb7a5 StaticDependenciesID=0cb6eda23c2c1caa962b4935ce29ec07 
+Importing 'GUID: 57694ed9d1cd1e340a4924c0f2eac8e3 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/24 - Surface Shader Example URP.unity' with importer (DefaultImporter)
+Imported 'GUID: 57694ed9d1cd1e340a4924c0f2eac8e3' -> (Import Result ID: '9af1b8848021ab4ae6086193aeb6639d') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=36fff6fa73540c0dc87ccaea6e138518 DependenciesID=c542cfa67c77d8914c896d689143db9b StaticDependenciesID=93d1556c075f4d0eebea213d8f849d7a 
+Importing 'GUID: 875684baf40f4d008ce806d03e2a81b2 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/13 - Soft Hyphenation.unity' with importer (DefaultImporter)
+Imported 'GUID: 875684baf40f4d008ce806d03e2a81b2' -> (Import Result ID: 'c47c69ee129d8a14d1dd9c0467f4e7eb') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=3dfa32bf1772c2540b5ee9989f92d044 DependenciesID=7b25cadc2bd066551bd6c433481f445c StaticDependenciesID=b0851f6450570b4fe2d2605812fd64e2 
+Importing 'GUID: 9747140c28254be2adc582210dfb89b8 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/12 - Link Example.unity' with importer (DefaultImporter)
+Imported 'GUID: 9747140c28254be2adc582210dfb89b8' -> (Import Result ID: '1903e7a22bbd49d49bb0cb9c99da97ef') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=6933350e05cc14495f2975e84a36a453 DependenciesID=39652ff994b2f1835ce187c44a6a67ab StaticDependenciesID=744acb8563b879f62204d3725bd3c123 
+Importing 'GUID: e76e6c0f81964cbda3fe0b7d26ed8060 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/15 - Inline Graphics & Sprites.unity' with importer (DefaultImporter)
+Imported 'GUID: e76e6c0f81964cbda3fe0b7d26ed8060' -> (Import Result ID: '549ccfa64fa9ee31dd78d6b57e715f04') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=e7cc046989992546f814241c6b6ff462 DependenciesID=51b7d95438961c64dd8b7bb159f629e7 StaticDependenciesID=96add83e050d780adf2ba246d2a1f54e 
+Importing 'GUID: 0851605490a599b46b6ac5cb681d93ea - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/26 - Dropdown Placeholder Example.unity' with importer (DefaultImporter)
+Imported 'GUID: 0851605490a599b46b6ac5cb681d93ea' -> (Import Result ID: 'd2c69488222579ccd60141301f7677d1') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=08dcf38673fd15852711f1bb2eb824ab DependenciesID=44cd62594ae51e0304c57af704fd178a StaticDependenciesID=ac09d54e6fad24de16236dbba0820123 
+Importing 'GUID: 08572ab7713642c8a60789750f0bce5c - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/12a - Text Interactions.unity' with importer (DefaultImporter)
+Imported 'GUID: 08572ab7713642c8a60789750f0bce5c' -> (Import Result ID: 'ef51ab55a732903dc9e4712f2862dafa') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=842e668e475e96736b90a616c12b3e67 DependenciesID=f94fef66e0c49cf51ca5fdd4e67bde9a StaticDependenciesID=abb5a780e10a4a2d1b26ca3db743b947 
+Importing 'GUID: 39a1fa96ad2a449b908fca29d4297a74 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/06 - Extra Rich Text Examples.unity' with importer (DefaultImporter)
+Imported 'GUID: 39a1fa96ad2a449b908fca29d4297a74' -> (Import Result ID: '8bc05990f9af37f4875d862e53274d77') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=b8d822703579c2a370355444a9e4fb3f DependenciesID=cb4990edf39f3ebe958ed9244011f8e4 StaticDependenciesID=c2a8a4a9c9d46358baf3da1f0f27449f 
+Importing 'GUID: f9b4c22e15cff344ba9fc6542a58dd07 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/25 - Sunny Days Example.unity' with importer (DefaultImporter)
+Imported 'GUID: f9b4c22e15cff344ba9fc6542a58dd07' -> (Import Result ID: '77d0cbfced850e82980d5dd8981a26dd') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=fad989ae7bce1a4f43416ab8123548a1 DependenciesID=934f61b1f161d40a928036e0ab98eb1e StaticDependenciesID=6a7395a7abfb16e54aa5da696f9d6d0e 
+Importing 'GUID: 2ac8cf212df6445e8aebbe3cb832e993 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/01-  Single Line TextMesh Pro.unity' with importer (DefaultImporter)
+Imported 'GUID: 2ac8cf212df6445e8aebbe3cb832e993' -> (Import Result ID: 'f724d6a52772a7331a88a7d231427ee0') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=96318875b8159baba5087cbe2f7e2d0b DependenciesID=ad3d71b3bcf9c726bbe4e45683edd54a StaticDependenciesID=de0f1e82d79df9ab59595094c2332ce4 
+Importing 'GUID: 9abcd5bd764646568a6ea70d00f9264c - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/19 - Masking Texture & Soft Mask.unity' with importer (DefaultImporter)
+Imported 'GUID: 9abcd5bd764646568a6ea70d00f9264c' -> (Import Result ID: '887fd6f3d7fd03f14651bf9058caf4a6') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=9e9613b97fe1c458fe0505f18bd2af7d DependenciesID=3bdc7feafcb7e2de3a6b9b3e9dbfc0f4 StaticDependenciesID=ed644c3d2cd4ee59076928848aeb67d9 
+Importing 'GUID: 3b38a6ba32b869f48812e595baf39746 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/27 - Double Pass Shader Example.unity' with importer (DefaultImporter)
+Imported 'GUID: 3b38a6ba32b869f48812e595baf39746' -> (Import Result ID: '863d5b6b2bdf9a410fae749ca2d79935') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=87e82ca0be9b8de3e443c5bc81f3591e DependenciesID=53d402f1af8ec36c13af4c0d1c3287cb StaticDependenciesID=fb13e37803a2dd0a61e694859b2f568c 
+Importing 'GUID: 8c4969fd8ba94a68b07cf11f3e7a5137 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/24 - Surface Shader Example.unity' with importer (DefaultImporter)
+Imported 'GUID: 8c4969fd8ba94a68b07cf11f3e7a5137' -> (Import Result ID: '0a98fe2de02c082fc2424b1fbb968817') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=39f83a56fea985616326e1400783f2dd DependenciesID=10091b73ead00bd373ec9426e4d318dc StaticDependenciesID=8be51edd29989fb4f28189951a10d3bc 
+Importing 'GUID: 3e2e4d7b0bed4cf9ab827e9f32448f69 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/17 - Old Computer Terminal.unity' with importer (DefaultImporter)
+Imported 'GUID: 3e2e4d7b0bed4cf9ab827e9f32448f69' -> (Import Result ID: 'e7ce33fe99cd0b3f8e23ce3b528ca757') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=4ff618bd120476727fd72e6203300a48 DependenciesID=4d191c71b41e0d676edb21060d18d9b2 StaticDependenciesID=b4a1419bf4e8aaf860a72d99357381f6 
+Importing 'GUID: eea2b7206368b444e84fbec4ec32b64a - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/28 - HDRP Shader Example.unity' with importer (DefaultImporter)
+Imported 'GUID: eea2b7206368b444e84fbec4ec32b64a' -> (Import Result ID: '63d4c1bc344e5fd479afc2acc9dc8092') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=40e0ec5b83c1f2eeddc407b83024923e DependenciesID=186a9e13c7eda9d06727a5c20ef179d7 StaticDependenciesID=b2261eb9b741da0d8cdb774e1a6d5d8c 
+Importing 'GUID: 5fe2257128d9401fad0790f581dc8a6f - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/08 - Improved Text Alignment.unity' with importer (DefaultImporter)
+Imported 'GUID: 5fe2257128d9401fad0790f581dc8a6f' -> (Import Result ID: 'a7571522e3a3f4946c38ecc6424530f3') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=86324657fc3454dd12859728200e0da7 DependenciesID=e2cb8a2003f01a3a9d659960e9b3f107 StaticDependenciesID=92bb0c2109e4c0682899cee5822cd924 
+Importing 'GUID: 8f7137eacd7042d5b17ef0efe5e744f5 - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/04 - Word Wrapping.unity' with importer (DefaultImporter)
+Imported 'GUID: 8f7137eacd7042d5b17ef0efe5e744f5' -> (Import Result ID: 'b969b2174d33e2ca040b1e9c8884ea6e') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=a8d6ae280f3075237255f073d323fbe3 DependenciesID=27a2a369dbdc3adeac2d1c66b2046540 StaticDependenciesID=d93602a6ae47b2be6f366ee33b43dc87 
+Importing 'GUID: 10c49fcd9c64421db7c0133e61e55f97 - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Circle.psd' with importer (TextureImporter)
+Imported 'GUID: 10c49fcd9c64421db7c0133e61e55f97' -> (Import Result ID: 'f4cbce3133db83a93ab3e6d89c3a71e9') in 0.011 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=4bec467f74415f915d978644f5a52c49 DependenciesID=f21306076b9a6214b45f20a1d59ae844 StaticDependenciesID=4baa6d3762ea499693c2957146df3bd4 
+Importing 'GUID: 602cb87b6a29443b8636370ea0751574 - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Small Crate_diffuse.jpg' with importer (TextureImporter)
+Imported 'GUID: 602cb87b6a29443b8636370ea0751574' -> (Import Result ID: 'bc2e701304dc3daed46ac2a94634b05c') in 0.008 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=23bda2d970765389c899adaf8345433b DependenciesID=8cde05c8bb31866ae22f4d2d60d13d8a StaticDependenciesID=445d2cd4b2ba25e8bf39b1a54033b2bd 
+Importing 'GUID: a0fc465d6cf04254a2938578735e2383 - Path: Assets/TextMesh Pro/Examples & Extras/Sprites/Default Sprites.png' with importer (TextureImporter)
+Imported 'GUID: a0fc465d6cf04254a2938578735e2383' -> (Import Result ID: '639dcd417058fd41978a3ef3242636db') in 0.021 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=ef8dd1c110f084e259ff1e85743edb05 DependenciesID=059ddca52bb78a69bb7a3be55be1534c StaticDependenciesID=7e41fba1dc38094933f8cd3c3bf001b7 
+Importing 'GUID: 03d0538de6e24c0f819bfc9ce084dfa9 - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Vertical (Color).jpg' with importer (TextureImporter)
+Imported 'GUID: 03d0538de6e24c0f819bfc9ce084dfa9' -> (Import Result ID: '8a2696195b2244e39ed3a9ac59cf9f37') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5d0ce22ad38ed7552658a9ea2b6ff1f4 DependenciesID=3fc2a1def59e72311696d2fb1a1db4d0 StaticDependenciesID=3da66e43e8d89137fbefc5e933113cbc 
+Importing 'GUID: 85ac55597b97403c82fc6601a93cf241 - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Floor Tiles 1 - diffuse.jpg' with importer (TextureImporter)
+Imported 'GUID: 85ac55597b97403c82fc6601a93cf241' -> (Import Result ID: '714e785375fca1b5a58077568529988f') in 0.010 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5738c99b60df8b04ec84129d14c17cd8 DependenciesID=f18b4c1833d83f09bfdede0c25fa7458 StaticDependenciesID=e1236649c5d14e565c3df08d1a488d18 
+Importing 'GUID: 7631f4eff8f74ed38eb3eb9db17134e1 - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Radial Double.psd' with importer (TextureImporter)
+Imported 'GUID: 7631f4eff8f74ed38eb3eb9db17134e1' -> (Import Result ID: 'cbc8f542bd0429e38fe07ef89a79e14a') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=6005e7a219f258afdcc7d3070e44e494 DependenciesID=5e360c944242fadf133958f03304bb9a StaticDependenciesID=d11938a884a015db3630e4ba1256a2ae 
+Importing 'GUID: 17c350171f7a3ca479f830547c66d187 - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Sunny Days - Seamless.jpg' with importer (TextureImporter)
+Imported 'GUID: 17c350171f7a3ca479f830547c66d187' -> (Import Result ID: 'fd720b0637f856ef638a3538cd41b789') in 0.026 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=d45a939b4561fcd83cebfebdf8360047 DependenciesID=c4eee60bb07d37b5034934d7bb937f65 StaticDependenciesID=829b8672723e2126818ed0fe57313785 
+Importing 'GUID: c76d18757a194d618355f05f815cb0a1 - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Text Overflow - Linked Text UI Screenshot.png' with importer (TextureImporter)
+Imported 'GUID: c76d18757a194d618355f05f815cb0a1' -> (Import Result ID: '5a754ff23470ab38db633f6c909927de') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=87bf36f6611c338bac360483595e9820 DependenciesID=35a67023add8e5254d5c78d732876c89 StaticDependenciesID=76b7634e892673880bef01187b639273 
+Importing 'GUID: 283f897e4925411ebbaa758b4cb13fc2 - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Floor Cement.jpg' with importer (TextureImporter)
+Imported 'GUID: 283f897e4925411ebbaa758b4cb13fc2' -> (Import Result ID: '027646cf3afd3bb86800ab327f70e964') in 0.007 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a8cefcf90475393afa973622c48850e3 DependenciesID=81c3889d9cd4326237d531b96ee90ef5 StaticDependenciesID=9417a7fdab27a35aca3dbddd4563e81e 
+Importing 'GUID: 8878a782f4334ecbbcf683b3ac780966 - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Small Crate_normal.jpg' with importer (TextureImporter)
+Imported 'GUID: 8878a782f4334ecbbcf683b3ac780966' -> (Import Result ID: 'c5612ccd46982661a91f92ae2a819b4d') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=4d3f92111081a4b4f11e92770518ae60 DependenciesID=ebceb42eb4da4bc4b5665bbf091848ea StaticDependenciesID=5965633d19a534511d020a960df6eb9b 
+Importing 'GUID: f88677df267a41d6be1e7a6133e7d227 - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Brushed Metal 3.jpg' with importer (TextureImporter)
+Imported 'GUID: f88677df267a41d6be1e7a6133e7d227' -> (Import Result ID: '52f3263c848332fabd27e010f70880f2') in 0.007 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a741b0b1c3990d19a076316928b78d8a DependenciesID=8193afe380a17893faa82fa37a764466 StaticDependenciesID=cd25bc422723904c796d9598a18e915a 
+Importing 'GUID: 2b5e9ae96c5644d8bae932f8b4ca68a2 - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Radial Quad.psd' with importer (TextureImporter)
+Imported 'GUID: 2b5e9ae96c5644d8bae932f8b4ca68a2' -> (Import Result ID: '9a8c8598a19afa7d756b42c1221a1b4e') in 0.002 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8140265da0d1c6aa941a263c468361a3 DependenciesID=671243a74bdbe07b610f4cfe97d8dda6 StaticDependenciesID=2c29ff4278118d262a1c8b999f3bb862 
+Importing 'GUID: bb8dfcd263ad4eb383a33d74a720be6f - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Mask Zig-n-Zag.psd' with importer (TextureImporter)
+Imported 'GUID: bb8dfcd263ad4eb383a33d74a720be6f' -> (Import Result ID: '0cf66dd1424751647b2425860952f3d2') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7226290de6a1779fb1e8c426d7ebfd3a DependenciesID=783679218a0133f17cc0e4da64489586 StaticDependenciesID=df671901db4d71dab769bb596d46aed8 
+Importing 'GUID: 1cdc5b506b1a4a33a53c30669ced1f51 - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Fruit Jelly (B&W).jpg' with importer (TextureImporter)
+Imported 'GUID: 1cdc5b506b1a4a33a53c30669ced1f51' -> (Import Result ID: 'a3285b8701c176e199728e1fc5741643') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0e772f65716460f1aab4d4a60e32456f DependenciesID=54dcab283513ac14131834f872b2e024 StaticDependenciesID=0ee9fa87f4f57cf94fd34a3cab4a680e 
+Importing 'GUID: 2ce5c55e85304b819a1826ecbc839aa5 - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Diagonal (Color).jpg' with importer (TextureImporter)
+Imported 'GUID: 2ce5c55e85304b819a1826ecbc839aa5' -> (Import Result ID: '5338ec1562b47459c5ac5b433fdc18be') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=4d6933f848756e3b6c306466be9dc9bc DependenciesID=fc32e247eaa3819f8bd868731d95d29a StaticDependenciesID=f10b432382d825a12ea8ac86d4b8f1a4 
+Importing 'GUID: 4ccf43d26c4748c792174516f4a8fcef - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Text Overflow - Linked Text Image 1.png' with importer (TextureImporter)
+Imported 'GUID: 4ccf43d26c4748c792174516f4a8fcef' -> (Import Result ID: '05956e2f1bb0c3f1a73a99b5161671aa') in 0.007 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f909c9f6fcbdcee127a896bc11196a0d DependenciesID=8a0b384189ff040f26df4c801e5f2351 StaticDependenciesID=e3531325785a0420363b237c9b7ce097 
+Importing 'GUID: ed5290d8df18488780e2996b9b882f01 - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Wipe Pattern - Diagonal.psd' with importer (TextureImporter)
+Imported 'GUID: ed5290d8df18488780e2996b9b882f01' -> (Import Result ID: '7582aab6f65182f29b945bdfc7b199e9') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=11013f1d09ee9c86ab1ece24177dfe94 DependenciesID=121da92d5a55e81cc99c88e65d19ba8a StaticDependenciesID=e143404e400cb315b89326a02442e8ed 
+Importing 'GUID: fd09957580ac4326916010f1f260975b - Path: Assets/TextMesh Pro/Examples & Extras/Sprites/DropCap Numbers.psd' with importer (TextureImporter)
+Imported 'GUID: fd09957580ac4326916010f1f260975b' -> (Import Result ID: '3eb176de76813f03000264f6bc3b51ef') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=ec3052838ec95421964fa130d99b4442 DependenciesID=f0b0a932377ccfa2ed51e10b8635d9d4 StaticDependenciesID=d650dfce7b2ed0e15403daeae7298ae6 
+Importing 'GUID: 6eb184de103d4b3f812b38561065192f - Path: Assets/TextMesh Pro/Examples & Extras/Textures/Gradient Horizontal (Color).jpg' with importer (TextureImporter)
+Imported 'GUID: 6eb184de103d4b3f812b38561065192f' -> (Import Result ID: '599f1268418b3212cf5001388da577aa') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=61a7239d5d1063656da0c614686d0307 DependenciesID=1693ab36d7217e192edab8e4180917b8 StaticDependenciesID=6356894bb94ef66e11f77b551eb38300 
+Importing 'GUID: 407bc68d299748449bbf7f48ee690f8d - Path: Assets/TextMesh Pro/Shaders/TMPro.cginc' with importer (ShaderIncludeImporter)
+Imported 'GUID: 407bc68d299748449bbf7f48ee690f8d' -> (Import Result ID: '3618e80ad43d071e204d9cf5be45ab66') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=1bd22da0221ba991566ca4e6dfae75f5 DependenciesID=7a86307ff4c917f45c27f2e87ab9edaf StaticDependenciesID=170ee875ac5777f267a696d780bf96a4 
+Importing 'GUID: c334973cef89a9840b0b0c507e0377ab - Path: Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc' with importer (ShaderIncludeImporter)
+Imported 'GUID: c334973cef89a9840b0b0c507e0377ab' -> (Import Result ID: '9581bbd251671f07621cf6dfd4e8be42') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=9e8a43846baefc8da31eb43e9237046f DependenciesID=44d81c02fd975e5f834e5e41256fc8e8 StaticDependenciesID=791c4489ab33dc449f499ba5ae5c57b4 
+Importing 'GUID: 96de908384869cd409c75efa351d5edf - Path: Assets/TextMesh Pro/Shaders/SDFFunctions.hlsl' with importer (ShaderIncludeImporter)
+Imported 'GUID: 96de908384869cd409c75efa351d5edf' -> (Import Result ID: 'f3673bc25e5839473ca66595ca4e9e03') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=32e6910ee6b9c4e28f824306c10569da DependenciesID=07307fbef5c6ded23b5102ecccd7351f StaticDependenciesID=90b56a2a1488be3baad66f92885102da 
+Importing 'GUID: 3997e2241185407d80309a82f9148466 - Path: Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc' with importer (ShaderIncludeImporter)
+Imported 'GUID: 3997e2241185407d80309a82f9148466' -> (Import Result ID: '14a4b72a3c7edcce5e5d97379ddd3502') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=d4afa331a41c35391aae778b3b6475ec DependenciesID=3b71b3e73753d44de397868ae79e57dc StaticDependenciesID=a9cb6b403ab8d56e50f890329e44abdc 
+Importing 'GUID: d930090c0cd643c7b55f19a38538c162 - Path: Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc' with importer (ShaderIncludeImporter)
+Imported 'GUID: d930090c0cd643c7b55f19a38538c162' -> (Import Result ID: '7a9e3748b9a56de235c0f0c803b42c37') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=458955789dc03a0d58de79767947df90 DependenciesID=91dc3d20bc3851a49a0428221a4cac3b StaticDependenciesID=7037e21b30cc0d7291e3cc4399291098 
+Importing 'GUID: a02a7d8c237544f1962732b55a9aebf1 - Path: Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader' with importer (ShaderImporter)
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Imported 'GUID: a02a7d8c237544f1962732b55a9aebf1' -> (Import Result ID: '7d71c0200336057cec07885e85ce1551') in 0.034 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=be286a2c35536c36c28002133d3ea9d6 DependenciesID=260a809c54b62be5d772e4dfe973e6ef StaticDependenciesID=d18d9aa03a934e9cef69405e5badf8b0 
+Importing 'GUID: 0178fcb869bafef4690d177d31d17db8 - Path: Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile-2-Pass.shader' with importer (ShaderImporter)
+Imported 'GUID: 0178fcb869bafef4690d177d31d17db8' -> (Import Result ID: 'a8d1b9e0d58374c082f0c4a5002abc79') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=72d28a60eddc51772e5c265a6e3bd05e DependenciesID=ca83589df10efc949ecd10b09d8a6026 StaticDependenciesID=3fafd30ca35048b7230b1cfee508eb14 
+Importing 'GUID: 118056f3a86aed2438019bdecd9f6f00 - Path: Assets/Resources/FX_Bloom.shader' with importer (ShaderImporter)
+Imported 'GUID: 118056f3a86aed2438019bdecd9f6f00' -> (Import Result ID: '308170beb6bcc3d88bcbe3243f9e21ce') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5d0ad9d2d644686644961f8984683f62 DependenciesID=fa357910a747e4c1c107e0abcb103a84 StaticDependenciesID=dd5d638ede1accedcf683f70c4451683 
+Importing 'GUID: 128e987d567d4e2c824d754223b3f3b0 - Path: Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader' with importer (ShaderImporter)
+Imported 'GUID: 128e987d567d4e2c824d754223b3f3b0' -> (Import Result ID: '2ef7f7b6e0d136e9582ff4496f98e6e4') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=52846379f6d4eca4fef2dbaadfe59d35 DependenciesID=c175d2b7c4e86e0d1bd252d0d7ab3795 StaticDependenciesID=e30c7feaaf44a194cea5069158fb2b59 
+Importing 'GUID: 14eb328de4b8eb245bb7cea29e4ac00b - Path: Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader' with importer (ShaderImporter)
+Imported 'GUID: 14eb328de4b8eb245bb7cea29e4ac00b' -> (Import Result ID: '3bec525f1eaa19e1cb73b1524c812392') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9fc25ef3343a8077f824dbbd3771b805 DependenciesID=e759e0f32c24269d6ad55a79d2ee3c32 StaticDependenciesID=270a443a84851c83958690416f8e68d1 
+Importing 'GUID: 85187c2149c549c5b33f0cdb02836b17 - Path: Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader' with importer (ShaderImporter)
+Imported 'GUID: 85187c2149c549c5b33f0cdb02836b17' -> (Import Result ID: 'ee889d0407ade8df7efce19b84a59742') in 0.114 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=dbec1b23fb88812b80c7312320d7e169 DependenciesID=573ba8dc2e9ef10b125a8be6b1e07a79 StaticDependenciesID=090c8b02186c6ef4a58f70aea6b288e8 
+Importing 'GUID: b5ab6cb89ffa7004ca59c01dddd06493 - Path: Assets/TextMesh Pro/Shaders/TMP_SDF SpaceWarp.shader' with importer (ShaderImporter)
+Imported 'GUID: b5ab6cb89ffa7004ca59c01dddd06493' -> (Import Result ID: 'e23804303e6fbef287d5f53f81805896') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=566da283fa48df7ba904514d45e37bfd DependenciesID=ebe4cb494330733275dfad48a56d6bf2 StaticDependenciesID=e6627696187d2054accf844c8194bc0a 
+Importing 'GUID: f7ada0af4f174f0694ca6a487b8f543d - Path: Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader' with importer (ShaderImporter)
+Imported 'GUID: f7ada0af4f174f0694ca6a487b8f543d' -> (Import Result ID: 'd6b2c90c173c8b415cfe6ebf6f5ba363') in 0.222 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f2ca013b1b933e541968cc241639403d DependenciesID=fd0c4c251f4c133a58bd401385dfb968 StaticDependenciesID=f3970b51488d88b76008dd898abd726f 
+Importing 'GUID: 48bb5f55d8670e349b6e614913f9d910 - Path: Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader' with importer (ShaderImporter)
+Imported 'GUID: 48bb5f55d8670e349b6e614913f9d910' -> (Import Result ID: '3bd9aa165b7b3965ac8c4342886c7b29') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3a682dce9b2cb66a8174cac06190509a DependenciesID=d47b14f2b3bf660e61b594fc6361e8af StaticDependenciesID=138aafa7a2684466438f7e762ffa5a8d 
+Importing 'GUID: 68e6db2ebdc24f95958faec2be5558d6 - Path: Assets/TextMesh Pro/Shaders/TMP_SDF.shader' with importer (ShaderImporter)
+Imported 'GUID: 68e6db2ebdc24f95958faec2be5558d6' -> (Import Result ID: 'e1a643c7a4369e08c49e79e4d144d01a') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=4638924de381c1b1a6465c7fdf0dd5ca DependenciesID=a905c4b20c2dbfb78a8af882b6c48048 StaticDependenciesID=b4eee8d22bb6e000cae2db86699ff7bc 
+Importing 'GUID: c8d12adcee749c344b8117cf7c7eb912 - Path: Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader' with importer (ShaderImporter)
+Imported 'GUID: c8d12adcee749c344b8117cf7c7eb912' -> (Import Result ID: '0569bcfda4cc54c70b1b7ac448a85be0') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=4865b8866c0e443b994f15f503c706cb DependenciesID=ed796858691dbc52ce78fc5139f80f44 StaticDependenciesID=d71ad9fa76b2f45a7ec584e6df35325b 
+Importing 'GUID: 2ae3f84ba70f31a448850bf95ca45125 - Path: Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SpaceWarp.shader' with importer (ShaderImporter)
+Imported 'GUID: 2ae3f84ba70f31a448850bf95ca45125' -> (Import Result ID: 'd6a797307003a7512ad5843e4f20bed9') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5b32bcd3afc3cc8b276be8dda5b999c0 DependenciesID=929793d74f5556ca9560c90c39ce5dfe StaticDependenciesID=6fe6893c984095caddb6e69c98ae9993 
+Importing 'GUID: 5c6f31a5a80ebc04f8bcfdeed8327fe1 - Path: Assets/TextMesh Pro/Shaders/TMP_SDF SSD SpaceWarp.shader' with importer (ShaderImporter)
+Imported 'GUID: 5c6f31a5a80ebc04f8bcfdeed8327fe1' -> (Import Result ID: '52ec384b445b0bd81f132f96e1f47f71') in 0.006 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=f402d99e39f4eb8f5d0fef1cb438dfea DependenciesID=faf650b84fb2c8026964e3f4f51797e9 StaticDependenciesID=5bd9a2be145a943deba34f24ce575855 
+Importing 'GUID: bc1ede39bf3643ee8e493720e4259791 - Path: Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader' with importer (ShaderImporter)
+Imported 'GUID: bc1ede39bf3643ee8e493720e4259791' -> (Import Result ID: '8a931dac6fda56d9e2ff9b886055468f') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a46d6bf8b07e57e44ca1086ece103152 DependenciesID=d1caf621f281124cf91c42e68eb7b82e StaticDependenciesID=0004ebc0eb4d86caabf12454f2b34a70 
+Importing 'GUID: 2d43a65a9e94247459f6453653dad792 - Path: Assets/Resources/FX_Blur.shader' with importer (ShaderImporter)
+Imported 'GUID: 2d43a65a9e94247459f6453653dad792' -> (Import Result ID: '77e52385e5aaaac0633b88118724e60c') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=3f106d30894bcae970c173343d0eafe7 DependenciesID=4619edf1857d55cc168657de70431317 StaticDependenciesID=73ebbe1f2d56524bda8a174b56cdf648 
+Importing 'GUID: dd89cf5b9246416f84610a006f916af7 - Path: Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader' with importer (ShaderImporter)
+Imported 'GUID: dd89cf5b9246416f84610a006f916af7' -> (Import Result ID: 'bd19ac339a85ec7e3a57db35ad5381d2') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=489d60ee00ffb0c151b60c97b8bbd188 DependenciesID=a703f3111ee5481474a501ce1150bf32 StaticDependenciesID=7bbfea45792f9719d18cfd658944ad66 
+Importing 'GUID: 1e3b057af24249748ff873be7fafee47 - Path: Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader' with importer (ShaderImporter)
+Imported 'GUID: 1e3b057af24249748ff873be7fafee47' -> (Import Result ID: '89de5f273394a5b46c3c910a1a5e52f9') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=118c06037f917ee2ac252ec7f9524ab2 DependenciesID=4b2a08a5812bd3407eefcf76fdf01d93 StaticDependenciesID=e6b1fd5b8b340c3f4427510db47926ad 
+Importing 'GUID: fe393ace9b354375a9cb14cdbbc28be4 - Path: Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader' with importer (ShaderImporter)
+Imported 'GUID: fe393ace9b354375a9cb14cdbbc28be4' -> (Import Result ID: '8755972221c881208c29711dcca1cc96') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=4781b56e21d96e2d3afea9b67cd9b9d5 DependenciesID=f455e731bee9e07429bef4dd10b8fe3a StaticDependenciesID=a4f5baa7114164c7b4bb290d0504b2c5 
+Importing 'GUID: 2f52e8cb070aaf94289b130df84e2882 - Path: Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD SpaceWarp.shader' with importer (ShaderImporter)
+Imported 'GUID: 2f52e8cb070aaf94289b130df84e2882' -> (Import Result ID: '850cfa16abc68a33333a4f1964d0e825') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=8ddd77ab6d1ab336c891e64f2ecac447 DependenciesID=c68262ae7208f33fcc243f6699fde8d0 StaticDependenciesID=399725ff05020b5bdc49646afe43d6eb 
+Importing 'GUID: cf81c85f95fe47e1a27f6ae460cf182c - Path: Assets/TextMesh Pro/Shaders/TMP_Sprite.shader' with importer (ShaderImporter)
+Imported 'GUID: cf81c85f95fe47e1a27f6ae460cf182c' -> (Import Result ID: 'd45fb1a1a527a32e97085478a06cb2af') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=6d22caeced2d439fa1081442e04a555e DependenciesID=a546c6900b07eb7f985900274ad8c81c StaticDependenciesID=bcea8001d712fbc92789e4d8c4eb1278 
+Importing 'GUID: df29124a3bf6d934780026dfd34b76e7 - Path: Assets/Resources/UI_Acrylic.shader' with importer (ShaderImporter)
+Imported 'GUID: df29124a3bf6d934780026dfd34b76e7' -> (Import Result ID: 'b6b3f19b9ee44cfcb098993163080985') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=75f8337994d4d3085c6e7e530aa85b37 DependenciesID=2cc001ecf1cc14cebc42b4c9e16cf3ef StaticDependenciesID=4fb2f98713266ef381e9f04ebf53ca41 
+Importing 'GUID: 90722b8bd74d9aa49958562aff7bdf76 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF - URP.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 90722b8bd74d9aa49958562aff7bdf76' -> (Import Result ID: '129329d57d72cfc55cba30fdcef1f709') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=aa888024b8752851a94dd967a3c6a9b0 DependenciesID=a303238e770a014bac160aece89901ed StaticDependenciesID=ac5a33f96324365f2007167b23098831 
+Importing 'GUID: a00013af81304728b2be1f4309ee2433 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Anton SDF - Outline.mat' with importer (NativeFormatImporter)
+Imported 'GUID: a00013af81304728b2be1f4309ee2433' -> (Import Result ID: '9bb8c87ad61ec6c365940f10695a89e6') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=d7c69b5353ccc44d259f055078f6306f DependenciesID=20756c5c4085bf2f044bc57c6894b582 StaticDependenciesID=61662360ce28a55adc779f306b15abdb 
+Importing 'GUID: 71529b88994c1a341b22bc57c038674a - Path: Assets/TextMesh Pro/Examples & Extras/Materials/Ground - URP.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 71529b88994c1a341b22bc57c038674a' -> (Import Result ID: '5d33379c0291931e567eb0847cef6a4c') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=258b92afbd8c5855550f4cb95f8b7a44 DependenciesID=bb475cbc6bc6f7d6d916cf9c44ee86dd StaticDependenciesID=b945f0db603238f752cfdd50322746e0 
+Importing 'GUID: 22262639920f43d6be32430e4e58350d - Path: Assets/TextMesh Pro/Examples & Extras/Materials/Small Crate_diffuse.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 22262639920f43d6be32430e4e58350d' -> (Import Result ID: '5335b529134ca42519b21735b2a6d98b') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=661525d97734a46ecb50ec32c71a4339 DependenciesID=c15a2689cc6050c632f2a669b0832761 StaticDependenciesID=c89a82b4bd2c552fcf33efe9a7b75a9d 
+Importing 'GUID: 42df1c7856584b6b8db9a509b6b10074 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/LiberationSans SDF - Soft Mask.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 42df1c7856584b6b8db9a509b6b10074' -> (Import Result ID: '4fd22e18580cee1a3e7401604a89ea7c') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=ae601a045faa9ca9539cb52f0f94fdbd DependenciesID=e884afbb6a6503db9f79edd8393cc416 StaticDependenciesID=e07229255552d1225f81a50730e615f6 
+Importing 'GUID: b246c4190f4e46ec9352fe15a7b09ce0 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF - Drop Shadow.mat' with importer (NativeFormatImporter)
+Imported 'GUID: b246c4190f4e46ec9352fe15a7b09ce0' -> (Import Result ID: '61c7be4507aaf61279a0ace1c2dc1801') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=9ae00da58d678a62576eafd7a80e6702 DependenciesID=2dd240e5fd3c58ae74328db4ebf324be StaticDependenciesID=0373769f22999860989cce9a24778715 
+Importing 'GUID: f2dcf029949142e28b974630369c8b4e - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF - Drop Shadow.mat' with importer (NativeFormatImporter)
+Imported 'GUID: f2dcf029949142e28b974630369c8b4e' -> (Import Result ID: '3266fbcb9b8881f9da43b2d9709fcd0f') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=c7314ea7778aa469aad05f2bcd3234d7 DependenciesID=2eaf4faa441960af5fee4686dcb48a10 StaticDependenciesID=957fa2afe05978712a4397bc41cec21c 
+Importing 'GUID: 749b9069dc4742c5bfa5c74644049926 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Anton SDF - Drop Shadow.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 749b9069dc4742c5bfa5c74644049926' -> (Import Result ID: 'f316cd9abc7e3597f83e14eb10dc4a12') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=efe2e5606291bf0e2cbc9b76fe332278 DependenciesID=05e1a5f614435dc51646cdf632bbfe43 StaticDependenciesID=e8c23f714d2f80d4aeafef1d54207c2a 
+Importing 'GUID: 947a44964e53bf0448ff698b2a2219c0 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF - Drop Shadow - 2 Pass.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 947a44964e53bf0448ff698b2a2219c0' -> (Import Result ID: 'b01496e9123170d64d501ef1c73b6aa6') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=a45420600a97e5853e89eb7dbade75af DependenciesID=d3eb6eebdb992a61b9b7161122db3da5 StaticDependenciesID=5a8f793da1f719808f1ae2441e675c59 
+Importing 'GUID: f4e195ac1e204eff960149d1cb34e18c - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF Logo.mat' with importer (NativeFormatImporter)
+Imported 'GUID: f4e195ac1e204eff960149d1cb34e18c' -> (Import Result ID: '79ade7be207672c2c1310bcc6fd631b2') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=769831c9bdb368a1c13a36f08f40e602 DependenciesID=0274a5dcfdd1162678c242cb8da2d220 StaticDependenciesID=6369f85855f666ad167daebcebfaac6e 
+Importing 'GUID: 6522f30e342599e4e9dd4cc2cc03c830 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Anton SDF - Sunny Days.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 6522f30e342599e4e9dd4cc2cc03c830' -> (Import Result ID: 'b401e6da10c8905e3df14548c6e6aab0') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=c6c01895306bad30c73b17f1de6a03d0 DependenciesID=b725fd52ff6925f1de42af09280c8e51 StaticDependenciesID=fbf24bf240bd7d5bcf1f5e1485ca824a 
+Importing 'GUID: 967f61bb1e3e28645a39e0cb647cc79e - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Unity SDF - HDRP LIT - Outline.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 967f61bb1e3e28645a39e0cb647cc79e' -> (Import Result ID: 'a6bf32b87e136fb537ed6d29b230bf55') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=875278df389dab4ec3165be3a990f4d3 DependenciesID=7367978c4dd43756a5cb0d897d2fedff StaticDependenciesID=ba097b30c5b539429962cdb6977f9d68 
+Importing 'GUID: e6b276ec991f467aa14ef1f3cc665993 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF - Surface.mat' with importer (NativeFormatImporter)
+Imported 'GUID: e6b276ec991f467aa14ef1f3cc665993' -> (Import Result ID: 'a0581f74541d863ffaf2ec6231a4810d') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=ffe6c292a1d76a681f540dcce116f123 DependenciesID=3715ac98f5dff26b13115ce7be1d5c32 StaticDependenciesID=c88b32008283deaf803877d1897dac00 
+Importing 'GUID: e6b9b44320f4448d9d5e0ee634259966 - Path: Assets/TextMesh Pro/Examples & Extras/Materials/Crate - Surface Shader Scene.mat' with importer (NativeFormatImporter)
+Imported 'GUID: e6b9b44320f4448d9d5e0ee634259966' -> (Import Result ID: '6bc4117ebe2e6d00369949e27432227b') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=28f0767d8c28c62c4fb7a7fb1ddeb023 DependenciesID=7f47144b4ca411f4fbe07e76d0bb7985 StaticDependenciesID=1fdb87c677286ba3a18bdb22e2934db0 
+Importing 'GUID: f629c6e43dba4bf38cb74d8860150664 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF - Outline.mat' with importer (NativeFormatImporter)
+Imported 'GUID: f629c6e43dba4bf38cb74d8860150664' -> (Import Result ID: '26078bd4ec7b5a9a6ba654885b1d6478') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=6305261321c0c321e80d5521ca3abbae DependenciesID=a2fa6bf4b5d384573baa14a064934208 StaticDependenciesID=2ccb9d1bb6a7e94a13a23a305f84fdaf 
+Importing 'GUID: 6751ce1a4611b3940812c13a6847d94f - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF Logo - URP.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 6751ce1a4611b3940812c13a6847d94f' -> (Import Result ID: 'a89e1ac4e78e1e8905be22b991a35bc8') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=eea80a64b1ace34bd8e3a4186291c571 DependenciesID=7499962282d96cb781ab4844122325d2 StaticDependenciesID=067dd5be39372f7badb1ef06df62ebfd 
+Importing 'GUID: c719e38f25a9480abd2480ab621a2949 - Path: Assets/TextMesh Pro/Examples & Extras/Materials/Ground - Logo Scene.mat' with importer (NativeFormatImporter)
+Imported 'GUID: c719e38f25a9480abd2480ab621a2949' -> (Import Result ID: '98c3d7d1fa19e3754d87058e8a33e7af') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=d39d7866b74e7151a5720ddb2e676d31 DependenciesID=f63e4f746f36005e6084e6c82ae0b87f StaticDependenciesID=40da158d0f3567c0aa7df12875a5f920 
+Importing 'GUID: d75b8f41e959450c84ac6e967084d3e1 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF Glow.mat' with importer (NativeFormatImporter)
+Imported 'GUID: d75b8f41e959450c84ac6e967084d3e1' -> (Import Result ID: '46f70cd66b6756ed8dd2f283c80e976a') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=df88d1f8fec16cbddcfa4f0551850645 DependenciesID=f5b14e97f16bf5fdd31661a4e48e1a7b StaticDependenciesID=9027186218665a328d495535011fdd45 
+Importing 'GUID: e73a58f6e2794ae7b1b7e50b7fb811b0 - Path: Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Drop Shadow.mat' with importer (NativeFormatImporter)
+Imported 'GUID: e73a58f6e2794ae7b1b7e50b7fb811b0' -> (Import Result ID: '7444372e8b151e08c827b4849bd9e5d3') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=88f815c0edef55493545dd7260b6379b DependenciesID=b8b1223fc9fbf86132c031eed09fa7d7 StaticDependenciesID=2737993edab62110322f575992925536 
+Importing 'GUID: 79459efec17a4d00a321bdcc27bbc385 - Path: Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Outline.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 79459efec17a4d00a321bdcc27bbc385' -> (Import Result ID: '693f01b16daf97ce0244acc39fe62db9') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=f742fd837be57d5b294f4214e1f60ced DependenciesID=3150f29c9a1d7596ab85db86ed0166cf StaticDependenciesID=6b24040d6bd9a7e54a024293a0740047 
+Importing 'GUID: 9ad269c99dcf42b7aedefd83dd5a7b9d - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/LiberationSans SDF - Overlay.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 9ad269c99dcf42b7aedefd83dd5a7b9d' -> (Import Result ID: '01b148c669087f8a4e0d7de0ab3dcdeb') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=bc9370ea421b7c9997fc51532d3af408 DependenciesID=aab27319a05e9af804b4a70b7c2cfc2f StaticDependenciesID=e8d10695f92e00a9f8235f6716809c60 
+Importing 'GUID: aadd5a709a48466c887296bb5b1b8110 - Path: Assets/TextMesh Pro/Examples & Extras/Materials/Ground - Surface Shader Scene.mat' with importer (NativeFormatImporter)
+Imported 'GUID: aadd5a709a48466c887296bb5b1b8110' -> (Import Result ID: 'adf860f3e39649dda5fbf725f3d92de7') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=416965d3309fc3274a2bc6f97649961d DependenciesID=a09122e4a5fe36bf6359f94b4818ff83 StaticDependenciesID=0f6bb205665be8d71383b829a7f22a94 
+Importing 'GUID: 3b5cc91c3bf8cf74391252247f52fb59 - Path: Assets/TextMesh Pro/Examples & Extras/Materials/Crate - URP.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 3b5cc91c3bf8cf74391252247f52fb59' -> (Import Result ID: '2f3dd8a4c88575deed17f0be1ac8f83b') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=dc5eb893b48e44150dec5b23ff9b62d5 DependenciesID=1b44882aa364602725d05cb2756b61da StaticDependenciesID=9909132278326406c47ffd984c2e85c4 
+Importing 'GUID: 8b29aaa3eec7468097ff07adfcf29ac9 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/LiberationSans SDF - Metalic Green.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 8b29aaa3eec7468097ff07adfcf29ac9' -> (Import Result ID: '1e86d964288ced9e5ac8d1d5058cc2ce') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=060dfc5a00bf8f7f0733990d302ac961 DependenciesID=41d912c2346f788bd7f940f62cc790f7 StaticDependenciesID=a44252702128b658defb7a3c4c8e88f7 
+Importing 'GUID: 2ddca8f46aa0838419d568affb0ca6b4 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF - HDRP Unlit.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 2ddca8f46aa0838419d568affb0ca6b4' -> (Import Result ID: '75f7b458aea2a270dffd774845f1ed5e') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=117a8f362751e740b0d75cb9ead33d8d DependenciesID=43cc8ff55fb5d4f32dde09c756d4df96 StaticDependenciesID=7bc7350d5be2d8e160c41ad65d4782c8 
+Importing 'GUID: 8d176c01131de8f46ad61094e29d79b2 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Unity SDF - HDRP LIT - Bloom.mat' with importer (NativeFormatImporter)
+Imported 'GUID: 8d176c01131de8f46ad61094e29d79b2' -> (Import Result ID: 'b4a959613298f426a285775f05ccf99b') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=7f2e387f29dd5f4479daef18d59fc610 DependenciesID=23487b01b1b800e31bf8d2199094e553 StaticDependenciesID=2bc8a5d8af281d3e4f9c4f739c84a0b7 
+Importing 'GUID: e3265ab4bf004d28a9537516768c1c75 - Path: Assets/TextMesh Pro/Fonts/LiberationSans.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: e3265ab4bf004d28a9537516768c1c75' -> (Import Result ID: '8d9129329af98c3fd7747f0369d7b328') in 0.234 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=0961a0baf0eafb599aee9d0864ed0035 DependenciesID=75c53ff3a0fde74b26f68c7b497c7e92 StaticDependenciesID=627bb810bcd7a3239a96b28879ffa446 
+Importing 'GUID: f4eec857a4fdf2f43be0e9f3d1a984e7 - Path: Assets/TextMesh Pro/Examples & Extras/Fonts/Unity.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: f4eec857a4fdf2f43be0e9f3d1a984e7' -> (Import Result ID: '25216d4da6b18e47a7e2ce163219d641') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=42e52b7ae0774985df80720b530195b8 DependenciesID=03f25fbfe2d2b1534843da47415204ac StaticDependenciesID=9f863a02ccd0dfd67b94069c4f1d4ab6 
+Importing 'GUID: 395078ba366cbb2498d34a5d5b6cbbaa - Path: Assets/Resources/Fonts/NotoSansCJKsc-Regular.otf' with importer (TrueTypeFontImporter)
+Imported 'GUID: 395078ba366cbb2498d34a5d5b6cbbaa' -> (Import Result ID: '5ddca408e92f149c52e3ea23007fe7ac') in 0.036 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=cfdb8345b7e6da29212eb48f31adfc09 DependenciesID=cee190b90815a78e07c2140d6077557e StaticDependenciesID=5912a5fe0700ae49171bdbddb5dd79cc 
+Importing 'GUID: 997a43b767814dd0a7642ec9b78cba41 - Path: Assets/TextMesh Pro/Examples & Extras/Fonts/Anton.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: 997a43b767814dd0a7642ec9b78cba41' -> (Import Result ID: '81df3ef5d93f66ab8bd159ec72a03303') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5446ee349c545d7856ef7e3449a5ef6b DependenciesID=be6c79719b6324a838a02e2dfb437f45 StaticDependenciesID=f1d40e98096d5b3c8c9437191bf5603c 
+Importing 'GUID: c9f6d0e7bc8541498c9a4799ba184ede - Path: Assets/TextMesh Pro/Examples & Extras/Fonts/Oswald-Bold.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: c9f6d0e7bc8541498c9a4799ba184ede' -> (Import Result ID: '44b78d8a1fd13de7bde4a815fd96cc94') in 0.002 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=a658ccdec2199388246ff0ce7863dbbb DependenciesID=4976b27a578465d8f0a47a888e07c3e1 StaticDependenciesID=4954d6fc33a428eed665e5450353e0f8 
+Importing 'GUID: 8a2b9e2a607dd2143b58c44bc32410b4 - Path: Assets/TextMesh Pro/Examples & Extras/Fonts/Electronic Highway Sign.TTF' with importer (TrueTypeFontImporter)
+Imported 'GUID: 8a2b9e2a607dd2143b58c44bc32410b4' -> (Import Result ID: 'f6abd19ef2e77a0ed795d43fb1ddf0bc') in 0.004 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=cb0391c36f9d492d6a9bdda12ef9b466 DependenciesID=bbde77d5a66220398b5f562214c6b023 StaticDependenciesID=22a6f6dfd637126cfa7c3bb654071bb6 
+Importing 'GUID: 4beb055f07aaff244873dec698d0363e - Path: Assets/TextMesh Pro/Examples & Extras/Fonts/Roboto-Bold.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: 4beb055f07aaff244873dec698d0363e' -> (Import Result ID: '1b6fe2b5d541eba6aa2761c7b962ce12') in 0.002 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=7eb3efb6772236b3254909f2c0e06437 DependenciesID=7dc36cdebf55f97e0e974626477d7120 StaticDependenciesID=d609a19e6ca7dacc9f7cf8dd7e75e39a 
+Importing 'GUID: 5dd49b3eacc540408c98eee0de38e0f1 - Path: Assets/TextMesh Pro/Examples & Extras/Fonts/Bangers.ttf' with importer (TrueTypeFontImporter)
+Imported 'GUID: 5dd49b3eacc540408c98eee0de38e0f1' -> (Import Result ID: '899c64fe2f1ec900d280faba86762f26') in 0.003 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=9121955ffe7476d50bd9a87d727a8431 DependenciesID=607d41d7b5fdbdaecf1fbaf2564c3d7a StaticDependenciesID=9d4b3de3cc179e679dddf7d7e3cbcfe3 
+Importing 'GUID: 0161d805a3764c089bef00bfe00793f5 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Oswald Bold SDF.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 0161d805a3764c089bef00bfe00793f5' -> (Import Result ID: 'c49311198604aef10eb92015a25f90c0') in 0.004 seconds [static dependencies only]. Details - ImportResultOutputID=c79f847a2fb75aa8bf097fb33b9a1526 DependenciesID=a3a5389b5cab3ae1ca9dd5f9d8babacc StaticDependenciesID=8341570c95980cb5a44f38dd47a24d0d 
+Importing 'GUID: 125cb55b44b24c4393181402bc6200e6 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Bangers SDF.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 125cb55b44b24c4393181402bc6200e6' -> (Import Result ID: 'a46a728c3a043556517fdcb384f6de6f') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=061db0d34de2d618c51840db9e68ab9f DependenciesID=ba9afaf305738cd005b841c7c478e8a6 StaticDependenciesID=dd642ecd0b3909c0f721ca23b430a10c 
+Importing 'GUID: 5302535af1044152a457ed104f1f4b91 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Roboto-Bold SDF.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 5302535af1044152a457ed104f1f4b91' -> (Import Result ID: 'bb22669a320304f85cfd9d233e88b038') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=4709a61516d7f031209fe4212c2e49aa DependenciesID=df20cc118661eb11dc07f5478a781fd4 StaticDependenciesID=0951542a5af634e651f9933dfc5c9c88 
+Importing 'GUID: 83ba2e375bed45f48bce43e5a5f7c88a - Path: Assets/TextMesh Pro/Examples & Extras/Scenes/28 - HDRP Shader Example/Sky and Fog Volume Profile.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 83ba2e375bed45f48bce43e5a5f7c88a' -> (Import Result ID: 'cebfcc750c13eb7ece8222fef3549431') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=61b241583fc5fc26117af2eb6f48a19b DependenciesID=ba418cd56fe485000bf8d418986948a5 StaticDependenciesID=a4c799666b66452491697f872db415c4 
+Importing 'GUID: 14aa93acbb234d16aaef0e8b46814db6 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Sprite Assets/DropCap Numbers.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 14aa93acbb234d16aaef0e8b46814db6' -> (Import Result ID: '51e5c73f09ad6726ea14d0f7c38413be') in 0.004 seconds [static dependencies only]. Details - ImportResultOutputID=73bf91f6beb69739de745aecc6741454 DependenciesID=a88a26d6cf1b294cb7d83120f9dd44c4 StaticDependenciesID=2aaaea463963442506c5413c55930f7e 
+Importing 'GUID: 479a66fa4b094512a62b0a8e553ad95a - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Color Gradient Presets/Blue to Purple - Vertical.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 479a66fa4b094512a62b0a8e553ad95a' -> (Import Result ID: 'b58d82c69142f97a5c369fe10fd9f902') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=2b7fea0458e9fec4d9bc22560466dbe7 DependenciesID=0ad6ad10e5580a09e886a3b8487db7c3 StaticDependenciesID=1d92e634cb8c10a82948398aa9eff739 
+Importing 'GUID: 69a525efa7e6472eab268f6ea605f06e - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Color Gradient Presets/Yellow to Orange - Vertical.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 69a525efa7e6472eab268f6ea605f06e' -> (Import Result ID: '503e18c4a1445fe5be54d149af121056') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=6d40fc2cc498b2f37ead228607cd1565 DependenciesID=0e86aeb08cadcb1196585fcd939b390a StaticDependenciesID=161322826d93667bbd7b4f887ea211db 
+Importing 'GUID: c9adb1f542a93ae489bacfeae21e8394 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Unity SDF.asset' with importer (NativeFormatImporter)
+Imported 'GUID: c9adb1f542a93ae489bacfeae21e8394' -> (Import Result ID: '915d85b39c658092dd76a8ce0f332f08') in 0.005 seconds [static dependencies only]. Details - ImportResultOutputID=8bb489f11d9a96e751213ca10317c7ec DependenciesID=82f30aa6e08007ac13ecc727d6c8f82d StaticDependenciesID=801e80180222e000041ecb6494425a46 
+Importing 'GUID: f952c082cb03451daed3ee968ac6c63e - Path: Assets/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset' with importer (NativeFormatImporter)
+Imported 'GUID: f952c082cb03451daed3ee968ac6c63e' -> (Import Result ID: '21a4425ec7a4a39973edca8080efd5a5') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=8dd71883b584e82682a3aae71db361b6 DependenciesID=6da6b219c10e2276291e394213745b15 StaticDependenciesID=7a67093dccabae2ba3d2c7897a951525 
+Importing 'GUID: 8a89fa14b10d46a99122fd4f73fca9a2 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Anton SDF.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 8a89fa14b10d46a99122fd4f73fca9a2' -> (Import Result ID: 'd48409f398ea25bc7e67b32b712580cb') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=94a51a7a4739ff749d8b01c9999613a1 DependenciesID=360a4f104af0a563d089bac73e13760e StaticDependenciesID=e77725a4ef19d4662217ae0bf6499b22 
+Importing 'GUID: fbef3c704dce48f08a44612d6c856c8d - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Sprite Assets/Default Sprite Asset.asset' with importer (NativeFormatImporter)
+Imported 'GUID: fbef3c704dce48f08a44612d6c856c8d' -> (Import Result ID: '29f57d15dca5f44cda53e890a7bc8c0c') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=c29e5d78344a39360e3c6bacd16ee87a DependenciesID=2c72dfda1da6309a6cbdb0b52641ac08 StaticDependenciesID=1d3976a5eb759ace8e1f3c03c007294c 
+Importing 'GUID: 4c86a3366cd840348ebe8dc438570ee4 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Color Gradient Presets/Dark to Light Green - Vertical.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 4c86a3366cd840348ebe8dc438570ee4' -> (Import Result ID: '5c2d2e909beb4d9999f9ca5df35a1429') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=1fd45b66132372bd3167d0cc4dd8af07 DependenciesID=69c075d04d6e7529c113124419fa7ae8 StaticDependenciesID=6e72d95cd0502c0929f7bc8d295e7394 
+Importing 'GUID: 5cf8ae092ca54931b443bec5148f3c59 - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Color Gradient Presets/Light to Dark Green - Vertical.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 5cf8ae092ca54931b443bec5148f3c59' -> (Import Result ID: '7410c2ee45c47f327419b18d0c1343f6') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=a65d3ebe59fa2108e3772ee11942d342 DependenciesID=9fb7f977a9384d7ad483298d1b029879 StaticDependenciesID=8f6f78df71f9311aa478c19e2cf69991 
+Importing 'GUID: dc36b3fdc14f47ebb36fd484a67e268a - Path: Assets/TextMesh Pro/Examples & Extras/Resources/Fonts & Materials/Electronic Highway Sign SDF.asset' with importer (NativeFormatImporter)
+Imported 'GUID: dc36b3fdc14f47ebb36fd484a67e268a' -> (Import Result ID: 'bf9930a089313486bdd28d8c15fb6159') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=65718714409f7487f869358db059e159 DependenciesID=ca6ef91e8ca4b086c46aa5333e21c3ae StaticDependenciesID=0de3ec176c09b9da1aa99f0f741ffa2a 
+Importing 'GUID: 2e498d1c8094910479dc3e1b768306a4 - Path: Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 2e498d1c8094910479dc3e1b768306a4' -> (Import Result ID: '2f30b673b1b23527b10f8a0c13a32fd7') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=94ce4dace069634644df4d315a8acf11 DependenciesID=007194477deb66b420426f4c0ce5104a StaticDependenciesID=99797bcebc66bcc7732e0d02be697dc7 
+Importing 'GUID: 3f5b5dff67a942289a9defa416b206f3 - Path: Assets/TextMesh Pro/Resources/TMP Settings.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 3f5b5dff67a942289a9defa416b206f3' -> (Import Result ID: '6209a1b55ae19f6545e5742dd4e6ec44') in 0.007 seconds [static dependencies only]. Details - ImportResultOutputID=f3a7f958421f64c2182feeeb9c024eba DependenciesID=d40333f412ea30279fcb141dd4021459 StaticDependenciesID=f47cfa5d6ff3b431b62b99002535f2f2 
+Importing 'GUID: 8f586378b4e144a9851e7b34d9b748ee - Path: Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset' with importer (NativeFormatImporter)
+Imported 'GUID: 8f586378b4e144a9851e7b34d9b748ee' -> (Import Result ID: 'ab2da2ff5f970f5451503cac90df091d') in 0.000 seconds [static dependencies only]. Details - ImportResultOutputID=240fd601d528dfe2404501a6b4c703ff DependenciesID=05eadb8ab1e3e78b1c16854d3468c5d7 StaticDependenciesID=6c613c06fd18fc7415d19c28ac95b407 
+Importing 'GUID: f0303f887b8fa7243a51432c478ff2f3 - Path: Assets/TextMesh Pro/Examples & Extras/Fonts/Roboto-Bold - License.txt' with importer (TextScriptImporter)
+Imported 'GUID: f0303f887b8fa7243a51432c478ff2f3' -> (Import Result ID: '4d079a428100c6f9ef66e265f2b4b6bf') in 0.003 seconds [static dependencies only]. Details - ImportResultOutputID=868c27228eec562ef68e940107691763 DependenciesID=0501727b3d85f18a0265f4350b2ba116 StaticDependenciesID=c55811ef57d47fd7ce87eb997c685188 
+Importing 'GUID: 0251f66ebc602a944b35bccd13be2738 - Path: Assets/TextMesh Pro/Examples & Extras/Fonts/Unity - OFL.txt' with importer (TextScriptImporter)
+Imported 'GUID: 0251f66ebc602a944b35bccd13be2738' -> (Import Result ID: 'ddd5d33a9e692f54a3037f72d9d771ad') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=95b235908f6e1cd0f57addc6835e6117 DependenciesID=a4b48a017b224ed5fd8d810defff0514 StaticDependenciesID=2c505446c2052e71481c69fab3c79ef5 
+Importing 'GUID: d2cf87a8a7a94aa8b80dff1c807c1178 - Path: Assets/TextMesh Pro/Examples & Extras/Fonts/Oswald-Bold - OFL.txt' with importer (TextScriptImporter)
+Imported 'GUID: d2cf87a8a7a94aa8b80dff1c807c1178' -> (Import Result ID: '9c46ed384ae261833992d813e0dfcbfe') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=2d6b5a645a3e2ac6b892d3e720645bef DependenciesID=eed4c20b9290ab3af9f8f528371eafc7 StaticDependenciesID=0e21bcce2bfbaf5238bb55ff54c32c7b 
+Importing 'GUID: f28c334d44214474d9702d3ad79ecb0a - Path: Assets/TextMesh Pro/Examples & Extras/Fonts/Roboto-Bold - AFL.txt' with importer (TextScriptImporter)
+Imported 'GUID: f28c334d44214474d9702d3ad79ecb0a' -> (Import Result ID: 'c494044340a8733def9480e264e8f3f1') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=2b855c9ba0fc2d0ab400149a8fc9e1e9 DependenciesID=4c733e6e0f49835f8be375ca7659debc StaticDependenciesID=d7b3a0009f414a0e75044272f93788d0 
+Importing 'GUID: 03729ab0c813ffd48ae56ed872473a52 - Path: Assets/Resources/Fonts/README.txt' with importer (TextScriptImporter)
+Imported 'GUID: 03729ab0c813ffd48ae56ed872473a52' -> (Import Result ID: '3d6ce87dd13c13ff1354eac7fd0eb462') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=46e6c479323188a27954eef19033a6bd DependenciesID=641621bd958f502571f5bbf0aa12ac27 StaticDependenciesID=9b7cc2552fe189e1c8217337fe2e237a 
+Importing 'GUID: 73a79399807f4e8388c2cbb5494681ca - Path: Assets/TextMesh Pro/Examples & Extras/Fonts/Anton OFL.txt' with importer (TextScriptImporter)
+Imported 'GUID: 73a79399807f4e8388c2cbb5494681ca' -> (Import Result ID: '84e257b002b6029bc4d7d8316f70a872') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=1a1762e30f2da9a29ee7e678842b6190 DependenciesID=cc0a12d77b311ffa8d0d114ba505e143 StaticDependenciesID=73f05856790816c4b6a84741af8021f1 
+Importing 'GUID: b5ed75b2b4a347841aaa753f315dd9eb - Path: Assets/Resources/Fonts/LICENSE.txt' with importer (TextScriptImporter)
+Imported 'GUID: b5ed75b2b4a347841aaa753f315dd9eb' -> (Import Result ID: 'a0f0ae19bd5c6c462ef0108ead8181ef') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=7639188d554fea89e38368aa7317f905 DependenciesID=e0dfd2318e43a01278774ec38a154204 StaticDependenciesID=c334d6f12dbb8f2ad27c2ba7a971f1f0 
+Importing 'GUID: d82c1b31c7e74239bff1220585707d2b - Path: Assets/TextMesh Pro/Resources/LineBreaking Leading Characters.txt' with importer (TextScriptImporter)
+Imported 'GUID: d82c1b31c7e74239bff1220585707d2b' -> (Import Result ID: '0d2c97b4dc7dbca2c309bcf8e0f7af09') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=656c264a72560bc6d5d4ff81ebbbd71e DependenciesID=afa4ee0077b367e9edfb69380bbc8e9d StaticDependenciesID=79925ca900dca6757d365b92997448b0 
+Importing 'GUID: fade42e8bc714b018fac513c043d323b - Path: Assets/TextMesh Pro/Resources/LineBreaking Following Characters.txt' with importer (TextScriptImporter)
+Imported 'GUID: fade42e8bc714b018fac513c043d323b' -> (Import Result ID: '98bf4117f6ea4ad70484be3c25f08755') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=e7a4faf6f5567055bb2bb9f81ed43db7 DependenciesID=72c7382f1dafe243c864ef508f959423 StaticDependenciesID=25245f0d21b22221e6830c74ea49758f 
+Importing 'GUID: 6e59c59b81ab47f9b6ec5781fa725d2c - Path: Assets/TextMesh Pro/Fonts/LiberationSans - OFL.txt' with importer (TextScriptImporter)
+Imported 'GUID: 6e59c59b81ab47f9b6ec5781fa725d2c' -> (Import Result ID: 'ab0e20dab93cbae8c4735e571bc19753') in 0.001 seconds [static dependencies only]. Details - ImportResultOutputID=743c8d75f946ab41679b34651b3ba806 DependenciesID=6dfec6588f6deab18965186cd2a79749 StaticDependenciesID=02ab2addbfbf4cb8d049896bb5ca7f7b 
+Importing 'GUID: efe0bf4ac872451e91612d1ae593f480 - Path: Assets/TextMesh Pro/Examples & Extras/Fonts/Bangers - OFL.txt' with importer (TextScriptImporter)
+Imported 'GUID: efe0bf4ac872451e91612d1ae593f480' -> (Import Result ID: 'a8b5a255b68e229e17e2d21d0adee5cf') in 0.002 seconds [static dependencies only]. Details - ImportResultOutputID=14acb097152eca595c0f2d4628779190 DependenciesID=38c00b3caabc3c1017efa8587689cc93 StaticDependenciesID=5d75a509622762fd79c845f8f9688a9e 
+Importing 'GUID: e0e10fbed36f2f149abd977c90bddabe - Path: Assets/Resources/Audio/stage1.mp3' with importer (AudioImporter)
+Imported 'GUID: e0e10fbed36f2f149abd977c90bddabe' -> (Import Result ID: '3b1749ef9f2a7aabeee2fba4af2be2fb') in 2.842 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=6c5b3e87056d7a9873832413d0a24b89 DependenciesID=8dc9c5182415dced3d42dec294e984a1 StaticDependenciesID=d64d0e884e5e84be58ff87a7a8420018 
+Importing 'GUID: 71f2df1405b89e349b2ec69f40d90911 - Path: Assets/Resources/Audio/stage4.mp3' with importer (AudioImporter)
+Imported 'GUID: 71f2df1405b89e349b2ec69f40d90911' -> (Import Result ID: '91c12318a9f08cd8f9e28f8c483b1c04') in 2.925 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=627379b23bfbec371e74b00f9fd2807a DependenciesID=c395a10bb2210342e599e83f0de2e929 StaticDependenciesID=8dff1bf069186981570328fd17c83441 
+Importing 'GUID: f3d1e3374c0c76f44bf9773a1d97dd33 - Path: Assets/Resources/Audio/stage5.mp3' with importer (AudioImporter)
+Imported 'GUID: f3d1e3374c0c76f44bf9773a1d97dd33' -> (Import Result ID: '3610fd898db9558d2105a5c37b54dba5') in 3.058 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=5b5c4f3a1f164399c5c46ba2f7441401 DependenciesID=2b18f3111451185a90b2b796f86c48ac StaticDependenciesID=9abf25a4bf173b0ac734054bf4908652 
+Importing 'GUID: 27ba678ec9e3f924d9cee98f1b00c165 - Path: Assets/Resources/Audio/stage3.mp3' with importer (AudioImporter)
+Imported 'GUID: 27ba678ec9e3f924d9cee98f1b00c165' -> (Import Result ID: '3fb05397cd968fb71f8f4888a71ca515') in 2.375 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=bbe1441c2f02659192038bc4784eaea7 DependenciesID=5be8c26f6e825f39cdf21373b421b0e3 StaticDependenciesID=7e9f69d386cd3763ab511cdb6205aa4a 
+Importing 'GUID: b84d0f00278b7564eb4739de1ebdf1c1 - Path: Assets/Resources/Audio/stage2.mp3' with importer (AudioImporter)
+Imported 'GUID: b84d0f00278b7564eb4739de1ebdf1c1' -> (Import Result ID: 'fd63f37d550dfc43a7d0958b93165e40') in 3.471 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=09b3dbf92edff5949b92af3d826f54da DependenciesID=9b467ac456e2be8f6e63b99a15083752 StaticDependenciesID=edb7b928d747572b993bc9e25a22de3c 
+Importing 'GUID: b06f0e6c1dfa4356ac918da1bb32c603 - Path: Assets/TextMesh Pro/Examples & Extras/Prefabs/Text Popup.prefab' with importer (PrefabImporter)
+Imported 'GUID: b06f0e6c1dfa4356ac918da1bb32c603' -> (Import Result ID: '5a777b9d1427549930ea40dbfe8a2612') in 0.015 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=04100a560cda6ad845d4cfee24e9341d DependenciesID=4f5d9d80cce18356a5e60b3035092bdf StaticDependenciesID=742f3b962fa30be76c25e0e62733a28d 
+Importing 'GUID: a6e39ced0ea046bcb636c3f0b2e2a745 - Path: Assets/TextMesh Pro/Examples & Extras/Prefabs/TextMeshPro - Prefab 1.prefab' with importer (PrefabImporter)
+Imported 'GUID: a6e39ced0ea046bcb636c3f0b2e2a745' -> (Import Result ID: '46c328b7ad308372dbf42fba48a17d74') in 0.005 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=e1eb5330987045b23517886bc0d88345 DependenciesID=a626ddead2ef92792c31d1b7b0a5c50f StaticDependenciesID=cbccf90214cb2e7b89b98a6739b78523 
+Importing 'GUID: fdad9d952ae84cafb74c63f2e694d042 - Path: Assets/TextMesh Pro/Examples & Extras/Prefabs/TextMeshPro - Prefab 2.prefab' with importer (PrefabImporter)
+Imported 'GUID: fdad9d952ae84cafb74c63f2e694d042' -> (Import Result ID: '9c1013c313c6f11c8a8a917ef07ce1d5') in 0.002 seconds [static and dynamic dependencies]. Details - ImportResultOutputID=054b2055b37ca8e08506d16ef877e0f6 DependenciesID=62dd2b03183cabc5dd4ca49ba2d96f86 StaticDependenciesID=e1c2c561936b85748a3527982db371c6 
+Starting new worker id: 0 with log in C:/Users/DreamNight/Documents/01My/personal/TowerDefenseUnity/.reports/validation-project/Logs/AssetImportWorkerHW0.log
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Loading style catalogs (6)
+	StyleSheets/Extensions/base/common.uss
+	UIPackageResources/StyleSheets/Default/Variables/Public/common.uss
+	StyleSheets/Northstar/common.uss
+	StyleSheets/Extensions/fonts/inter.uss
+	StyleSheets/Extensions/base/dark.uss
+	UIPackageResources/StyleSheets/Default/Northstar/Palette/dark.uss
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+
+Asset Pipeline Refresh (id=6ff52ba0bdc628d47a26f1c80653c238): Total: 24.480 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=241 (actual=241, local cache=0, cache server=0)
+		Asset DB Process Time: managed=12 ms, native=16538 ms
+		Asset DB Callback time: managed=127 ms, native=332 ms
+		Scripting: domain reloads=1, domain reload time=446 ms, compile time=7014 ms, other=9 ms
+		Project Asset Count: scripts=90, non-scripts=151
+		Asset File Changes: new=288, changed=288, moved=0, deleted=0
+		Scan Filter Count: 0
+	ApplyChangesToAssetFolders: 0.176ms
+	Scan: 185.945ms
+	Collect global state as custom dependencies: 8.931ms
+	OnSourceAssetsModified: 0.977ms
+	CategorizeScriptCompilationAssets: 0.859ms
+	ProcessAssetsWithTransientArtifactChanges: 6.758ms
+	CategorizeAssets: 1.109ms
+	CompileScripts: 7013.806ms
+	ImportOutOfDateAssets: 16298.858ms (336.567ms without children)
+		ImportManagerImport: 15952.137ms (10.816ms without children)
+			UpdateCategorizedAssets: 0.714ms
+		UnloadImportedAssets: 0.269ms
+		ReloadImportedAssets: 0.085ms
+		ImportSchedulerStart: 9.852ms
+	PostProcessAllAssets: 458.790ms
+		ShaderAssetModifiedCallback 305.990ms
+		VersionControlSettings.HiddenFilePostprocess 8.282ms
+		VCAutoAddAssetPostprocess 1.067ms
+		AssemblyValidation.PostprocessAllAssets 0.999ms
+		PostProcessCallbackCreateDeferredMaterials 0.572ms
+		ComputeShaderImportPostprocess 0.428ms
+		RaytracingShaderImportPostprocess 0.283ms
+		SpeedTreeImporter.PostprocessAllAssets 0.274ms
+		LocalizationDatabase.AssetDatabasePostprocessCallback 0.186ms
+		BlockShaderImporter.PostprocessAllAssets 0.177ms
+		MonoPostProcessAllAssets: 126.526ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 80.233ms
+			AssetPostprocessor.OnPostprocessAllAssets 14.642ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 5.907ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 3.634ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 3.524ms
+			AssetChangedListener.OnPostprocessAllAssets 2.532ms
+			SyncVS.PostprocessSyncProject 1.330ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 1.187ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 1.010ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.897ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.432ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.389ms
+			AssetEvents.OnPostprocessAllAssets 0.334ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.321ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.222ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.186ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.180ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.125ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.118ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.081ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.080ms
+			AudioContainerPostProcessor.OnPostprocessAllAssets 0.052ms
+	PostAssetChangesProfiler: 0.591ms
+	UnloadStreamsBegin: 1.441ms
+	PersistCurrentRevisions: 0.141ms
+	GenerateScriptTypeHashes: 0.340ms
+	GenerateScriptTypeSerializationHashes: 1.012ms
+	Untracked: 495.249ms
+
+Application.AssetDatabase Initial Refresh End
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Scanning for USB devices : 6.094ms
+Initializing Unity extensions:
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-TowerDefenseVerification
+Unloading 25 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 357 unused Assets / (0.7 MB). Loaded Objects now: 1173.
+Memory consumption went from 235.3 MB to 234.7 MB.
+Total: 6.606200 ms (FindLiveObjects: 0.095300 ms CreateObjectMapping: 0.044700 ms MarkObjects: 4.093700 ms  DeleteObjects: 2.370100 ms)
+
+[Project] Loading completed in 26.638 seconds
+	Project init time: 				26.328 seconds
+		Template init time: 		0.000 seconds
+		Package Manager init time: 		0.000 seconds
+		Asset Database init time: 		0.110 seconds
+		Global illumination init time: 	0.002 seconds
+		Assemblies load time: 			0.767 seconds
+		Unity extensions init time: 	0.001 seconds
+		Asset Database refresh time: 	24.480 seconds
+	Scene opening time: 			0.067 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1789016675610,"processId":49728,"projectLoad":26.6382058,"projectInit":26.3278931,"templateInit":0.0,"packageManagerInit":0.0,"assetDatabaseInit":0.1098732,"globalIlluminationInit":0.0018867,"assembliesLoad":0.7671735,"unityExtensionsInit":0.000918,"assetDatabaseRefresh":24.4804986,"sceneOpening":0.0666205}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1789016675610,"processId":49728,"editorVersion":"6000.5.9f1 (b57deb96f08d)","branch":"6000.5/staging","buildType":"Release","platform":"Windows"}
+Reloading assemblies for play mode.
+Reloading assemblies after forced synchronous recompile.
+Begin MonoManager ReloadAssembly
+Worker ready: AssetImportWorkerHW0 0
+Native extension for WindowsStandalone target not found
+Native extension for WebGL target not found
+[Package Manager] Failed to launch server process. Reason: Unity was launched with the -noUpm command-line argument
+[Package Manager] Unable to send message (not connected to server process).
+[Package Manager] Cannot connect to Unity Package Manager local server
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.365 seconds
+Domain Reload Profiling: 645ms
+	BeginReloadAssembly (146ms)
+		DisableScriptedObjects (24ms)
+		CreateAndSetChildDomain (48ms)
+	RebuildCommonClasses (7ms)
+	RebuildNativeTypeToScriptingClass (14ms)
+	initialDomainReloadingComplete (31ms)
+	LoadAllAssembliesAndSetupDomain (81ms)
+		LoadAssemblies (53ms)
+		AnalyzeDomain (6ms)
+			TypeCache.Refresh (2ms)
+	FinalizeReload (366ms)
+		SetupLoadedEditorAssemblies (0ms)
+			BeforeProcessingInitializeOnLoad (59ms)
+			ProcessInitializeOnLoadAttributes (50ms)
+			ProcessInitializeOnLoadMethodAttributes (48ms)
+			AfterProcessingInitializeOnLoad (7ms)
+		AwakeInstancesAfterBackupRestoration (33ms)
+
+Asset Pipeline Refresh (id=07f56f5884ca0b74caed42349cbd4294): Total: 0.761 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	(Values over 0.05ms)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=405 ms
+		Asset DB Callback time: managed=33 ms, native=12 ms
+		Scripting: domain reloads=1, domain reload time=308 ms, compile time=1 ms, other=0 ms
+		Project Asset Count: scripts=90, non-scripts=151
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	Collect global state as custom dependencies: 1.252ms
+	ProcessAssetsWithTransientArtifactChanges: 8.590ms
+	CategorizeAssets: 1.427ms
+	CompileScripts: 1.376ms
+	ImportOutOfDateAssets: 368.107ms (366.747ms without children)
+		UnloadImportedAssets: 0.243ms
+		ImportSchedulerStart: 1.082ms
+	PostProcessAllAssets: 43.851ms
+		PostProcessCallbackCreateDeferredMaterials 1.018ms
+		ShaderAssetModifiedCallback 0.552ms
+		ComputeShaderImportPostprocess 0.186ms
+		RaytracingShaderImportPostprocess 0.178ms
+		SpeedTreeImporter.PostprocessAllAssets 0.148ms
+		LocalizationDatabase.AssetDatabasePostprocessCallback 0.124ms
+		BlockShaderImporter.PostprocessAllAssets 0.084ms
+		AssemblyValidation.PostprocessAllAssets 0.083ms
+		MonoPostProcessAllAssets: 33.272ms
+			StyleCatalogPostProcessor.OnPostprocessAllAssets 5.884ms
+			WindowAssetPostprocessingWatcher.OnPostprocessAllAssets 5.328ms
+			AssetPostprocessor.OnPostprocessAllAssets 5.138ms
+			BuilderAssetPostprocessor.OnPostprocessAllAssets 3.339ms
+			SpeedTree9Postprocessor.OnPostprocessAllAssets 2.179ms
+			AssetChangedListener.OnPostprocessAllAssets 1.476ms
+			TextAssetPostProcessor.OnPostprocessAllAssets 0.972ms
+			SyncVS.PostprocessSyncProject 0.922ms
+			RetainedModeAssetPostprocessor.OnPostprocessAllAssets 0.804ms
+			ArtifactBrowserPostProcessor.OnPostprocessAllAssets 0.337ms
+			EditModeScopePostprocessor.OnPostprocessAllAssets 0.325ms
+			TMPro_TexturePostProcessor.OnPostprocessAllAssets 0.192ms
+			AudioMixerPostprocessor.OnPostprocessAllAssets 0.180ms
+			ReferencedClipsPostProcessor.OnPostprocessAllAssets 0.174ms
+			TerrainToolbarOverlayPostProcessor.OnPostprocessAllAssets 0.143ms
+			AssetEvents.OnPostprocessAllAssets 0.138ms
+			SpeedTreePostProcessor.OnPostprocessAllAssets 0.113ms
+			AssetDatabaseCallbacks.OnPostprocessAllAssets 0.103ms
+			ConfigAssetsTracker.OnPostprocessAllAssets 0.069ms
+			ScenarioDriftAssetsTracker.OnPostprocessAllAssets 0.066ms
+			RenderPipelineGlobalSettingsPostprocessor.OnPostprocessAllAssets 0.059ms
+	PostAssetChangesProfiler: 1.860ms
+	GenerateScriptTypeHashes: 0.345ms
+	GenerateScriptTypeSerializationHashes: 0.901ms
+	Untracked: 326.613ms
+
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.298 ms
+	Integration:            1106.824 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.016 ms
+	Total Operation Time:   1107.140 ms
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+Start Indexing on Editor startup
+MonoPathRemapper: Attempts to remap: 1232; Successful remaps: 0
+Serialized file version minimum: 23, current 23
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+[Licensing::IpcConnector] LicenseClient-DreamNight-6000.5.9-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-DreamNight-6000.5.9 channel disconnected successfully.
+Lingering sessions upon destruction of worker manager
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+CodeReloadManager destroyed
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1789016679180,"processId":49728,"allocatedMemory":29669530,"memoryLabels":[{"Default":191247},{"Permanent":15516},{"NewDelete":67795},{"Thread":4205216},{"Manager":39495},{"VertexData":8},{"Geometry":816},{"Texture":24},{"Shader":838228},{"Material":24},{"GfxDevice":57368},{"Animation":952},{"Font":17168586},{"FreeType":788288},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":1392},{"Input":42840},{"JobScheduler":256},{"TextLib":280},{"Mono":48},{"ScriptingNativeRuntime":674964},{"BaseObject":1633872},{"Resource":1208},{"Renderer":3080},{"Transform":4685},{"File":9967},{"WebCam":616},{"Culling":32},{"Terrain":11442},{"Wind":24},{"STL":40},{"String":62256},{"StaticString":3808},{"Utility":2675958},{"Curl":2594},{"PoolAlloc":2168},{"AI":80},{"TypeTree":17165},{"CodeReload":448},{"RuntimeInitializeOnLoadManager":64},{"Sprites":102},{"SpriteAtlas":120},{"GI":7816},{"Director":8296},{"CloudService":22040},{"WebRequest":592},{"VR":47114},{"SceneManager":608},{"Video":208},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"Image":65536},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":424},{"Hierarchy":1176},{"UIElements":72},{"CoreStats":13688},{"Identifiers":6768},{"Gui":128},{"EditorUtility":97115},{"VersionControl":8},{"Undo":931},{"AssetDatabase":464949},{"AssetImporter":40},{"EditorGi":328},{"UnityConnect":38929},{"Upm":1344},{"UpmDiagnostics":8},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":216},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3486},{"Windowing":456},{"Licensing":664},{"AssetReference":32},{"IPCStream":32}]}

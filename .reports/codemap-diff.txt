@@ -1,0 +1,25 @@
+Generated: 2026-09-09
+Baseline: no prior codemap/report files were found.
+
+Added documentation:
+- PROJECT_OVERVIEW.md
+- ARCHITECTURE.md
+- MODULES.md
+- DEPENDENCIES.md
+- CODE_ISSUES.md
+- REFACTOR_PLAN.md
+- REFACTOR_RULES.md
+
+Scan scope:
+- 46 first-party C# files under Assets/Scripts
+- Packages/manifest.json
+- ProjectSettings/ProjectVersion.txt and EditorBuildSettings.asset
+- 3 custom shaders under Assets/Resources
+
+Excluded from architecture analysis:
+- Unity-generated Library, Logs, UserSettings
+- TextMesh Pro example/resource payload
+
+New external dependencies detected: none. Only Unity built-in packages are declared.
+Architecture change detection: not applicable; this is the first generated baseline.
+Staleness warnings: none; these files were generated today.

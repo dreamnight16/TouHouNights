@@ -1,0 +1,37 @@
+[
+  {
+    "stage": 1,
+    "track": "02. A God That Misses People ~ Romantic Fall.mp3",
+    "source": "https://archive.org/download/touhou-10-original-soundtrack/02.%20A%20God%20That%20Misses%20People%20~%20Romantic%20Fall.mp3",
+    "sha256": "da24288681715b779aa309c8f40a232f705f89446824ec571e09533845a3511a",
+    "bytes": 6894423
+  },
+  {
+    "stage": 2,
+    "track": "06. The Gensokyo the Gods Loved.mp3",
+    "source": "https://archive.org/download/touhou-10-original-soundtrack/06.%20The%20Gensokyo%20the%20Gods%20Loved.mp3",
+    "sha256": "e6e2d1517ad3d06defb7c6d3f96cc831c7c79718a63435bab30b17a76df4c648",
+    "bytes": 9285452
+  },
+  {
+    "stage": 3,
+    "track": "06. Shanghai Scarlet Teahouse ~ Chinese Tea.mp3",
+    "source": "https://archive.org/download/touhou-6-original-soundtrack/06.%20Shanghai%20Scarlet%20Teahouse%20~%20Chinese%20Tea.mp3",
+    "sha256": "d53cefde89a23cdb42108c081f9f72a2183e003e5f0fa5810ee932ce059b2b75",
+    "bytes": 6196043
+  },
+  {
+    "stage": 4,
+    "track": "10. The Maid and the Pocket Watch of Blood.mp3",
+    "source": "https://archive.org/download/touhou-6-original-soundtrack/10.%20The%20Maid%20and%20the%20Pocket%20Watch%20of%20Blood.mp3",
+    "sha256": "d3d06681e5efb8543dd97b05ed79d9f5754c4f3c4dac456548ff412b83089a85",
+    "bytes": 7911882
+  },
+  {
+    "stage": 5,
+    "track": "13. The Venerable Ancient Battlefield ~ Suwa Foughten Field.mp3",
+    "source": "https://archive.org/download/touhou-10-original-soundtrack/13.%20The%20Venerable%20Ancient%20Battlefield%20~%20Suwa%20Foughten%20Field.mp3",
+    "sha256": "de622655c942f7130580985d8001ddb72d7d532f182ae5567565be55119bd5d7",
+    "bytes": 7450398
+  }
+]
