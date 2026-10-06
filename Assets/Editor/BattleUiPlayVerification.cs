@@ -162,6 +162,7 @@ public static class BattleUiPlayVerification
             RenderTexture.active = target;
             pixels.ReadPixels(new Rect(0, 0, width, height), 0, 0);
             pixels.Apply();
+            Directory.CreateDirectory(".reports");
             File.WriteAllBytes(Path.Combine(".reports", name), pixels.EncodeToPNG());
         }
         finally

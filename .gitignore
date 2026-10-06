@@ -37,3 +37,9 @@ Desktop.ini
 sysinfo.txt
 *.stackdump
 crashlytics-build.properties
+
+# Local verification, assistant files and Unity recovery scenes
+/.reports/
+/.workbuddy-ai/
+/Assets/_Recovery/
+/Assets/_Recovery.meta

@@ -21,7 +21,7 @@ namespace TowerDefense.UI
         private float _driftSpeed;
         private float _startScale;
 
-        /// <summary>由 TerminalHud.Awake 调用：挂到 HUD 画布并预热池。</summary>
+        /// <summary>挂到 HUD 画布并预热飘字池。</summary>
         public static void Init(Transform canvasRoot)
         {
             if (_layer != null) return;
