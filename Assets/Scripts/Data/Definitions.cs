@@ -30,7 +30,7 @@ namespace TowerDefense.Data
     }
 
     /// <summary>
-    /// 智能索敌策略（进阶挑战 ★★★★★，三选一）。
+    /// 全局索敌策略。
     /// 所有塔共享当前全局策略，可在 HUD 中切换。
     /// </summary>
     public enum TargetingPriority
@@ -88,33 +88,35 @@ namespace TowerDefense.Data
         public Color Color;
     }
 
-    /// <summary>轮内刷怪条目：从本轮开始后第 StartTime 秒起，在指定红门按间隔刷 Count 个敌人。</summary>
+    /// <summary>从幕次横幅结束后第 StartTime 秒起，在指定出怪口按间隔刷 Count 个敌人。</summary>
     [Serializable]
     public class SpawnEntry
     {
         public EnemyType EnemyType;
         public int RouteIndex;          // 走哪条正交路线（红门）
-        public float StartTime;         // 轮内相对开始时间（秒）
+        public float StartTime;         // 相对幕次横幅结束的时间（秒）
         public int Count;
         public float SpawnInterval;
     }
 
     /// <summary>
-    /// 一轮（波）：以「刷完 + 场上清空」为轮界。标题用于换波横幅；Entries 的 StartTime 为轮内相对偏移。
-    /// 这样每轮有明确的结束与开始，轮与轮之间的区分一目了然。
+    /// 一幕在条目刷完且场上敌人清空后结束；标题用于横幅。
+    /// Entries 的 StartTime 相对横幅结束。
     /// </summary>
     [Serializable]
     public class RoundDef
     {
-        public string Title;            // Stage 中文幕名（如「侵入加深」）
-        public string Eng;              // 英文卷标（如「WAVE II」）
+        public string Title;            // 中文幕名
+        public string Eng;              // 英文幕次标签
         public SpawnEntry[] Entries;    // 本轮刷怪条目
     }
 
-    /// <summary>结算数据：游戏结束时展示东方 stage 风格战绩 + Phigros 风格评级。</summary>
+    /// <summary>游戏结束时的战绩和评级。</summary>
     public struct GameResult
     {
         public bool Victory;
+        public int CompletedStages; // 本局实际通过关数；练习最多为 1
+        public bool IsPractice;
         public int Score;
         public int TotalKills;
         public int LeakedEnemies;

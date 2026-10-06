@@ -4,9 +4,7 @@ using TowerDefense.Util;
 namespace TowerDefense.Effects
 {
     /// <summary>
-    /// 战场氛围光尘（Unity ParticleSystem）：低速漂浮的微光尘埃，
-    /// 让战场「空气感」十足——方舟在用粒子烘托页面细节（文章第 7 点）。
-    /// 挂在 WorldRoot 下，随重开一并销毁。
+    /// 低速漂浮的光尘粒子，挂在 WorldRoot 下，随重开销毁。
     /// </summary>
     public sealed class AmbientDust : MonoBehaviour
     {
@@ -35,7 +33,6 @@ namespace TowerDefense.Effects
             shape.shapeType = ParticleSystemShapeType.Box;
             shape.scale = new Vector3(19f, 11f, 0.2f);
 
-            // 明灭：出现→最亮→淡出
             var colorOverLifetime = ps.colorOverLifetime;
             colorOverLifetime.enabled = true;
             var grad = new Gradient();
@@ -44,7 +41,6 @@ namespace TowerDefense.Effects
                 new[] { new GradientAlphaKey(0f, 0f), new GradientAlphaKey(0.9f, 0.35f), new GradientAlphaKey(0f, 1f) });
             colorOverLifetime.color = new ParticleSystem.MinMaxGradient(grad);
 
-            // Billboard 渲染 + 圆形柔光贴图（最兼容的粒子渲染模式）
             var renderer = go.GetComponent<ParticleSystemRenderer>();
             renderer.renderMode = ParticleSystemRenderMode.Billboard;
             renderer.sortingOrder = 8;

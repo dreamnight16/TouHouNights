@@ -8,11 +8,9 @@ using TowerDefense.Util;
 namespace TowerDefense.Actors
 {
     /// <summary>
-    /// 子弹：支持直线与追踪（Homing）两种飞行方式。
-    /// - ★  追踪：带转向加速度，实时追向目标；
-    /// - ★★ 目标死亡后：追踪弹尝试就近重锁定，直线弹平滑淡出消失；
-    /// - ★★★ 命中后产生 AOE 爆炸，对范围内所有敌人造成伤害。
-    /// 命中检测不使用物理引擎，直接按距离判断。
+    /// 直线与追踪子弹，按距离检测命中，支持单体和范围伤害。
+    /// 目标失效时，追踪弹尝试重锁定；无法重锁定则淡出。
+    /// 无目标的扫射弹持续沿发射方向飞行。
     /// </summary>
     [RequireComponent(typeof(SpriteRenderer))]
     public sealed class Projectile : MonoBehaviour
@@ -39,14 +37,13 @@ namespace TowerDefense.Actors
         private bool _fading;
         private float _fadeTimer;
         private bool _directional; // 无目标的直线弹（弹幕扫射用）
-        private Tower _source;     // 发射该弹的塔（用于把伤害累加成 BOOM 的经验值；弹幕/无主弹为 null）
+        private Tower _source;     // 伤害计入发射塔的 BOOM 经验；无主弹为 null
         private float _trailTimer; // 拖尾落点计时
 
         private static Projectile CreateNew()
         {
             var go = new GameObject("Projectile");
 
-            // 发光光晕（弹体带氛围光，霓虹手感）
             var glow = new GameObject("Glow");
             glow.transform.SetParent(go.transform, false);
             var glowSr = glow.AddComponent<SpriteRenderer>();
@@ -66,8 +63,8 @@ namespace TowerDefense.Actors
         }
 
         /// <summary>
-        /// 生成一枚追踪/直线弹，并乘以伤害倍率（塔伤害随 P点 成长）。
-        /// source 为发射该弹的塔；null 表示无主弹（弹幕/缓冲），不计入 BOOM 经验值。
+        /// 生成带目标的子弹，并应用伤害倍率。
+        /// source 为发射塔；null 表示无主弹，不计入 BOOM 经验。
         /// </summary>
         public static Projectile Spawn(TowerDefinition definition, Vector2 position, Enemy target, float damageMultiplier, Tower source = null)
         {
@@ -103,7 +100,6 @@ namespace TowerDefense.Actors
             _fadeTimer = 0f;
             _trailTimer = 0f;
 
-            // 菱形弹丸（沿飞行方向拉长）：比圆点更有速度感，也能读出弹道朝向
             _sprite.sprite = SpriteFactory.Diamond(0.085f, 0.20f, definition.ProjectileColor);
             _glowSr.sprite = SpriteFactory.Glow(0.24f, new Color(definition.ProjectileColor.r, definition.ProjectileColor.g, definition.ProjectileColor.b, 0.45f));
 
@@ -128,7 +124,6 @@ namespace TowerDefense.Actors
             _fadeTimer = 0f;
             _trailTimer = 0f;
 
-            // 菱形弹丸（沿飞行方向拉长）：比圆点更有速度感，也能读出弹道朝向
             _sprite.sprite = SpriteFactory.Diamond(0.085f, 0.20f, definition.ProjectileColor);
             _glowSr.sprite = SpriteFactory.Glow(0.24f, new Color(definition.ProjectileColor.r, definition.ProjectileColor.g, definition.ProjectileColor.b, 0.45f));
             _velocity = direction.normalized * _speed;
@@ -142,7 +137,6 @@ namespace TowerDefense.Actors
                 return;
             }
 
-            // 弹道拖尾（能量轨迹）
             _trailTimer -= Time.deltaTime;
             if (_trailTimer <= 0f)
             {
@@ -163,7 +157,7 @@ namespace TowerDefense.Actors
                 return;
             }
 
-            // ★★ 目标死亡处理：追踪弹就近重锁定，否则平滑消失。
+            // 目标失效后，只有追踪弹尝试重锁定。
             if (_target == null || !_target.IsAlive)
             {
                 _target = TryRetarget();
@@ -174,7 +168,6 @@ namespace TowerDefense.Actors
                 }
             }
 
-            // ★ 追踪：带转向加速度的实时追踪。
             if (_homingStrength > 0f)
             {
                 var desired = ((Vector2)_target.transform.position - (Vector2)transform.position).normalized * _speed;
@@ -184,7 +177,6 @@ namespace TowerDefense.Actors
             transform.position += (Vector3)(_velocity * Time.deltaTime);
             FaceVelocity();
 
-            // 命中检测（手动距离判断）。
             float hitDistance = HitRadius + _target.Radius;
             if (Vector2.Distance(transform.position, _target.transform.position) <= hitDistance)
             {
@@ -233,7 +225,7 @@ namespace TowerDefense.Actors
 
             if (_splashRadius > 0f)
             {
-                // ★★★ AOE 爆炸：范围内所有敌人受同等伤害，命中数计入该塔经验值。
+                // 范围伤害按命中数累加发射塔的 BOOM 经验。
                 int hit = GameManager.Instance.DamageEnemiesInRadius(transform.position, _splashRadius, _damage);
                 _source?.AddXp(_damage * hit);
                 EffectFactory.SpawnBurst(transform.position, _definition.ProjectileColor, _splashRadius, 0.35f);

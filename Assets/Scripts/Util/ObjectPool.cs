@@ -5,8 +5,7 @@ using UnityEngine;
 namespace TowerDefense.Util
 {
     /// <summary>
-    /// 极简通用对象池：避免敌人/子弹频繁 Instantiate/Destroy 造成 GC 抖动。
-    /// 工厂负责「创建一个全新对象」，池负责复用。
+    /// 使用工厂创建组件，释放时停用并入池，获取时复用并启用。
     /// </summary>
     public sealed class ObjectPool<T> where T : Component
     {

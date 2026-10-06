@@ -5,17 +5,13 @@ using TowerDefense.Util;
 
 namespace TowerDefense.UI
 {
-    /// <summary>
-    /// 面板用途。只有三种 —— 这个数字是刻意的。
-    /// Chrome / Well 两个成员连同它们的预设已被删除：全项目一次都没用过，
-    /// 留着只会让「这块该用哪种面」变成一个可以选错的问题。
-    /// </summary>
+    /// <summary>面板用途。</summary>
     public enum UiSurfaceKind
     {
         /// <summary>信息面板：平涂的石墨底 + 发丝描边。</summary>
         Panel = 0,
 
-        /// <summary>可交互卡片：平涂的板岩底 —— 比 <see cref="Panel"/> 亮一档，靠这一点浮起来。</summary>
+        /// <summary>可交互卡片：比 Panel 亮一档的平涂底色。</summary>
         Card = 1,
 
         /// <summary>通栏遮罩：平涂、无描边。用于暂停与结算的全屏底，也用于按钮自绘底板。</summary>
@@ -25,10 +21,10 @@ namespace TowerDefense.UI
     /// <summary>按钮语义。</summary>
     public enum UiButtonKind
     {
-        /// <summary>主行动：绯色实心。一屏之内最多出现一个。</summary>
+        /// <summary>主行动：绯色实心。</summary>
         Primary = 0,
 
-        /// <summary>次级行动：无填充，发丝描边，骨白文字。默认值。</summary>
+        /// <summary>次级行动：暗底、发丝描边和骨白文字。</summary>
         Ghost = 1,
 
         /// <summary>安静行动：无描边，灰字。用于「返回 / 退出」这类不该抢注意力的入口。</summary>
@@ -36,16 +32,11 @@ namespace TowerDefense.UI
     }
 
     /// <summary>
-    /// UI 装配的公共零件库。所有界面（战斗 / 标题 / 练习 / 设置）都从这里取件，
-    /// 保证「同一件事只有一种做法」—— 面板只有一种做法、按钮只有一种做法、小米字只有一种做法。
-    ///
-    /// 想要新外观，先在这里加一个零件；不要在调用点临时拼一个 —— 那正是上一版
-    /// 退化成「工程技术样品」的原因：十几个面板各自手搓，长出了十几种不同的边。
+    /// 战斗和前端界面共用的布局、面板、文本与按钮工厂。
     /// </summary>
     public static class UiKit
     {
         // ================= 布局 =================
-        // 一律用锚点定位，禁止写死参考分辨率坐标 —— 竖屏 / 超宽屏都靠这几个函数兜住。
 
         public static void PinTopLeft(RectTransform r, float x, float y, float w, float h)
         {
@@ -116,25 +107,7 @@ namespace TowerDefense.UI
 
             switch (kind)
             {
-                // 一条规则管全部三种面：**面是平的**。
-                //
-                // 上一版这里写着「面板是平的」，可 Card 预设实际给了它三样东西 ——
-                // Stone→Char 的上下渐变、一个对角斜切、一条顶部受光加一条底部压暗。
-                // 四条装饰同时在否认那句注释。
-                //
-                // 渐变和切角本质上是**对材质的模仿**：它们假装这块平面是一块被光照到的
-                // 实体，用受光面与背光面伪造出厚度。可这套界面不在任何一个有光源的空间里，
-                // 它浮在夜空之上 —— 于是那些「受光」既说不出光源在哪，也不对应任何状态。
-                // 玩家读到的不是「这块更亮」，而是「这里有一道没人要的亮边」。
-                //
-                // 层次改由两样东西表达，它们都是真的：
-                //   · **明度台阶** —— Ink → Char → Slate → Stone，平涂，亮一档就是高一层；
-                //   · **辉光与动效** —— UiHalo 的明暗随时间变化，能呼吸、能淡入淡出。
-                // Metro 的做法也正是这两条：颜色只用来回答「这是哪一层」，
-                // 运动只用来回答「什么变了」。
-                //
-                // 唯一留下的是发丝描边。它不模仿材质，它只说明这块面的**边界在哪** ——
-                // 面板浮在流动的星空上，没有边就没有形，那是信息，不是装饰。
+                // 面板预设使用平涂底色，层次由明度、描边和辉光区分。
 
                 case UiSurfaceKind.Panel:
                     panel.Flat(BattleUiTheme.Slate)
@@ -154,7 +127,7 @@ namespace TowerDefense.UI
             return panel;
         }
 
-        /// <summary>纯色矩形（分隔线、色条、占位）。需要渐变或有边界的块请用 <see cref="Surface"/>。</summary>
+        /// <summary>不拦截指针的纯色矩形，用于分隔线、色条和占位。</summary>
         public static Image Rect(Transform parent, string name, Color color)
         {
             var image = UiFactory.CreateImage(parent, name, color);
@@ -186,16 +159,12 @@ namespace TowerDefense.UI
         {
             var text = UiFactory.CreateText(parent, name, value, size, color, anchor);
             PinTopLeft(text.rectTransform, x, y, w, h);
-            // 自动缩放下限必须严格小于上限：Micro 档只有 10pt，减 4 会得到 6，
-            // 再被 Mathf.Max 抬到 11 就变成 min > max，TMP 会直接取 min 渲染 —— 米字全部偷偷放大一号。
+            // 最小字号不得超过当前字号，小字号标签也要保持有效范围。
             text.FitInBox(Mathf.Min(size, Mathf.Max(9, size - 4)));
             return text;
         }
 
-        /// <summary>
-        /// 极小米字：全大写拉丁 / 中文标签，带字距。这套排版里「小」的一极 ——
-        /// 和 <see cref="Readout"/> 的超大数字同屏，尺度对比就是全部的设计。
-        /// </summary>
+        /// <summary>带字距的小字号标签。</summary>
         public static UiText MicroLabel(Transform parent, string name, string value, Color color,
             float x, float y, float w, float h)
         {
@@ -205,13 +174,6 @@ namespace TowerDefense.UI
         }
 
         // ================= 纹样 =================
-        // 这一节现在是空的 —— 这套视觉里已经没有任何纹样。
-        // 斜切随 Card 预设一起删掉了（改回直角），角标零件更早之前就删了
-        // （唯一的使用者是暂停菜单，而那儿没有任何需要「取景」的东西）。
-        //
-        // 下面这个封印环暂时**没有调用点**：结算屏评级字母后面那圈 250px 的环已经删了。
-        // 它是整套视觉里最后一个还没决定去留的零件，留在这儿等一个决定 ——
-        // 要么找到一件它真正编码了状态的事，要么把它和 SpriteFactory.SealRing 一起删掉。
 
         /// <summary>封印环：断成 4 段的细环，缺口落在对角线上。</summary>
         public static Image SealRing(Transform parent, string name, float size, Color color,
@@ -236,13 +198,7 @@ namespace TowerDefense.UI
             var panel = Surface(parent, name, kind == UiButtonKind.Primary ? UiSurfaceKind.Card : UiSurfaceKind.Panel);
             if (kind == UiButtonKind.Primary)
             {
-                // 主行动靠**它自己在发光**被认出来，加上全屏唯一的那一大块绯色实心 ——
-                // 不靠顶部那条白色受光带。
-                //
-                // 那条带子（原 Rim）是「假装按钮被上方光源照到」。屏幕里没有这个光源，
-                // 而它让按钮的上半截比下半截亮出一大截，读起来像一块廉价的塑料键帽。
-                // 发光是**状态**（可点 / 已就绪），受光是**布景**（假装有盏灯）——
-                // 这里只留前者。
+                // 主行动使用绯色实心和辉光。
                 panel.Flat(BattleUiTheme.Scarlet)
                      .Border(BattleUiTheme.Lift(BattleUiTheme.Scarlet, .45f), BattleUiTheme.Border)
                      .Glow(BattleUiTheme.GlowScarlet, 14f);
@@ -262,8 +218,7 @@ namespace TowerDefense.UI
             int size = labelSize > 0
                 ? labelSize
                 : (kind == UiButtonKind.Primary ? BattleUiTheme.Type.Heading : BattleUiTheme.Type.Body);
-            // 默认的 16pt 内缩是给整行大按钮留的。倍速档那种 36×26 的小方块用它，
-            // 标签框会被压成 4px 宽 —— 字全被挤没。小按钮必须自己给内缩。
+            // 小按钮需要单独指定内缩，避免标签框过窄。
             float inset = labelInset >= 0f ? labelInset : BattleUiTheme.Gap.Md;
             float insetV = Mathf.Min(BattleUiTheme.Gap.Xs, inset);
 
@@ -287,9 +242,8 @@ namespace TowerDefense.UI
         }
 
         /// <summary>
-        /// 全白且零时长的颜色过渡。状态反馈一律交给 <see cref="UiMotion"/> 和面板本体，
-        /// 不走 ColorBlock —— ColorBlock 是**乘算**，会把烘进顶点的渐变和受光带一起压平，
-        /// 结果状态越多的按钮越糊。
+        /// 全白、零时长的颜色过渡，避免 ColorBlock 乘算改变面板的顶点色。
+        /// 状态反馈交给 UiMotion 和面板本体。
         /// </summary>
         public static ColorBlock FlatColors()
         {

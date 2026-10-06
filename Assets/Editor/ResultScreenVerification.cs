@@ -6,20 +6,12 @@ using TowerDefense.Data;
 using TowerDefense.UI;
 
 /// <summary>
-/// 只做一件事：把一局打到**胜利结算屏**，截图，退出。
-///
-/// 为什么不复用 MenuFlowVerification：那套要跑完整场五关战役（四分钟），
-/// 而结算屏要到第五关打完才出现 —— 为了看一眼一屏等四分钟不划算，
-/// 何况那条路本身也还没跑通过。
-///
-/// 捷径是练习模式：它**只打选定的一关**（MenuFlowVerification 里那句
-/// "Practice advanced beyond selected stage" 断言的就是这件事），
-/// 所以 BeginRun(4, practice:true) 直接落在第五关上，赢了就是结算屏。
+/// 使用第五关练习模式快速进入结算屏，截图后退出编辑器。
 /// </summary>
 [InitializeOnLoad]
 public static class ResultScreenVerification
 {
-    /// <summary>和 MenuFlowVerification 用的是同一套参考阵容，赢面已知。</summary>
+    /// <summary>与 MenuFlowVerification 一致的参考阵容。</summary>
     private static readonly Vector2Int[] Cells =
     {
         new Vector2Int(-5, 2), new Vector2Int(-4, -2), new Vector2Int(-1, 2), new Vector2Int(2, -2),
@@ -72,7 +64,6 @@ public static class ResultScreenVerification
                 return;
             }
 
-            // FindAnyObjectByType 而非 FindFirstObjectByType：后者已标记过时（依赖实例 ID 顺序）。
             var ui = UnityEngine.Object.FindAnyObjectByType<BattleUiRoot>();
             if (ui == null) throw new Exception("Missing battle UI");
 
@@ -81,12 +72,12 @@ public static class ResultScreenVerification
                 if (EditorApplication.timeSinceStartup > _deadline) throw new Exception("Stage did not resolve");
                 if (game.State == GameState.Running || game.State == GameState.Menu)
                 {
-                    // 每帧压一次部署，和玩家用手点走的是同一条 Public 路径。
+                    // 使用与玩家操作相同的公共部署入口。
                     game.SetSpeedIndex(3);
                     for (int i = 0; i < Cells.Length; i++) game.TowerPlacer.TryDeploy(Cells[i], Types[i]);
                     return;
                 }
-                // Victory 会把 timeScale 定格成 0，所以后面的等待只能按真实时间走。
+                // 结算时 timeScale 为 0，截图前按编辑器时间等待布局稳定。
                 _deadline = EditorApplication.timeSinceStartup + SettleDelay;
                 _phase = 2;
                 return;

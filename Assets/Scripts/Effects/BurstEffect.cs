@@ -16,19 +16,16 @@ namespace TowerDefense.Effects
         private SpriteRenderer _flash;
         private float _duration;
         private float _elapsed;
-        private float _maxRadius;
 
         public void Init(Color color, float radius, float duration)
         {
             _sprite = GetComponent<SpriteRenderer>();
             _sprite.sprite = SpriteFactory.Circle(radius, color);
             _sprite.sortingOrder = WorldArt.LayerBurst;
-            _maxRadius = radius;
             _duration = Mathf.Max(0.05f, duration);
             _elapsed = 0f;
             transform.localScale = Vector3.one * 0.3f;
 
-            // 扩散环（Shell 描边：外扩 + 淡出，更像「冲击波」）
             if (_ring == null)
             {
                 var ringGo = new GameObject("Ring");
@@ -40,7 +37,6 @@ namespace TowerDefense.Effects
             _ring.color = new Color(1f, 1f, 1f, 0.85f);
             _ring.transform.localScale = Vector3.one * 0.3f;
 
-            // 闪光内核（白色实心，极快速淡出 → 命中瞬间的「爆白」感）
             if (_flash == null)
             {
                 var flashGo = new GameObject("Flash");
@@ -57,7 +53,6 @@ namespace TowerDefense.Effects
             _elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(_elapsed / _duration);
 
-            // 主体：从 0.3 扩散到 1，淡出
             float scale = Mathf.Lerp(0.3f, 1f, t);
             transform.localScale = Vector3.one * scale;
 
@@ -65,7 +60,7 @@ namespace TowerDefense.Effects
             color.a = 1f - t;
             _sprite.color = color;
 
-            // 扩散环：比主体更快扩散，更早淡出（冲击波感）
+            // 扩散环比主体更早淡出。
             if (_ring != null)
             {
                 float ringT = Mathf.Clamp01(t * 1.3f);
@@ -76,7 +71,7 @@ namespace TowerDefense.Effects
                 _ring.color = rc;
             }
 
-            // 闪光：极快速亮 → 暗（前 20% 时段闪白）
+            // 闪光只持续总时长的前 20%。
             if (_flash != null)
             {
                 float flashT = Mathf.Clamp01(t / 0.2f);

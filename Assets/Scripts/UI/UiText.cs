@@ -5,9 +5,8 @@ using TMPro;
 namespace TowerDefense.UI
 {
     /// <summary>
-    /// 文本统一封装：优先 TextMeshPro（SDF 场渲染——矢量级抗锯齿，彻底解决 legacy Text 的像素感），
-    /// 中文字形走动态字体资产；若 TMP 初始化失败则自动回退 legacy Text，保证任何环境可用。
-    /// 对外暴露与旧 Text 等价的最小接口（content/color/fontSize），调用方无感知。
+    /// 统一封装 TextMeshPro 和 legacy Text，提供内容、颜色和字号接口。
+    /// TMP 创建失败时回退到 legacy Text。
     /// </summary>
     public sealed class UiText : MonoBehaviour
     {
@@ -57,7 +56,7 @@ namespace TowerDefense.UI
             }
         }
 
-        /// <summary>legacy Text 分支（默认路径：无需任何资源、必然显示）。</summary>
+        /// <summary>使用 UiFont 提供的字体创建 legacy Text。</summary>
         internal static UiText CreateLegacy(Transform parent, string name)
         {
             var go = new GameObject(name, typeof(RectTransform));
@@ -65,7 +64,7 @@ namespace TowerDefense.UI
 
             var legacy = go.AddComponent<Text>();
             legacy.font = UiFactory.Font;
-            legacy.fontStyle = FontStyle.Normal; // 禁用伪粗体（合成粗体是中文发糊元凶）
+            legacy.fontStyle = FontStyle.Normal;
             legacy.alignment = TextAnchor.MiddleCenter;
             legacy.raycastTarget = false;
             legacy.horizontalOverflow = HorizontalWrapMode.Overflow;
@@ -76,7 +75,7 @@ namespace TowerDefense.UI
             return ui;
         }
 
-        /// <summary>TextMeshPro 分支（需项目已导入 TMP Essential Resources，否则渲染空白）。</summary>
+        /// <summary>创建 TextMeshPro 文本，字体由 UiFactory.TmpFont 提供。</summary>
         internal static UiText CreateTmp(Transform parent, string name)
         {
             var go = new GameObject(name, typeof(RectTransform));
@@ -104,7 +103,7 @@ namespace TowerDefense.UI
             }
         }
 
-        /// <summary>纵向顶点渐变（TMP 特性）：顶色→底色，标题/数值的精致质感。</summary>
+        /// <summary>设置纵向顶点渐变；legacy Text 分支忽略此设置。</summary>
         internal void SetVerticalGradient(Color top, Color bottom)
         {
             if (_tmp != null)
@@ -156,13 +155,8 @@ namespace TowerDefense.UI
         }
 
         /// <summary>
-        /// 让文字自动缩到框内。<paramref name="wrap"/> 为 true 时才允许多行并截断。
-        ///
-        /// 溢出模式必须跟着 <paramref name="wrap"/> 走：单行标签的矩形是**定位工具**而不是裁剪框，
-        /// 而 TMP 的 Ellipsis 是拿「行高 > 框高」当溢出判定的 —— 框比行高矮几个像素，
-        /// 整行就被直接丢掉，文字凭空消失，调用点看上去却毫无问题（这正是幕次编号、
-        /// 灵力、弹幕威力三个大数字一起消失的原因：它们的框高都比行高矮了 4~8 像素）。
-        /// 需要多行的场合才用 Ellipsis 截断；单行宁可溢出，也绝不静默丢字。
+        /// 自动缩放字号。wrap 启用多行截断；TMP 单行使用 Overflow，
+        /// 避免行高略超出定位框时，Ellipsis 隐藏整行文字。
         /// </summary>
         internal void FitInBox(int minimumSize, bool wrap = false)
         {
@@ -186,7 +180,7 @@ namespace TowerDefense.UI
 
         internal void AddLegacyShadow(Vector2 offset, Color color)
         {
-            if (IsTmp || _legacy == null) return; // TMP 由 SDF 渲染自带锐利边缘，无需位图阴影
+            if (IsTmp || _legacy == null) return;
             var shadow = _legacy.gameObject.AddComponent<Shadow>();
             shadow.effectColor = color;
             shadow.effectDistance = offset;

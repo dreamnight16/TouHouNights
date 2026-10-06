@@ -5,8 +5,7 @@ using UnityEngine;
 namespace TowerDefense.Effects
 {
     /// <summary>
-    /// 程序化音效（Unity AudioClip 特性）：用数学函数合成短音效，
-    /// 零外部音频资源——点击/放置/爆炸/弹幕/漏怪/击杀全有反馈（参考文章第 7 点「操作反馈」）。
+    /// 合成并缓存操作与战斗音效，不依赖外部音频资源。
     /// </summary>
     public static class Sfx
     {

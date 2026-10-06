@@ -4,8 +4,7 @@ using UnityEngine;
 namespace TowerDefense.UI
 {
     /// <summary>
-    /// 标准补间缓动曲线库（easing.net / DOTween 规格）：22 条常用曲线，输入输出均为已归一化 t∈[0,1]。
-    /// 统一所有 UI 动画的节奏语言（Fluent Motion 依赖一致的曲线族）。
+    /// 常用补间缓动曲线，输入 t∈[0,1]。Back 和 Elastic 曲线允许输出超调。
     /// </summary>
     public static class UiEasings
     {

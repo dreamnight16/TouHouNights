@@ -16,7 +16,6 @@ namespace TowerDefense.UI
         private Transform _fill;
         private SpriteRenderer _fillSr;
         private Transform _delayed;
-        private SpriteRenderer _delayedSr;
         private float _width;
         private float _height;
 
@@ -55,7 +54,6 @@ namespace TowerDefense.UI
             delayedSr.sprite = SpriteFactory.RoundedSquare(1f, 0.30f, new Color(0.85f, 0.88f, 0.92f, 0.55f));
             delayedSr.sortingOrder = WorldArt.LayerBar + 1;
             _delayed = delayed.transform;
-            _delayedSr = delayedSr;
 
             // 当前填充条：即时反映血量，颜色随血量变化
             var fill = new GameObject("Fill");

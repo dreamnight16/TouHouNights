@@ -19,8 +19,8 @@ namespace TowerDefense.Core
     }
 
     /// <summary>
-    /// 游戏总控：持有经济、生命、敌人/塔注册表、空间哈希、懒删除堆与全局索敌策略，
-    /// 负责相机、地图、UI、刷怪器、放置器的组装；各 Stage 由协程自动推进（无需手动开关幕）。
+    /// 管理经济、生命、单位注册表与全局索敌策略。
+    /// 组装相机、地图和 UI，并由协程推进幕次。
     /// </summary>
     public sealed class GameManager : MonoBehaviour
     {
@@ -41,6 +41,7 @@ namespace TowerDefense.Core
         private int _score;
         private float _power;
         private int _totalKills;
+        private int _spawnedEnemies;
         private int _leakedEnemies;
         private int _combo;
         private int _bestCombo;
@@ -51,6 +52,7 @@ namespace TowerDefense.Core
         private FrontEndUi _frontEnd;
         public bool IsPractice { get; private set; }
         public int StartStage { get; private set; }
+        public int CompletedStages { get; private set; }
         public int PracticeSpirit => GameConfig.PracticeStartingSpirit(StartStage);
 
         public Transform WorldRoot { get; private set; }
@@ -141,7 +143,7 @@ namespace TowerDefense.Core
                 cam = camGo.AddComponent<Camera>();
             }
 
-            // 透视相机：位于地图下缘前方、视线微微上仰 → 近大远小（下大上小）。
+            // 使用配置中的透视相机位置和观察点。
             cam.orthographic = false;
             cam.fieldOfView = GameConfig.CameraFov;
             cam.backgroundColor = GameConfig.BackgroundColor;
@@ -149,7 +151,7 @@ namespace TowerDefense.Core
             cam.transform.position = GameConfig.CameraPosition;
             cam.transform.LookAt(GameConfig.CameraLookAt);
 
-            // 屏幕震动 + 屏幕模糊（真·毛玻璃背景，供 UI 亚克力材质采样）
+            // 屏幕震动和 UI 背景模糊采样。
             if (cam.GetComponent<ScreenShake>() == null)
             {
                 cam.gameObject.AddComponent<ScreenShake>();
@@ -158,13 +160,12 @@ namespace TowerDefense.Core
             {
                 cam.gameObject.AddComponent<ScreenBlurFx>();
             }
-            // 方舟式手持漂移：只动旋转、不动位置，与 ScreenShake（独占位置）不冲突。
+            // 漂移只改旋转，避免与修改位置的 ScreenShake 冲突。
             if (cam.GetComponent<CameraDrift>() == null)
             {
                 cam.gameObject.AddComponent<CameraDrift>();
             }
 
-            // 抗锯齿：消除精灵边缘锯齿。
             QualitySettings.antiAliasing = 8;
             cam.allowMSAA = true;
         }
@@ -174,8 +175,7 @@ namespace TowerDefense.Core
             var canvas = UiFactory.CreateCanvas();
             _battleCanvas = canvas.gameObject;
             UiFactory.EnsureEventSystem();
-            // BattleUiRoot 是新版“结界作战档案”唯一入口。依赖在装配点注入，
-            // 表现层不再自行读取 GameManager.Instance。
+            // 在装配点向 BattleUiRoot 注入依赖。
             var battleUi = canvas.gameObject.AddComponent<BattleUiRoot>();
             battleUi.Init(this);
         }
@@ -190,7 +190,7 @@ namespace TowerDefense.Core
             var root = new GameObject("WorldRoot");
             WorldRoot = root.transform;
 
-            // 夜色先铺底（天幕 / 星野 / 地平雾 / 樱瓣），棋盘再压在上面。
+            // 先创建背景，再创建棋盘。
             WorldAmbience.Create(WorldRoot);
             BuildFloor();
 
@@ -207,17 +207,13 @@ namespace TowerDefense.Core
             var spawnerGo = new GameObject("WaveSpawner");
             spawnerGo.transform.SetParent(WorldRoot, false);
             WaveSpawner = spawnerGo.AddComponent<WaveSpawner>();
+            WaveSpawner.OnRoundClear += OnStageCleared;
 
             // 战场氛围光尘（ParticleSystem）
             AmbientDust.Create(WorldRoot);
         }
 
-        /// <summary>
-        /// 地面收束。原来的「一大块纯色 Abyss 方板」被夜色天幕取代了 ——
-        /// 方板的水平边长只有视野的 2/3，左右会留下两条笔直的硬边，把战场切成
-        /// 「贴图 + 黑板」。现在底色由 <see cref="WorldAmbience"/> 的天幕渐变整幅铺满，
-        /// 这里只负责最后压一层暗角，把视线收回棋盘中央。
-        /// </summary>
+        /// <summary>绘制战场暗角；背景由 <see cref="WorldAmbience"/> 提供。</summary>
         private void BuildFloor()
         {
             var vignette = new GameObject("Vignette");
@@ -238,9 +234,11 @@ namespace TowerDefense.Core
             _score = 0;
             _power = 0f;
             _totalKills = 0;
+            _spawnedEnemies = 0;
             _leakedEnemies = 0;
             _combo = 0;
             _bestCombo = 0;
+            CompletedStages = 0;
             State = GameState.Running;
             _enemies.Clear();
             _towers.Clear();
@@ -254,6 +252,12 @@ namespace TowerDefense.Core
         {
             StopGameLoop();
             _gameLoop = StartCoroutine(GameLoop());
+        }
+
+        private void OnStageCleared(int _)
+        {
+            // 失败会重置刷怪器，已通过关数由本局状态单独保存。
+            CompletedStages++;
         }
 
         private void StopGameLoop()
@@ -277,7 +281,7 @@ namespace TowerDefense.Core
             Time.timeScale = 0f; // 结束定格
         }
 
-        // ---- 时间控制（暂停 + 多档变速，参考塔防设计建议）----
+        // ---- 时间控制（暂停与变速）----
 
         private static readonly float[] SpeedLevels = { 0.5f, 1f, 2f, 4f };
 
@@ -340,6 +344,7 @@ namespace TowerDefense.Core
         public void NotifyEnemySpawned(Enemy enemy)
         {
             _enemies.Add(enemy);
+            _spawnedEnemies++;
         }
 
         public void NotifyEnemyRemoved(Enemy enemy)
@@ -360,7 +365,7 @@ namespace TowerDefense.Core
             _combo++;
             if (_combo > _bestCombo) _bestCombo = _combo;
 
-            // 连击激励：每 10 连击额外灵力（节奏与爽点）
+            // 每 10 连击额外回复灵力。
             if (_combo > 0 && _combo % 10 == 0)
             {
                 AddSpirit(2);
@@ -429,7 +434,7 @@ namespace TowerDefense.Core
             return best;
         }
 
-        /// <summary>主动撤退符卡：按造价返还 50% 灵力，让换阵不至于一次误判毁掉整局。</summary>
+        /// <summary>主动撤退符卡，按造价和撤退比例返还灵力。</summary>
         public void RetreatTower(Tower tower)
         {
             if (tower == null) return;
@@ -440,7 +445,7 @@ namespace TowerDefense.Core
             RemoveTower(tower);
         }
 
-        /// <summary>符卡被敌影击毁：只返还 20% 灵力，作为「没守住」的惩罚。</summary>
+        /// <summary>符卡被击毁时，按造价和击毁比例返还灵力。</summary>
         public void OnTowerDefeated(Tower tower)
         {
             if (tower == null) return;
@@ -546,7 +551,7 @@ namespace TowerDefense.Core
             return best;
         }
 
-        // 返回命中敌人数量：既供 Projectile 统计 AOE 命中数，也让 BOOM 知道一次命中了多少目标。
+        // 返回命中数，供子弹经验值和 BOOM 反馈使用。
         public int DamageEnemiesInRadius(Vector2 center, float radius, float damage)
         {
             _spatialGrid.QueryCircle(center, radius + 0.5f, _queryBuffer);
@@ -572,7 +577,7 @@ namespace TowerDefense.Core
             }
         }
 
-        /// <summary>治疗塔：每一帧对范围内友方塔回血（治疗塔不奶自己，避免变成永动机）。</summary>
+        /// <summary>每帧为范围内的非治疗塔恢复生命。</summary>
         public void HealTowersInRange(Vector2 center, int rangeCells, float healing)
         {
             if (healing <= 0f) return;
@@ -604,13 +609,37 @@ namespace TowerDefense.Core
         /// <summary>计算结算数据与 Phigros 风格评级（Φ/V/S/A/B/C）。</summary>
         public GameResult GetResult()
         {
-            int totalEnemies = IsPractice ? GameConfig.RoundEnemyCount(StartStage) : GameConfig.TotalEnemies;
-            float killProgress = totalEnemies > 0 ? (float)_totalKills / totalEnemies : 0f;
-            float lifeRatio = GameConfig.StartingLives > 0 ? (float)_lives / GameConfig.StartingLives : 0f;
-            float scoreFactor = Mathf.Clamp01(_score / (float)GameConfig.TargetScore);
+            float killRatio = _spawnedEnemies > 0 ? Mathf.Clamp01((float)_totalKills / _spawnedEnemies) : 0f;
+            float lifeRatio = GameConfig.StartingLives > 0 ? Mathf.Clamp01((float)_lives / GameConfig.StartingLives) : 0f;
+            float comboRatio = _spawnedEnemies > 0 ? Mathf.Clamp01((float)_bestCombo / _spawnedEnemies) : 0f;
+            float performance = 0.5f * killRatio + 0.3f * lifeRatio + 0.2f * comboRatio;
+            bool perfect = !IsPractice && State == GameState.Victory && CompletedStages == 5
+                && _leakedEnemies == 0 && _totalKills == GameConfig.TotalEnemies;
 
-            int rating = Mathf.RoundToInt(100f * (0.4f * killProgress + 0.4f * lifeRatio + 0.2f * scoreFactor));
-            bool perfect = killProgress >= 1f && _leakedEnemies == 0;
+            int rating;
+            if (perfect)
+            {
+                rating = 100;
+            }
+            else if (IsPractice)
+            {
+                rating = Mathf.RoundToInt(99f * performance);
+            }
+            else
+            {
+                // 表现只影响本档分数，不能跨越已通过关数对应的评级。
+                int minimum, maximum;
+                switch (CompletedStages)
+                {
+                    case 0: minimum = 0; maximum = 59; break;
+                    case 1: minimum = 60; maximum = 69; break;
+                    case 2: minimum = 70; maximum = 79; break;
+                    case 3: minimum = 80; maximum = 89; break;
+                    case 4: minimum = 90; maximum = 94; break;
+                    default: minimum = 95; maximum = 99; break;
+                }
+                rating = Mathf.RoundToInt(Mathf.Lerp(minimum, maximum, performance));
+            }
 
             // 结界纪录
             bool isNew = !IsPractice && _score > BestScore;
@@ -623,6 +652,8 @@ namespace TowerDefense.Core
             return new GameResult
             {
                 Victory = State == GameState.Victory,
+                CompletedStages = CompletedStages,
+                IsPractice = IsPractice,
                 Score = _score,
                 TotalKills = _totalKills,
                 LeakedEnemies = _leakedEnemies,

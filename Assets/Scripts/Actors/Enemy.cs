@@ -8,9 +8,8 @@ using TowerDefense.Util;
 namespace TowerDefense.Actors
 {
     /// <summary>
-    /// 敌人：沿预设路径点向终点移动，具备血量、减速、死亡与到达终点逻辑。
-    /// 采用对象池复用；不使用物理引擎，移动与命中检测均在 Update 中手动完成，
-    /// 从而避免层/标签/Rigidbody 配置，保证工程「开箱即跑」。
+    /// 沿预设路线移动，管理血量、减速和攻击，并在死亡或抵达基地时回收。
+    /// 使用对象池；移动与碰撞判定不依赖物理引擎。
     /// </summary>
     [RequireComponent(typeof(SpriteRenderer))]
     public sealed class Enemy : MonoBehaviour
@@ -54,18 +53,18 @@ namespace TowerDefense.Actors
         public float Radius => _definition != null ? _definition.Radius : 0.3f;
         public float HealthRatio => _maxHealth > 0f ? _health / _maxHealth : 0f;
 
-        // ---- UI 只读快照（HudEnemyInspector 按需查阅；不参与任何玩法计算）----
+        // ---- UI 只读数据 ----
         public EnemyDefinition Definition => _definition;
         public float Health => _health;
         public float MaxHealth => _maxHealth;
         public bool IsBoss => _definition != null && _definition.Type == EnemyType.Boss;
 
-        /// <summary>是否处于减速状态（霜华符卡命中中）。</summary>
+        /// <summary>减速仍在生效。</summary>
         public bool IsSlowed => _slowTimer > 0f && _slowFactor < 0.999f;
 
         /// <summary>
         /// 到基地的最短距离（用于「距离终点最近」索敌策略）。
-        /// 直接用 MapSystem 预计算的 BFS 距离场（O(1) 查表），替代逐段求和。
+        /// 优先读取地图的 BFS 距离场；无地图时沿剩余路线求和。
         /// </summary>
         public float DistanceToEnd
         {
@@ -95,14 +94,13 @@ namespace TowerDefense.Actors
         {
             var go = new GameObject("Enemy");
 
-            // 落地辉光：独立子节点，挂在根上会带着整只敌人一起位移，所以必须单独建。
-            // 它不随朝向旋转，用阵营色给地面染一小片光，比单纯的黑影更有"活着"的感觉。
+            // 落地辉光独立于朝向组，保持贴地且不随敌人旋转。
             var glow = new GameObject("Glow");
             glow.transform.SetParent(go.transform, false);
             var sr = glow.AddComponent<SpriteRenderer>();
             sr.sortingOrder = WorldArt.LayerEnemyGlow;
 
-            // 地面柔影（投影在 z=0，透视相机下产生浮空立体感）
+            // 地面投影位于 z=0。
             var shadow = new GameObject("Shadow");
             shadow.transform.SetParent(go.transform, false);
             var shadowSr = shadow.AddComponent<SpriteRenderer>();
@@ -112,7 +110,6 @@ namespace TowerDefense.Actors
             var spin = new GameObject("Spin");
             spin.transform.SetParent(go.transform, false);
 
-            // 深色描边（底层），保证任何剪影都能从路面上"剥"出来
             var outline = new GameObject("Outline");
             outline.transform.SetParent(spin.transform, false);
             var outlineSr = outline.AddComponent<SpriteRenderer>();
@@ -129,13 +126,11 @@ namespace TowerDefense.Actors
             var bodySr = body.AddComponent<SpriteRenderer>();
             bodySr.sortingOrder = WorldArt.LayerEnemyBody;
 
-            // 能量芯（中心较亮的职业色核心）
             var core = new GameObject("Core");
             core.transform.SetParent(spin.transform, false);
             var coreSr = core.AddComponent<SpriteRenderer>();
             coreSr.sortingOrder = WorldArt.LayerEnemyCore;
 
-            // 顶部受光（统一打光：缩小上移的一层亮面）
             var highlight = new GameObject("Highlight");
             highlight.transform.SetParent(spin.transform, false);
             var highlightSr = highlight.AddComponent<SpriteRenderer>();
@@ -163,7 +158,6 @@ namespace TowerDefense.Actors
             enemy.Configure(definition, healthScale, speedScale, damageScale, path);
             GameManager.Instance.NotifyEnemySpawned(enemy);
 
-            // Boss 生成时触发预警
             if (definition.Type == EnemyType.Boss)
             {
                 OnBossSpawned?.Invoke(enemy);
@@ -203,8 +197,7 @@ namespace TowerDefense.Actors
             _shadowSr.transform.localScale = new Vector3(1f, 0.6f, 1f);
             _shadowSr.sprite = SpriteFactory.Circle(r * 0.78f, WorldArt.Shadow);
 
-            // 统一剪影三件套：描边（放大）→ 本体 → 顶部受光（缩小上移）。
-            // 三层复用同一张贴图，只改 renderer.color，不额外产生贴图。
+            // 描边、本体和顶部受光共用剪影贴图，通过 renderer.color 调整明暗。
             var shape = SilhouetteFor(definition.Type, color);
             _outlineSr.sprite = shape;
             _outlineSr.transform.localScale = Vector3.one * 1.16f;
@@ -223,7 +216,7 @@ namespace TowerDefense.Actors
             _coreSr.transform.localPosition = new Vector3(0f, -r * 0.10f, -0.02f);
             _coreSr.color = Color.white;
 
-            // Boss 威胁环（只有 Boss 显示，形状语言上就用"多一圈"表达威胁）
+            // Boss 专属威胁环。
             bool boss = definition.Type == EnemyType.Boss;
             _crownSr.gameObject.SetActive(boss);
             if (boss)
@@ -232,7 +225,7 @@ namespace TowerDefense.Actors
                 _crownSr.color = Color.white;
             }
 
-            // 初始朝向：指向路线第二段，避免出场瞬间朝向错误
+            // 初始朝向沿路线第一段。
             _facing = _path != null && _path.Length >= 2
                 ? ((Vector2)_path[1] - (Vector2)_path[0]).normalized
                 : Vector2.up;
@@ -260,7 +253,7 @@ namespace TowerDefense.Actors
             TryAttackTower();
         }
 
-        /// <summary>入场过冲登场 + 行进的微弱呼吸脉冲（只动轮廓，不改碰撞体积）。</summary>
+        /// <summary>入场缩放和行进脉冲只影响显示，不改变碰撞半径。</summary>
         private void AnimateVisual()
         {
             _animT += Time.deltaTime;
@@ -276,7 +269,7 @@ namespace TowerDefense.Actors
                 transform.localScale = Vector3.one * pulse;
             }
 
-            // 状态可视化：被霜华减速时本体泛青，不用读数字就知道这只在"被控"。
+            // 减速时本体泛青。
             if (_bodySr != null)
             {
                 _bodySr.color = IsSlowed
@@ -284,8 +277,6 @@ namespace TowerDefense.Actors
                     : Color.white;
             }
 
-            // 朝向：平滑转到移动方向。箭形剪影因此始终"头朝前"，
-            // 玩家不用看血条也能判断敌人在往哪走（状态可视化替代数字）。
             if (_spin != null && _facing.sqrMagnitude > 0.0001f)
             {
                 float target = Mathf.Atan2(_facing.y, _facing.x) * Mathf.Rad2Deg - 90f;
@@ -295,7 +286,7 @@ namespace TowerDefense.Actors
             }
         }
 
-        /// <summary>分型剪影：形状即信息——细箭=快、宽六边形=厚甲、大箭=Boss。</summary>
+        /// <summary>用剪影区分敌人类型。</summary>
         private static Sprite SilhouetteFor(EnemyType type, Color color)
         {
             switch (type)
@@ -394,7 +385,6 @@ namespace TowerDefense.Actors
                 OnBossKilled?.Invoke(this);
             }
 
-            // 击破回复：直接把灵力数字弹在敌影身上，让「不同敌影回不同灵力」可见。
             FloatingTextView.SpawnWorld(transform.position + Vector3.up * 0.55f, "灵力 +" + _spiritReward,
                 TdTheme.GoldText, 0.9f, isBoss ? 18 : 14);
             Despawn();

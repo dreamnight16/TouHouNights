@@ -10,8 +10,8 @@ using TowerDefense.Systems;
 namespace TowerDefense.UI
 {
     /// <summary>
-    /// “结界作战档案”战斗界面。这个类是唯一的战斗 UI 装配入口；它通过 Init 注入
-    /// GameManager。状态刷新、界面装配和视觉基础分别放在独立 partial 文件。
+    /// 战斗 UI 装配入口，通过 Init 注入 GameManager。
+    /// 状态刷新、界面装配和基础控件分别放在 partial 文件中。
     /// </summary>
     public sealed partial class BattleUiRoot : MonoBehaviour
     {
@@ -23,7 +23,7 @@ namespace TowerDefense.UI
             public UiText Cost;
             public UiText State;
             public RectTransform Rect;
-            /// <summary>选中时亮起的辉光。「选中」这件事由光表达，不再叠一条更粗的边框。</summary>
+            /// <summary>选中时亮起的辉光。</summary>
             public UiHalo Halo;
             public Vector2 RestPosition;
             /// <summary>可以开始落位的时间（unscaled）。错峰用，见 <c>AnimateHand</c>。</summary>
@@ -31,7 +31,7 @@ namespace TowerDefense.UI
             public int VisualState = -1;
         }
 
-        /// <summary>符卡静止高度 / 选中时向上展开的增量（方舟干员卡：选中即长高，而不是变色）。</summary>
+        // 卡片底边固定，选中时增加高度。
         private const float CardHeight = 136f;
         private const float CardExpand = 18f;
 
@@ -50,7 +50,7 @@ namespace TowerDefense.UI
         private UiText _slots;
         private UiText _speed;
         private readonly UiText[] _speedLabels = new UiText[4];
-        /// <summary>当前倍速档下方的短横线。档位本身继续只用文字明度区分，线只负责「是这一档」。</summary>
+        /// <summary>当前倍速档下方的状态标记。</summary>
         private readonly Image[] _speedBars = new Image[4];
         private UiText _power;
         private UiText _powerBonus;
@@ -201,18 +201,12 @@ namespace TowerDefense.UI
             if (_alert == null) return;
             if (_alertRoutine != null) StopCoroutine(_alertRoutine);
 
-            // 提示条是「事件」而不是「控件」：整块用事件色染色，只有标题保留满强度。
-            // 底色压到接近墨黑，让那一抹 Accent 在满屏暗色里跳出来 —— 一屏最多同时存在一处。
-            //
-            // 平涂而非渐变。原来的两点渐变（.86 → .95）几乎看不出差别，却让这块面
-            // 读起来像「上半截被照到」，而它只是一个存在 1.5 秒的通知。
-            // 事件色交给描边和辉光说，它们本来就是这块面板上唯一可变的部分。
+            // 背景保持暗色，描边与辉光随事件色变化。
             _alertPanel.Flat(BattleUiTheme.Deepen(accent, .90f))
                        .Border(BattleUiTheme.WithAlpha(accent, .55f), BattleUiTheme.Border)
                        .Glow(BattleUiTheme.WithAlpha(accent, .26f), 22f);
 
-            // 警戒条纹只在 Boss 这种非日常事件亮出：一条 45° 斜纹带压在面板左缘，
-            // 颜色随事件色走。常规波次不配条纹 —— 条纹一旦随处可见，它就只是装饰。
+            // 警戒条纹仅用于强敌预警。
             if (_alertStripes != null)
             {
                 _alertStripes.color = BattleUiTheme.WithAlpha(accent, .92f);
@@ -224,11 +218,6 @@ namespace TowerDefense.UI
             _alertSub.content = sub;
             _alertSub.color = BattleUiTheme.WithAlpha(accent, .90f);
             _alert.SetActive(true);
-            // 播报是「事件」——它得自己走进来。原来这里只有一句 SetActive(true)，
-            // 面板是「啪」一下出现在屏幕上的，读起来像界面掉了一帧。
-            //
-            // 方向用**从下往上**，和出阵卡、以及整套 HUD 的入场是同一个方向：
-            // 这块界面里「出现」这个词只有一个含义，就是「升上来」。
             UiEntrance.Play((RectTransform)_alert.transform, Vector2.down * 12f, 0f, BattleUiTheme.Motion.Normal);
             _alertRoutine = StartCoroutine(HideAlertAfter(duration));
         }
@@ -237,8 +226,6 @@ namespace TowerDefense.UI
         {
             yield return new WaitForSecondsRealtime(duration);
 
-            // 出场对称地再走一遍。一条无声无息消失的播报，和它无声无息地出现一样糟 ——
-            // 玩家会以为是自己看漏了，而不是「它已经播完了」。
             var group = _alert.GetComponent<CanvasGroup>();
             if (group != null)
             {
@@ -304,15 +291,10 @@ namespace TowerDefense.UI
             int roundTotal = _spawner != null ? _spawner.CurrentRoundTotal : 0;
             int roundSpawned = _spawner != null ? _spawner.CurrentRoundSpawned : 0;
             _mission.content = roundIndex < 0 ? "作战准备" : _roundTitle;
-            // 备战期没有幕次可报。原来的占位是 40pt 的「—」，渲染出来像一条凭空出现的横线；
-            // 「00」读起来才像一个还没开始的编号，配色也退到灰阶里去。
             _stageNumber.content = roundIndex < 0 ? "00" : (roundIndex + 1).ToString("00");
             _stageNumber.color = roundIndex < 0 ? BattleUiTheme.WithAlpha(BattleUiTheme.Ash, .55f) : BattleUiTheme.Bone;
             _missionSub.content = (_game.IsPractice ? "练习 / " : "") + (_spawner != null ? _spawner.PhaseText : "准备");
-            // 大数字都写成「A / B」形式：同一段宽度里字号才能开到最大，
-            // 把「场上还有几只」这类次要信息挤到下面的小米字去。
-            // 击破数变化时数字做一次 0.18s 的放大脉冲（方舟 DP 跳动的感觉）——
-            // 战斗里数字偶尔在变，动一下才像「真的在计数」。
+            // 首次刷新不播放脉冲，仅在计数增加时提示。
             int kills = _game.TotalKills;
             if (kills > _lastKills && _lastKills >= 0) Pulse(_kills.rectTransform, ref _killsPulse);
             _lastKills = kills;
@@ -323,8 +305,6 @@ namespace TowerDefense.UI
             _barrier.color = _game.Lives <= 1 ? BattleUiTheme.Scarlet : BattleUiTheme.Bone;
             _speed.content = _game.SpeedScale.ToString("0.#") + "×";
 
-            // 档位只用颜色区分（不重建网格，纯改 text color）：当前档 = 骨白，其余 = 灰。
-            // 档下再加一条 2px 的骨白短线，不换颜色不换字号 —— 玩家扫一眼就知道自己在哪一档。
             for (int i = 0; i < _speedLabels.Length; i++)
             {
                 if (_speedLabels[i] == null) continue;
@@ -343,15 +323,11 @@ namespace TowerDefense.UI
             RefreshBarrage();
         }
 
-        /// <summary>
-        /// 弹幕按钮只有两个状态，而且区别极大：就绪 = 整块绯色实心（全屏唯一的大面积 Accent），
-        /// 充能中 = 沉成暗板 + 灰字。用「亮起来」而不是「变灰」表达就绪 ——
-        /// 玩家在等的是它亮，不是等它可用。
-        /// </summary>
+        /// <summary>就绪时显示绯色按钮，充能时使用暗底与灰字。</summary>
         private void RefreshBarrage()
         {
             int state = _game.CanBarrage ? 1 : 0;
-            // 灯是无状态的开关，每帧设一次无所谓；放在状态比较之外，就绪那一刻会自然闪起来。
+            // 持续同步辉光目标；面板网格只在状态变化时更新。
             if (_barrageHalo != null) _barrageHalo.Set(state == 1);
 
             if (_barrageState != state)
@@ -359,8 +335,6 @@ namespace TowerDefense.UI
                 _barrageState = state;
                 if (state == 1)
                 {
-                    // 就绪 = 绯色实心 + 辉光。没有白色受光带 —— 和主按钮同一条规则：
-                    // 实心的面积和那圈光已经足够把「现在可以了」喊出来，不需要再假装有盏灯。
                     _barragePanel.Flat(BattleUiTheme.Scarlet)
                                  .Border(BattleUiTheme.Lift(BattleUiTheme.Scarlet, .45f), BattleUiTheme.Border)
                                  .Glow(BattleUiTheme.GlowScarlet, 10f);
@@ -377,7 +351,7 @@ namespace TowerDefense.UI
         }
         private void RefreshHand()
         {
-            // 灵力增加时大数字脉冲一次；减少（买塔/撤退）保持安静 —— 花钱不需要庆祝。
+            // 仅在灵力增加时播放脉冲。
             int spirit = _game.Spirit;
             if (spirit > _lastGold && _lastGold >= 0) Pulse(_gold.rectTransform, ref _goldPulse);
             _lastGold = spirit;
@@ -396,8 +370,6 @@ namespace TowerDefense.UI
                 bool selected = _game.TowerPlacer != null && _game.TowerPlacer.SelectedTower == null && _game.TowerPlacer.SelectedType == card.Type;
 
                 card.Button.interactable = allowed;
-                // 卡片上唯一的大字是消耗，所以它的颜色就是「买得起 / 买不起」的唯一信号：
-                // 买得起 = 骨白（普通数字），买不起 = 灰（退到暗处）。不标红。
                 card.Cost.color = allowed || lack == 0 ? BattleUiTheme.Bone : BattleUiTheme.WithAlpha(BattleUiTheme.Ash, .75f);
 
                 card.State.content = _game.IsPaused ? "暂停中"
@@ -418,14 +390,11 @@ namespace TowerDefense.UI
             for (int i = 0; i < _cards.Length; i++)
             {
                 var card = _cards[i];
-                // 还没轮到自己入场就待在起点别动，否则 AnimateHand 会在开场那一帧
-                // 把卡片从起点直接拽到落点，错峰就白做了。
+                // 延迟期间保持起点，避免首次 Update 提前开始入场动画。
                 if (Time.unscaledTime < card.EnterAt) continue;
 
                 bool selected = _game.TowerPlacer.SelectedTower == null && _game.TowerPlacer.SelectedType == card.Type;
-                // 选中的卡向上**长高** 18px（方舟干员卡的做法）：卡片底部钉死，
-                // 只让顶边升起来，内容随顶边一起上移 —— 与其给整张卡换一圈描边，
-                // 不如让它的体积本身说「我起来了」。位置只负责入场归位，不再叠加位移。
+                // 位置负责入场归位，选中状态只改变高度，保持底边不动。
                 card.Rect.anchoredPosition = Vector2.Lerp(card.Rect.anchoredPosition, card.RestPosition,
                     1f - Mathf.Exp(-18f * Time.unscaledDeltaTime));
                 var size = card.Rect.sizeDelta;
@@ -435,8 +404,8 @@ namespace TowerDefense.UI
             }
         }
 
-        /// <summary>0.18s 的单次放大脉冲：1 → 1.12 → 1。数字「跳了一下」，但没有位移、没有颜色变化。</summary>
-        private System.Collections.IEnumerator PulseRoutine(RectTransform rect)
+        /// <summary>0.18 秒的单次缩放脉冲：1 → 1.12 → 1。</summary>
+        private IEnumerator PulseRoutine(RectTransform rect)
         {
             float t = 0f;
             while (t < 1f)
@@ -456,19 +425,12 @@ namespace TowerDefense.UI
         }
 
         /// <summary>
-        /// 卡片只有三种状态，而且全部靠「本体亮度」区分，不靠色相：
-        /// 待选 = 石墨、选中 = 板岩 + 绯色描边与辉光、不可出 = 退到炭。
-        ///
-        /// 三级台阶现在是**平涂**的，一档一档干净地亮上去 —— 这正是卡片唯一的深度语言：
-        /// 亮一档就是浮高一层。选中态在此之上再加两样：绯色描边（颜色）与 UiHalo（光），
-        /// 外加 AnimateHand 把它推高 9px（动）。三样都真的对应一个状态。
-        ///
-        /// 不可出**绝不标红** —— 绯红是危险与就绪专用的，被「钱不够」这种日常状态占掉就失效了。
+        /// 按可部署、选中、不可部署三种状态更新卡面亮度与描边。
+        /// 选中时的高度变化由 AnimateHand 处理。
         /// </summary>
         private static void ApplyCardVisualState(DeployCard card, bool selected, bool allowed)
         {
-            // 辉光是无状态的开关，每帧设一次都无所谓（内部只记一个目标值），
-            // 所以放在提前返回之前 —— 否则「选中但视觉档位没变」时灯光会漏掉。
+            // 不可部署时选中状态仍可能变化，辉光需要在提前返回前同步。
             card.Halo.Set(selected);
 
             int state = !allowed ? 0 : (selected ? 2 : 1);
@@ -478,8 +440,7 @@ namespace TowerDefense.UI
             switch (state)
             {
                 case 2:
-                    // 只有一圈很紧的贴边热芯；外圈那层柔光是 UiHalo 在管，它可以呼吸、可以淡出，
-                    // 而烘进网格的 Glow 改一次就要重建网格，做不了动画。
+                    // 动态外辉光由 UiHalo 处理，这里只设置固定的贴边辉光。
                     card.Panel.Flat(BattleUiTheme.Stone)
                               .Border(BattleUiTheme.Scarlet, BattleUiTheme.Border)
                               .Glow(BattleUiTheme.GlowScarlet, 9f);
@@ -514,9 +475,7 @@ namespace TowerDefense.UI
             _dossierBoom.content = tower.BoomReady ? "符卡就绪" : "符卡充能 " + Mathf.RoundToInt(tower.BoomReadyRatio * 100f) + "%";
             _boom.interactable = tower.BoomReady && !_game.IsPaused;
 
-            // 发动键只有「就绪」时才配得上绯色实心。充能中的它必须沉下去 ——
-            // 否则一个按不动的亮红键比没有键更糟：它一直在喊「现在可以了」。
-            // 撤退键是 Ghost、永远安静，两个键的权重差由此保持真实。
+            // 区分可发动、已就绪但暂停、充能中的三种状态。
             int state = _boom.interactable ? 2 : tower.BoomReady ? 1 : 0;
             if (_boomState != state)
             {
@@ -555,17 +514,12 @@ namespace TowerDefense.UI
                     "击破    " + _game.TotalKills + "\n" +
                     "残机    " + _game.Lives + " / " + GameConfig.StartingLives + "\n" +
                     "得分    " + _game.Score;
-                // 音乐键不能是永远一模一样的「开 / 关」——那等于让玩家试错。
-                // 状态写在按钮上，按完下一个刷新周期就会改过来。
                 if (_musicLabel != null)
                     _musicLabel.content = TowerDefense.Effects.BattleMusic.IsMuted ? "音乐　关" : "音乐　开";
             }
         }
 
-        /// <summary>
-        /// 结算屏是「这局已经结束」的宣告：HUD 从屏幕上撤下，只留结算本身。
-        /// 原来那种 90% 的半透明遮罩下顶栏和卡组仍在透光，结果字排和 HUD 文字叠在一起读。
-        /// </summary>
+        /// <summary>结算时隐藏常规 HUD，避免文字叠在结算内容后方。</summary>
         private void SetHudHidden(bool hidden)
         {
             if (_hudHidden == hidden) return;
@@ -575,25 +529,25 @@ namespace TowerDefense.UI
         }
         private void ShowResult(GameResult result)
         {
-            _resultTitle.content = (_game.IsPractice ? "练习 / " : "") + (result.Victory ? "异变解决" : "满身疮痍");
+            _resultTitle.content = (result.IsPractice ? "练习 / " : "") + (result.Victory ? "异变解决" : "满身疮痍");
             _resultTitle.color = result.Victory ? BattleUiTheme.Bone : BattleUiTheme.Scarlet;
 
-            // 结果色带同题：胜利骨白、败北绯。两个字说的是同一件事。
             if (_resultBand != null) _resultBand.color = result.Victory ? BattleUiTheme.Bone : BattleUiTheme.Scarlet;
 
             _resultGrade.content = result.Grade;
-            // 评级是全场最大的字形，所以它的颜色就是结果的温度：
-            // Φ / V / S 这些「打得好」的评级用骨白，A 以下退成灰 —— 尺度已经足够大，颜色只做分层。
             _resultGrade.color = (result.Grade == "Φ" || result.Grade == "V" || result.Grade == "S")
                 ? BattleUiTheme.Bone : BattleUiTheme.Ash;
 
             _resultStats.content =
+                (result.IsPractice
+                    ? "单关练习    第 " + (_game.StartStage + 1) + " 关 · " + (result.CompletedStages > 0 ? "已通过" : "未通过")
+                    : "战役通关    " + result.CompletedStages + " / " + GameConfig.Rounds.Length) + "\n" +
+                "综合评分    " + result.Rating + " / 100\n" +
                 "得分    " + result.Score + "\n" +
                 "击破    " + result.TotalKills + "\n" +
                 "漏过    " + result.LeakedEnemies + "\n" +
                 "残机    " + result.LivesRemaining + "\n" +
                 "连击    " + result.BestCombo;
-            // 新纪录只在该出现的那一局出现：一小行绯字，不抢评级字母的视线。
             if (_resultRecord != null) _resultRecord.gameObject.SetActive(result.NewRecord && result.Victory);
             _result.SetActive(true);
         }

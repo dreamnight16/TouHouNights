@@ -73,8 +73,7 @@ public static class BattleUiPlayVerification
             if (phase == 2)
             {
                 if (game.TowerCount != 0) throw new Exception("Deployments retained after restart");
-                // 部署一座塔再选中它：左下角的固定档案面板（UnitDossier）只在选中时出现，
-                // 它的排版只有真实截图能验收。走 TryDeploy —— 和玩家点击同一条 Public 路径。
+                // 使用公共部署入口，为后续选中塔并截取档案面板准备对象。
                 if (!game.TowerPlacer.TryDeploy(new Vector2Int(-6, -2), TowerDefense.Data.TowerType.Sniper))
                     throw new Exception("Deploy for dossier failed");
                 started = EditorApplication.timeSinceStartup;

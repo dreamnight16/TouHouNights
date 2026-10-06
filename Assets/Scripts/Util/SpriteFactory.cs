@@ -5,14 +5,10 @@ using UnityEngine;
 namespace TowerDefense.Util
 {
     /// <summary>
-    /// 运行时生成纯色/圆形/方形/圆角/光晕/环形/三角形/心形/渐变贴图，让工程不依赖任何外部美术资源即可运行。
-    /// 生成结果按「形状参数 + 尺寸 + 颜色」缓存，避免每次刷怪/开火都新建纹理造成内存抖动。
-    /// 另外提供带九宫格边框（border）的圆角 UI 切片贴图（方舟/Fluent 式卡片），
-    /// 用于卡片/按钮/面板，保证任意缩放时圆角近似不变形。
+    /// 生成并缓存运行时图元、氛围贴图和圆角 UI 九宫格贴图。
     /// </summary>
     public static class SpriteFactory
     {
-        // 512：世界贴图实体按更高分辨率烘焙，边缘抗锯齿带按 1/半径 比例更细腻，消除「精致感不足」的颗粒感。
         private const int Resolution = 512;
         private static readonly Dictionary<string, Sprite> Cache = new Dictionary<string, Sprite>();
 
@@ -49,8 +45,7 @@ namespace TowerDefense.Util
         }
 
         /// <summary>
-        /// 生成受光球体 Sprite（左上受光、右下渐暗，明暗在贴图层逐像素烘焙），
-        /// 让圆形单位呈现 3D 体积感，而非 Circle 那种平涂圆块。适合做塔身/敌人主体。
+        /// 生成球体 Sprite，逐像素烘焙左上受光、右下渐暗的明暗变化。
         /// </summary>
         public static Sprite Sphere(float radius, Color color)
         {
@@ -64,7 +59,7 @@ namespace TowerDefense.Util
                 float ny = py / half;
                 float d = Mathf.Sqrt(nx * nx + ny * ny);
                 float edge = Mathf.Clamp01((1f - d) * half / 2f);   // 圆软边（约 2px 抗锯齿）
-                // 光从左上 45° 来：正面偏亮、右下压到约 0.38 倍亮度 → 像滚动的珠子/玻璃球
+                // 左上方向更亮，右下方向更暗。
                 float light = Mathf.Clamp01(0.40f + 0.60f * (0.5f - 0.5f * (nx * 0.71f - ny * 0.71f)));
                 Color c = Color.Lerp(color * 0.38f, color * 1.30f, light);
                 c.a = edge;
@@ -123,9 +118,8 @@ namespace TowerDefense.Util
         }
 
         /// <summary>
-        /// 生成 45° 警戒条纹 Sprite（方舟式警戒带的「斜纹」本体），矩形按 width × height 世界单位烘焙。
-        /// 条纹周期沿世界坐标计量：phase = (x + y) mod period，前半周期亮、后半周期透明，
-        /// 边缘各留约 2 世界单位的软边。宽高比烘进纹理，UI 侧任意拉伸都保持屏幕上 45° 的走向。
+        /// 生成斜向条纹，矩形尺寸为 width × height 世界单位。
+        /// 周期按世界坐标的 x + y 计算，周期首尾保留约两像素的软边。
         /// </summary>
         public static Sprite Hazard(float width, float height, float period, Color color)
         {
@@ -179,8 +173,7 @@ namespace TowerDefense.Util
         }
 
         /// <summary>
-        /// 正六边形（尖顶：上下各一个顶点），外径 = radius。
-        /// 策略棋盘的通用「地块/机体」轮廓，比圆形更有工业感、比方形更柔和。
+        /// 尖顶六边形 Sprite，纹理边长对应 2 * radius 世界单位。
         /// </summary>
         public static Sprite Hex(float radius, Color color)
         {
@@ -217,7 +210,6 @@ namespace TowerDefense.Util
         /// <summary>菱形 Sprite：宽 width、高 height（世界单位）。用于针状/晶体类剪影。</summary>
         public static Sprite Diamond(float width, float height, Color color)
         {
-            float half = Resolution * 0.5f;
             float size = Mathf.Max(width, height);
             float s = size / Resolution;              // 每像素对应的世界尺寸
             float a = Mathf.Max(0.0001f, width * 0.5f);
@@ -233,7 +225,6 @@ namespace TowerDefense.Util
 
         /// <summary>
         /// 朝上的箭形 Sprite（窄柄 + 带肩箭头）：宽 width、高 height（世界单位）。
-        /// 用作敌人/弹丸的「指向性」剪影 —— 有明确前后，一眼能看出朝向。
         /// </summary>
         public static Sprite Arrow(float width, float height, Color color)
         {
@@ -308,8 +299,7 @@ namespace TowerDefense.Util
         }
 
         /// <summary>
-        /// 生成灰度噪点 Sprite（0~1 随机明度），用于 Fluent 亚克力磨砂质感：
-        /// 以低 alpha 平铺覆盖在面板上，模拟玻璃/亚克力内部噪点。
+        /// 生成可平铺的灰度噪点贴图，明度在 0~1 之间随机变化。
         /// </summary>
         public static Sprite Noise(Color color)
         {
@@ -363,13 +353,11 @@ namespace TowerDefense.Util
 
         /// <summary>
         /// 生成纯白圆角 UI 贴图（带 border 九宫格），Image.type = Sliced 时任意尺寸圆角不变形。
-        /// 贴图为白色、仅含 alpha，运行时用 Image.color 染色，才能支持按钮 hover/press 状态变色。
-        /// 方舟/类 Fluent 视觉：卡片圆角 + 细描边 + 亚克力材质（亚克力由 UI/UI_Acrylic shader 提供）。
+        /// 贴图为白色、仅含 alpha，运行时用 Image.color 染色。
         /// </summary>
         public static Sprite UiRounded(UiKind kind)
         {
-            // 按 2x 分辨率烘焙（UHD）：显示端的 1px = 贴图 2px，圆角边缘抗锯齿加倍细腻，
-            // 9-slice border 同比例放大，Image 缩放显示时圆角尺寸不变而边缘锐利。
+            // 按典型控件尺寸的 2 倍烘焙，九宫格边框同步放大。
             int w, h, r;
             switch (kind)
             {
@@ -403,11 +391,10 @@ namespace TowerDefense.Util
             return sprite;
         }
 
-        // ---- 氛围与纹样（纯程序化，仍然零外部资源）----
+        // ---- 氛围与纹样 ----
 
         /// <summary>
-        /// 樱瓣：一枚尖椭圆，顶点朝 +y，中段饱满、两端收细，峰值 alpha 略小于 1（花瓣是半透的）。
-        /// 用于战场上飘落的花瓣 —— 单个花瓣尺寸小，所以形状只需要轮廓正确，不需要叶脉细节。
+        /// 朝 +y 的尖椭圆樱瓣，两端收细，峰值 alpha 为 0.92。
         /// </summary>
         public static Sprite Petal(float size, Color color)
         {
@@ -424,9 +411,7 @@ namespace TowerDefense.Util
         }
 
         /// <summary>
-        /// 封印环：一圈断成 <paramref name="arcs"/> 段的细环，缺口落在对角线上。
-        /// 这是整套视觉里唯一的「纹样」——用在关卡编号、结算评级、战场门扉上，
-        /// 表达「封印 / 结界」而不是装饰。
+        /// 断成 <paramref name="arcs"/> 段的细环；arcs=4 时缺口落在对角线上。
         /// </summary>
         public static Sprite SealRing(float size, float thickness, Color color, int arcs = 4, float gap = 0.22f)
         {
@@ -445,7 +430,7 @@ namespace TowerDefense.Util
                 if (radial <= 0f) return 0f;
 
                 float segment = Mathf.PI * 2f / arcs;
-                // 相位偏移半段，让缺口落在 45° 对角线上；对 arcs=4 尤其明显。
+                // 偏移半段相位，使 arcs=4 时的缺口落在 45° 对角线上。
                 float local = Mathf.Repeat(Mathf.Atan2(py, px) + segment * 0.5f, segment);
                 float trim = segment * gap * 0.5f;
                 float angularAa = Mathf.Max(0.02f, aa / Mathf.Max(0.05f, outerRadius));
@@ -460,7 +445,7 @@ namespace TowerDefense.Util
             return sprite;
         }
 
-        /// <summary>四芒星闪光：中心核 + 沿坐标轴的四道星芒。用于金尘与命中亮点。</summary>
+        /// <summary>四芒星闪光：中心核与沿坐标轴的四道星芒。</summary>
         public static Sprite Sparkle(float size, Color color)
         {
             float half = Resolution * 0.5f;
@@ -476,9 +461,8 @@ namespace TowerDefense.Util
         }
 
         /// <summary>
-        /// 夜空垂直渐变（不透明）。三段插值，并叠加逐行有序抖动 ——
-        /// 8 位色深的暗部渐变必然起色带，抖动是唯一不用额外贴图就能打散它的办法。
-        /// 贴图只有 16 px 宽：横向拉伸时每一行颜色相同，不会产生棋盘格。
+        /// 不透明的三色垂直渐变，叠加逐行微量抖动以减轻暗部色带。
+        /// 同一行颜色一致，避免横向拉伸产生噪点格纹。
         /// </summary>
         public static Sprite SkyGradient(Color top, Color mid, Color bottom)
         {
@@ -496,15 +480,13 @@ namespace TowerDefense.Util
             uint hash = 0x9E3779B9u;
             for (int y = 0; y < h; y++)
             {
-                // SetPixels32 的索引 0 是**贴图底行**，而贴图底行就是 sprite 底边（= 屏幕底）。
-                // 这里曾经写成 1 - (y+0.5)/h，于是整片天幕上下颠倒：地平线的暖光跑到画面顶端，
-                // 天顶的近黑沉到了棋盘底下 —— 看起来就像「天空挂在头顶、地面在发光」。
+                // SetPixels32 从底行开始，t 增大时由底部向顶部插值。
                 float t = (y + 0.5f) / h;   // 0 = 屏幕底，1 = 屏幕顶
                 Color c = t < 0.55f
                     ? Color.Lerp(bottom, mid, t / 0.55f)
                     : Color.Lerp(mid, top, (t - 0.55f) / 0.45f);
 
-                // 每行一个 ±1/255 的抖动值：足以打散色带，又低于可见阈值。
+                // 每行共享一个 ±1/255 的抖动值。
                 hash = hash * 1664525u + 1013904223u;
                 float dither = ((hash >> 24) / 255f - 0.5f) * (2f / 255f);
                 var row = new Color32(
@@ -525,14 +507,9 @@ namespace TowerDefense.Util
         }
 
         /// <summary>
-        /// 星野：四方连续的星点贴图。星星按环绕寻址绘制，所以平铺时接缝处不会断星。
-        ///
-        /// 必须配 <c>SpriteRenderer.drawMode = Tiled</c>（或 UI 的 Tiled Image）使用。
-        /// 用普通拉伸模式画，256px 的贴图会被放大到几十个世界单位，每颗星随之放大十几倍，
-        /// 星野就变成一片模糊的白斑 —— 这正是它看起来像「灰尘」而不是「星星」的原因。
+        /// 可无缝平铺的星点贴图，配合 Tiled 渲染以保持星点尺寸。
         /// </summary>
-        /// <param name="starSize">单颗星的半径（贴图像素）。贴图一个 tile 只有 2.56 世界单位，
-        /// 默认的 1px 级半径投影到屏幕上是亚像素，会闪；星野要看得见就得给到 5~8。</param>
+        /// <param name="starSize">星点半径的像素缩放系数，实际半径为该值的 0.6~1.8 倍。</param>
         public static Sprite StarTile(int seed, int starCount, float starSize = 1f)
         {
             string key = $"startile|{seed}|{starCount}|{starSize:0.0}";
@@ -556,7 +533,7 @@ namespace TowerDefense.Util
                     float d = Mathf.Sqrt(dx * dx + dy * dy) / radius;
                     float v = Mathf.Clamp01(1f - d);
                     v *= v;
-                    // 环绕寻址 = 四方连续；否则贴图右/上边缘的星星会被切掉，平铺出现网格感。
+                    // 环绕寻址保留越过贴图边缘的星点，保证平铺连续。
                     int x = ((Mathf.RoundToInt(cx) + dx) % size + size) % size;
                     int y = ((Mathf.RoundToInt(cy) + dy) % size + size) % size;
                     int index = y * size + x;
@@ -584,8 +561,7 @@ namespace TowerDefense.Util
         }
 
         /// <summary>
-        /// 低对比云雾噪声（四方连续）。用于漆器底板与大块石面的材质感 ——
-        /// 纯色大平面看起来像没做完的图块，一层极低对比的云雾就能把它变成「材料」。
+        /// 可无缝平铺的低对比云雾噪声，用于底板与石面纹理。
         /// </summary>
         public static Sprite Mottle(int seed, int cells, float contrast)
         {
@@ -617,8 +593,7 @@ namespace TowerDefense.Util
         }
 
         /// <summary>
-        /// 胶片颗粒：逐像素随机 alpha 的白色噪点，四方连续。
-        /// 以极低 alpha 覆盖全屏，是所有「像渲染出来的画面」而不是「像矢量图的画面」的关键一步。
+        /// 可平铺的白色噪点，逐像素随机设置 alpha。
         /// </summary>
         public static Sprite Grain(int seed)
         {
@@ -693,7 +668,7 @@ namespace TowerDefense.Util
 
         private static Sprite GetOrCreate(string kindKey, float size, Color color, Func<float, float, float> coverage)
         {
-            // 尺寸按 0.1 舍入：避免浮点噪声/连续缩放撑爆 512² 贴图的缓存（每次缓存 1MB，无节制会堆积）。
+            // 缓存键中的尺寸保留一位小数，减少浮点尺寸产生的重复缓存项。
             string key = $"{kindKey}|{size:0.0}|{ColorKey(color)}";
             if (Cache.TryGetValue(key, out var cached))
             {

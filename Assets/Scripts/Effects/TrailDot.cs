@@ -4,7 +4,7 @@ using TowerDefense.Util;
 namespace TowerDefense.Effects
 {
     /// <summary>
-    /// 弹道拖尾光点（对象池）：子弹飞行时周期性落点，快速缩小淡出——运动感与能量轨迹。
+    /// 对象池复用的弹道拖尾光点，生成后缩小并淡出。
     /// </summary>
     public sealed class TrailDot : MonoBehaviour
     {

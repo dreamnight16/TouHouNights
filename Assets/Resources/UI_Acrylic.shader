@@ -1,4 +1,4 @@
-// 程序化亚克力 UI 材质（Fluent Acrylic + 明日方舟边缘光）
+// UI 材质：模糊背景、纵向明暗、噪点和透明度边缘光。
 Shader "TowerDefense/UI/Acrylic"
 {
     Properties
@@ -58,7 +58,7 @@ Shader "TowerDefense/UI/Acrylic"
                 float4 vertex : SV_POSITION;
                 fixed4 color : COLOR;
                 float2 texcoord : TEXCOORD0;
-                float2 objXY : TEXCOORD1;   // 矩形局部坐标（世界空间一致的噪点密度）
+                float2 objXY : TEXCOORD1;   // 局部顶点坐标，用于生成噪点。
                 float4 screenPos : TEXCOORD2; // 屏幕坐标（用于采样模糊背景）
             };
 
@@ -79,7 +79,7 @@ Shader "TowerDefense/UI/Acrylic"
                 half a = tex.a * i.color.a;
                 half3 base = tex.rgb * i.color.rgb;
 
-                // 0) 真·毛玻璃：混合模糊后的屏幕背景（一帧拖后半帧无感，UI 渲染在相机后）
+                // 混合模糊后的屏幕背景，并按背景亮度调整面板。
                 half2 screenUV = i.screenPos.xy / i.screenPos.w;
                 fixed4 blur = tex2D(_BlurTex, screenUV);
                 half blurBlend = _BlurStrength * a;
@@ -87,16 +87,16 @@ Shader "TowerDefense/UI/Acrylic"
                 half bgLum = dot(blur.rgb, half3(0.299, 0.587, 0.114));
                 base = lerp(base, base * (0.72 + 0.28 * bgLum), blurBlend); // 环境亮度也参与面板明暗
 
-                // 1) 纵向曲面受光：顶部冷光 + 底部内阴影（幂曲线，细腻不脏）
+                // 按纵向 UV 调整明暗。
                 half y = saturate(i.texcoord.y);
                 half light = 1.0 + _TopLight * pow(1.0 - y, 3.0)
                                    - _BottomShadow * 0.6 * pow(y, 2.0);
 
-                // 2) 亚克力磨砂：世界空间一致的亮度噪点（颗粒 1~2 物理像素级，不脏）
+                // 用局部坐标生成亮度噪点。
                 half n = frac(sin(dot(i.objXY * 1.3, half2(12.9898, 78.233))) * 43758.5453);
                 light *= 1.0 + (n - 0.5) * _NoiseAmount;
 
-                // 3) alpha 边缘发光：梯度法线 → 细亮边沿（斜切角/描边自动发光）
+                // 用纹理透明度梯度提取边缘光。
                 half2 t = _MainTex_TexelSize.xy;
                 half dAx = tex2D(_MainTex, i.texcoord + half2(t.x, 0)).a
                          - tex2D(_MainTex, i.texcoord - half2(t.x, 0)).a;

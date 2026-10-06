@@ -3,8 +3,7 @@ using UnityEngine;
 namespace TowerDefense.Effects
 {
     /// <summary>
-    /// 屏幕震动：挂载在相机上，提供静态入口 Shake() 供命中/漏怪/弹幕等事件触发。
-    /// 幅度随时间线性衰减，时间为 scaled（暂停时自动冻结）。
+    /// 相机震动，幅度按剩余时间比例的平方衰减，衰减进度使用缩放时间。
     /// </summary>
     public sealed class ScreenShake : MonoBehaviour
     {

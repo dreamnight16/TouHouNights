@@ -3,23 +3,15 @@ using UnityEngine;
 namespace TowerDefense.UI
 {
     /// <summary>
-    /// 一层**可动画的辉光**，挂在一个 <see cref="UiPanel"/> 上。
-    ///
-    /// 这套界面表达层级只用两样东西：平涂的**明度台阶**，和**光**。
-    /// 「有没有在发光」本身就是层级 —— 该被看见的东西亮起来，其余保持暗的，
-    /// 不需要再加倒角、投影、粗描边这些「硬造 3D」的手法去说明谁在上面。
-    /// 那些手法在暗底上只会让画面变脏，因为它们在模拟一种这套配色根本给不出的材质。
-    ///
-    /// 实现和 <see cref="UiMotion"/> 同一套路：一层几何与目标面板完全一致、
-    /// 平时全透明的面板，只烘一圈 <c>Glow</c>，靠 <see cref="CanvasRenderer"/> 的 alpha 做插值。
-    /// 每帧只改一个 float，绝不重建网格（重建会在每帧产生 GC 抖动）。
+    /// UiPanel 的动态辉光层，复制目标几何并通过 CanvasRenderer alpha
+    /// 控制淡入淡出、呼吸和闪光，避免逐帧重建网格。
     /// </summary>
     public sealed class UiHalo : MonoBehaviour
     {
-        /// <summary>亮起的速率。点灯要快 —— 玩家按下之后不该等光。</summary>
+        /// <summary>亮起速率。</summary>
         private const float RiseSpeed = 13f;
 
-        /// <summary>熄灭的速率。必须明显慢于亮起，快到对称就会读成「闪了一下」而不是「暗下去」。</summary>
+        /// <summary>熄灭速率，比亮起更慢。</summary>
         private const float FallSpeed = 7f;
 
         private CanvasRenderer _renderer;
@@ -30,16 +22,15 @@ namespace TowerDefense.UI
         private float _flash;
 
         /// <summary>
-        /// 给一块面板挂一层辉光。四角几何从目标面板复制，所以辉光的轮廓和面板严格重合，
-        /// 不会在外面多露出半个像素的直角。
+        /// 添加辉光层，四角形状从目标面板复制。
         /// </summary>
-        /// <param name="color">辉光色。这里传的颜色决定「发光意味着什么」：绯 = 就绪 / 选中，冷青 = 数据。</param>
-        /// <param name="width">向外淡出的宽度。默认 18 已经足够柔和，再大就会糊成一片。</param>
+        /// <param name="color">辉光颜色。</param>
+        /// <param name="width">向外淡出的宽度。</param>
         public static UiHalo Attach(UiPanel target, Color color, float width = 18f)
         {
             var halo = UiKit.Surface(target.transform, "Halo", UiSurfaceKind.Veil);
             halo.Corners(target.CornerMode, target.CornerSize, target.IsRounded);
-            // 本体、描边、受光全部留空：这一层唯一画出来的东西就是那圈向外的光。
+            // 只绘制外辉光。
             halo.Flat(Color.clear)
                 .Border(Color.clear, 0f)
                 .Rim(Color.clear, 0f)
@@ -52,12 +43,12 @@ namespace TowerDefense.UI
             var component = halo.gameObject.AddComponent<UiHalo>();
             component._renderer = halo.canvasRenderer;
             component._renderer.SetAlpha(0f);
-            // 排在文字与图标之前：辉光是**从面板背后透出来的**，不该盖在内容上。
+            // 辉光放在文字与图标下方。
             halo.transform.SetSiblingIndex(0);
             return component;
         }
 
-        /// <summary>缓慢呼吸。只在「正在发生」的元素上用，全场同时呼吸的东西不超过一个。</summary>
+        /// <summary>设置呼吸频率与衰减深度。</summary>
         public UiHalo Breathe(float speed = 2.6f, float depth = .38f)
         {
             _breatheSpeed = speed;
@@ -65,7 +56,7 @@ namespace TowerDefense.UI
             return this;
         }
 
-        /// <summary>开关辉光。界面刚装配出来时可以传 <paramref name="instant"/>，免得开场所有东西一起亮一下。</summary>
+        /// <summary>开关辉光；instant 为真时立即应用目标亮度。</summary>
         public UiHalo Set(bool on, bool instant = false)
         {
             _target = on ? 1f : 0f;
@@ -93,8 +84,7 @@ namespace TowerDefense.UI
             float value = _current;
             if (_breatheDepth > 0f && value > .01f)
             {
-                // 呼吸只做「变暗」，不做「变亮」：峰值应当就是设定值。
-                // 允许它亮过设定值的话，呼吸的波峰会盖过主行动按钮，层级当场反过来。
+                // 呼吸仅衰减亮度，峰值保持在目标值内。
                 value *= 1f - _breatheDepth * (.5f - .5f * Mathf.Cos(Time.unscaledTime * _breatheSpeed));
             }
 

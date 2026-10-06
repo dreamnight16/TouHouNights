@@ -16,8 +16,7 @@ public static class BattleUiVerification
         try
         {
             typeof(BattleUiRoot).GetMethod("ConfigureCanvas", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(root, null);
-            // 按钮的视觉一律烘进 UiPanel 的顶点（渐变 + 描边 + 受光），ColorBlock 必须保持全白零时长：
-            // 它是乘算的，任何非白 tint 都会把顶点里的渐变和受光带一起压平。
+            // ColorBlock 与 UiPanel 顶点颜色相乘；保持全白、零过渡时间，避免干扰 UiMotion。
             var button = UiKit.Button(canvas.transform, "Probe", "Probe", UiButtonKind.Ghost, null);
             if (!(button.targetGraphic is UiPanel)) throw new Exception("FAIL: button target graphic is not a UiPanel");
             var colors = button.colors;

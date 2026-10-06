@@ -1,4 +1,4 @@
-// Dual Kawase 模糊（成熟图形学算法：菱形5点加权，模糊质量/成本比优于普通高斯）
+// 两组中心及四邻域加权模糊。
 Shader "TowerDefense/FX/Blur"
 {
     Properties
@@ -9,7 +9,7 @@ Shader "TowerDefense/FX/Blur"
     SubShader
     {
         Cull Off ZWrite Off ZTest Always
-        Pass // 0: Down（5-point 菱形）
+        Pass // 0: 中心权重 1/9，四邻域各 2/9。
         {
             CGPROGRAM
             #pragma vertex vert
@@ -33,7 +33,7 @@ Shader "TowerDefense/FX/Blur"
             }
             ENDCG
         }
-        Pass // 1: Up（4-point 加权还原）
+        Pass // 1: 中心权重 1/2，四邻域各 1/8。
         {
             CGPROGRAM
             #pragma vertex vert

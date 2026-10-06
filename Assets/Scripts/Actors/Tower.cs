@@ -8,16 +8,14 @@ using TowerDefense.Util;
 namespace TowerDefense.Actors
 {
     /// <summary>
-    /// 防御塔：在射程内锁定敌人并攻击，同时具备生命值（可被敌人击毁）。
-    /// - 普通塔：发射子弹（直线 / 追踪 / AOE 由定义决定）；
-    /// - 减速塔：不发射子弹，改为对范围内敌人持续施加减速。
-    /// 索敌使用 GameManager 的全局智能索敌策略（★★★）。
+    /// 管理塔的攻击、减速、治疗、生命和 BOOM 技能。
+    /// 伤害塔按 GameManager 的全局策略索敌；减速和治疗塔持续作用于范围内单位。
     /// </summary>
     public sealed class Tower : MonoBehaviour
     {
         private TowerDefinition _definition;
         private Transform _halo;
-        private Transform _turret;       // 炮塔组：整组朝向目标（比只转一根炮管更有机械感）
+        private Transform _turret;       // 炮塔组整体朝向目标
         private Transform _visualRoot;   // 悬浮塔身组（入场/浮空/后坐统一作用；基座与血条保持贴地）
         private SpriteRenderer _muzzle;  // 炮口闪光
         private HealthBarView _healthBar;
@@ -56,8 +54,8 @@ namespace TowerDefense.Actors
         }
 
         /// <summary>
-        /// 手动引爆 BOOM：以 5 倍基础伤害在 BoomRadius 内对敌人造成 AOE，清空经验并进入冷却。
-        /// 守卫全部放在塔内，配合 UI 只在就绪时可点，防止暂停/结算帧误触发。
+        /// 手动引爆 BOOM，造成范围伤害后清空经验并进入冷却。
+        /// 塔内校验运行状态、暂停和技能就绪，防止 UI 误触发。
         /// </summary>
         public void TriggerBoom()
         {
@@ -73,7 +71,7 @@ namespace TowerDefense.Actors
             ScreenShake.Shake(0.14f, 0.40f);
             FloatingTextView.SpawnWorld(transform.position + Vector3.up * 0.6f, $"爆 {Mathf.RoundToInt(boomDamage)} ×{hits}", TdTheme.DamageSplash, 1.0f, 15);
 
-            // 清空经验（含溢出部分）并进入最短冷却，防止单发超大 AOE 立即再次充满触发。
+            // 消耗全部经验，包括溢出部分；BOOM 自身伤害不再累加经验。
             _xp = 0f;
             _boomCooldown = GameConfig.BoomCooldown;
             _boomGlowT = 0.5f;
@@ -83,7 +81,7 @@ namespace TowerDefense.Actors
         {
             _definition = definition;
             Cell = cell;
-            // 视觉高度：塔身浮空、底座贴地（透视相机下形成真切立体感）
+            // 根节点保留视觉高度，底座另行投影到地面。
             transform.position = new Vector3(position.x, position.y, GameConfig.TowerVisualHeight);
             _cooldown = 0f;
             _maxHealth = definition.MaxHealth;
@@ -94,7 +92,7 @@ namespace TowerDefense.Actors
             var deep = WorldArt.Shade(color, 0.62f);
             var bright = WorldArt.Tint(color, 0.45f);
 
-            // ---- 贴地平台：六边形基座（不随悬浮组起伏，让塔"站在地上"）----
+            // ---- 贴地基座，不随塔身起伏 ----
             var ground = new GameObject("Ground");
             ground.transform.SetParent(transform, false);
             ground.transform.localPosition = new Vector3(0f, 0f, -GameConfig.TowerVisualHeight);
@@ -106,7 +104,6 @@ namespace TowerDefense.Actors
             AddSprite(ground.transform, "Rim", SpriteFactory.Shell(0.47f, 0.045f, color), 5,
                 Vector3.zero, Color.white);
 
-            // 基座四向刻度（一点机械细节，避免基座是个光秃秃的块）
             for (int i = 0; i < 4; i++)
             {
                 var tick = AddSprite(ground.transform, "Tick",
@@ -121,7 +118,6 @@ namespace TowerDefense.Actors
             visualRoot.transform.localPosition = Vector3.zero;
             _visualRoot = visualRoot.transform;
 
-            // 底部职业辉光（让塔「有光」而非平板贴片）
             _auraSr = AddSprite(_visualRoot, "Aura",
                 SpriteFactory.Glow(0.60f, WorldArt.Alpha(color, 0.55f)), 5, Vector3.zero, Color.white);
             _auraSr.color = new Color(1f, 1f, 1f, AuraRestRatio);
@@ -131,8 +127,7 @@ namespace TowerDefense.Actors
             turret.transform.SetParent(_visualRoot, false);
             _turret = turret.transform;
 
-            // 统一剪影三件套：近黑描边（放大）→ 本体 → 顶部受光（缩小上移）。
-            // 三层复用同一张剪影贴图，只靠 renderer.color 相乘改变明度，不额外产生贴图。
+            // 描边、本体和顶部受光共用剪影贴图，通过 renderer.color 调整明暗。
             var shape = SilhouetteFor(definition.Type, color);
             AddSprite(_turret, "Outline", shape, 6, Vector3.zero, WorldArt.Ink, 1.16f);
             AddSprite(_turret, "Body", shape, 7, new Vector3(0f, 0.02f, 0f), Color.white);
@@ -142,7 +137,6 @@ namespace TowerDefense.Actors
 
             if (_isHealer)
             {
-                // 治疗塔：悬浮符环 + 十字（无炮管，一眼区分支援职业）
                 _halo = AddSprite(_visualRoot, "Halo", SpriteFactory.Shell(0.32f, 0.035f, bright), 8,
                     new Vector3(0f, 0.22f, 0f), Color.white).transform;
                 AddSprite(_visualRoot, "Cross",
@@ -155,7 +149,6 @@ namespace TowerDefense.Actors
                 AddSprite(_turret, "Barrel", SpriteFactory.RoundedSquare(1f, 0.5f, bright), 8,
                     new Vector3(0f, 0.22f, 0f), Color.white, new Vector3(0.13f, 0.42f, 1f));
 
-                // 炮口闪光（开火瞬间的一星亮芒，营造弹道起点的爆发感）
                 _muzzle = AddSprite(_visualRoot, "Muzzle",
                     SpriteFactory.Glow(0.18f, new Color(1f, 1f, 1f, 0.9f)), 9,
                     new Vector3(0f, 0.46f, 0f), Color.white);
@@ -165,7 +158,7 @@ namespace TowerDefense.Actors
             _healthBar = HealthBarView.Attach(transform, 0.8f, 0.09f, 0.62f);
             _healthBar.SetRatio(1f);
 
-            // 入场：从 0 过冲放大登场（召唤感）；浮空相位随机化避免群塔同步；BOOM 状态复位。
+            // 随机浮空相位，避免群塔动画同步；入场与 BOOM 状态复位。
             _spawnT = 0f;
             _bobT = Random.Range(0f, 6.28f);
             _recoilT = 0f;
@@ -177,10 +170,8 @@ namespace TowerDefense.Actors
 
         private void Update()
         {
-            // 统一动画：入场缩放 / 浮空呼吸 / 开火后坐与炮口闪光（任何塔型都执行）。
             AnimateVisual();
 
-            // BOOM 冷却回落（任何塔型都走，满足冷却后就绪反馈由 AnimateVisual 反映到辉光上）。
             _boomCooldown = Mathf.Max(0f, _boomCooldown - Time.deltaTime);
 
             // 治疗塔：无子弹，持续为范围内友方塔回血 + 光环律动。
@@ -222,7 +213,7 @@ namespace TowerDefense.Actors
             }
         }
 
-        /// <summary>职业剪影：不同职业用不同几何形，玩家不看颜色也能分辨（形状即信息）。</summary>
+        /// <summary>用剪影区分塔的职业。</summary>
         private static Sprite SilhouetteFor(TowerType type, Color color)
         {
             switch (type)
@@ -236,7 +227,6 @@ namespace TowerDefense.Actors
             }
         }
 
-        /// <summary>建一个带 SpriteRenderer 的子节点（世界层绘制的唯一入口，保证层级与打光一致）。</summary>
         private static SpriteRenderer AddSprite(Transform parent, string name, Sprite sprite, int order,
             Vector3 localPos, Color tint, float scale = 1f)
         {
@@ -267,7 +257,7 @@ namespace TowerDefense.Actors
 
         private void AnimateVisual()
         {
-            // 入场：OutBack 过冲，快速从 0 放大到 1（仅一次，召唤感）。
+            // 入场缩放使用 OutBack 过冲。
             if (_spawnT < 1f)
             {
                 _spawnT = Mathf.Min(1f, _spawnT + Time.deltaTime / SpawnDuration);
@@ -291,7 +281,7 @@ namespace TowerDefense.Actors
             }
 
             // BOOM 辉光：爆发闪光 → 就绪呼吸增亮 → 静息。
-            // 峰值烘焙为 auraPeak=0.55，基线由 auraRest/auraPeak 压回，因此这里能把 a 拉高实打实增亮。
+            // 贴图 alpha 峰值为 0.55，renderer 的 alpha 按基线与峰值之比缩放。
             if (_auraSr != null)
             {
                 _boomGlowT = Mathf.Max(0f, _boomGlowT - Time.deltaTime);
@@ -325,7 +315,7 @@ namespace TowerDefense.Actors
             }
         }
 
-        /// <summary>治疗塔回血：只恢复到上限，满血即跳过（不产生无谓 sprites/飘字）。</summary>
+        /// <summary>恢复生命至上限，死亡或满血时跳过。</summary>
         public void Heal(float amount)
         {
             if (_health <= 0f || _health >= _maxHealth) return;

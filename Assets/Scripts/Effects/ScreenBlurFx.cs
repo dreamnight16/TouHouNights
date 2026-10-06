@@ -3,9 +3,7 @@ using UnityEngine;
 namespace TowerDefense.Effects
 {
     /// <summary>
-    /// UI 后处理链（挂在相机上的唯一 OnRenderImage）：
-    /// 1) 屏幕模糊 → RenderTexture（供 UI 亚克力毛玻璃采样）；
-    /// 2) Bloom 辉光（亮度提取→模糊→加回），让发光弹体/描边/光晕产生霓虹氛围。
+    /// 相机后处理：生成 UI 模糊纹理，再提取、模糊并合成 Bloom。
     /// </summary>
     public sealed class ScreenBlurFx : MonoBehaviour
     {
@@ -55,7 +53,7 @@ namespace TowerDefense.Effects
             Graphics.Blit(source, _raw);
             if (_blurMaterial != null)
             {
-                // Dual Kawase 迭代：3 次降采样（菱形5点加权）+ 2 次升采样（4点加权还原）
+                // 在低分辨率纹理上迭代模糊：3 次 pass 0，再执行 2 次 pass 1。
                 _blurMaterial.SetTexture("_MainTex", _raw);
                 _blurMaterial.SetFloat("_Distance", 1.0f);
                 Graphics.Blit(_raw, Blurred, _blurMaterial, 0);

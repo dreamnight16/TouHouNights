@@ -157,7 +157,7 @@ namespace TowerDefense.UI
             _ratingRing.Progress = 0f;
 
             _titleText.text = result.Victory ? "结界守成" : "结界破碎";
-            _subTitleText.text = BuildSubTitle(result, color);
+            _subTitleText.text = BuildSubTitle(result);
             _subTitleText.color = color;
 
             _ratingText.text = $"符卡评级  {result.Rating} / 100";
@@ -283,7 +283,7 @@ namespace TowerDefense.UI
             }
         }
 
-        private static string BuildSubTitle(GameResult result, Color color)
+        private static string BuildSubTitle(GameResult result)
         {
             if (result.Victory)
             {

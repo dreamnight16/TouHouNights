@@ -4,9 +4,7 @@ using UnityEngine.UI;
 namespace TowerDefense.UI
 {
     /// <summary>
-    /// 战斗界面的零件入口。真正的零件在 <see cref="UiKit"/> —— 这里只保留
-    /// 本类内部用着顺手的短名字，以及 <see cref="BattleUiRoot.Layout.cs"/> 依赖的
-    /// 定位函数（那一层是全项目最容易改出回归的地方，所以刻意不做大改）。
+    /// 战斗界面的基础控件和定位函数，委托给 UiKit 与 UiFactory。
     /// </summary>
     public sealed partial class BattleUiRoot
     {

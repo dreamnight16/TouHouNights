@@ -5,10 +5,8 @@ using TowerDefense.Actors;
 namespace TowerDefense.Systems
 {
     /// <summary>
-    /// 均匀网格空间哈希（ICPC 式优化）：
-    /// 把敌人按所在格子分桶，范围查询从「每塔每帧 O(N) 全量扫描」降为
-    /// 「只遍历覆盖格子，O(1) 摊销 + 候选集内的常数级过滤」。
-    /// 每帧由 GameManager 重建一次，保证索敌/AOE/减速查询的高效与正确。
+    /// 按敌人位置分桶，每帧由 GameManager 重建。
+    /// 范围查询遍历覆盖格和候选敌人，按距离过滤结果。
     /// </summary>
     public sealed class SpatialGrid
     {

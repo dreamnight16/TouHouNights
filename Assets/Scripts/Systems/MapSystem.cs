@@ -6,12 +6,8 @@ using TowerDefense.Util;
 namespace TowerDefense.Systems
 {
     /// <summary>
-    /// 战术棋盘：绘制可部署棋盘（底 + 主次网格 + 取景框）、连续路径（含行进方向箭头）、
-    /// 基地（蓝门）与出怪口（红门），并计算道路格集合与到基地的 BFS 距离场。
-    ///
-    /// 视觉上遵循 <see cref="WorldArt"/>：明确的价值层级（底 → 网格 → 路径 → 建筑）、
-    /// 六边形 + 箭形的统一形状语言、统一的描边与顶部受光。
-    /// 所有玩法数据（道路格、距离场、路线）与绘制完全解耦。
+    /// 绘制棋盘、路线、基地和出怪口，并计算道路格集合与 BFS 距离场。
+    /// 玩法数据与绘制分开维护，战场配色使用 <see cref="WorldArt"/>。
     /// </summary>
     public sealed class MapSystem : MonoBehaviour
     {
@@ -122,17 +118,12 @@ namespace TowerDefense.Systems
                 _baseGlow.color = c;
             }
 
-            // 基地外环缓慢自转：全场唯一持续旋转的元素，用来标记「这是要守的东西」。
             if (_baseSpin != null) _baseSpin.Rotate(0f, 0f, -18f * Time.deltaTime);
         }
 
         // ---- 绘制 ----
 
-        /// <summary>
-        /// 棋盘底 + 金线格 + 取景框。整块棋盘是一方漆板，格子由一层极细金线织出来 ——
-        /// 而不是「每格一块灰方块」。这两者看着相似，读出来的东西完全不同：
-        /// 方格棋盘是电子表格，金线漆板才是神社的院子。
-        /// </summary>
+        /// <summary>绘制棋盘底、主次网格和取景框。</summary>
         private void BuildBoard(Transform parent)
         {
             var root = new GameObject("Board");
@@ -148,8 +139,7 @@ namespace TowerDefense.Systems
             plate.transform.position = new Vector3(cx, cy, 0f);
             plate.transform.localScale = new Vector3(w, h, 1f);
 
-            // 材质层：极低对比的云雾噪声。纯色大平面看起来像没做完的图块，
-            // 一层几乎看不见的斑驳就把它变成「漆」。平铺贴图靠 drawMode = Tiled 才不会拉花。
+            // 噪声贴图使用 Tiled 平铺，避免随棋盘尺寸拉伸。
             var grain = CreateSprite(root.transform, "PlateGrain", 0);
             grain.sprite = SpriteFactory.Mottle(7717, 5, .55f);
             grain.drawMode = SpriteDrawMode.Tiled;
@@ -158,9 +148,7 @@ namespace TowerDefense.Systems
             grain.color = WorldArt.Alpha(WorldArt.LacquerLift, .085f);
             grain.transform.position = new Vector3(cx, cy, 0f);
 
-            // 金线格：横竖各一层发丝线，贯穿整个棋盘。路面（层号更高）会盖住经过的部分，
-            // 于是「漆板上铺着石道」这层关系不需要额外画一笔就成立了。
-            // 每 4 格抬成一道冷青主格线 —— 等权网格是坐标纸，分主次才是标定过的板。
+            // 道路层盖住网格；每 4 格使用更亮的主格线。
             for (int x = BoardMinX; x <= BoardMaxX + 1; x++)
                 Line(root.transform, "GridV", x - .5f, cy, .012f, h, x % 4 == 0 ? 2 : 1,
                     x % 4 == 0 ? WorldArt.GridSurvey : WorldArt.GoldLine);
@@ -168,21 +156,17 @@ namespace TowerDefense.Systems
                 Line(root.transform, "GridH", cx, y - .5f, w, .012f, y % 4 == 0 ? 2 : 1,
                     y % 4 == 0 ? WorldArt.GridSurvey : WorldArt.GoldLine);
 
-            // 上沿的**辉光**（不是棱线）：一条向下淡出的暖光。它是光打在这块板上的痕迹，
-            // 不是「这块板被削过一刀」—— 后者是硬造 3D，在暗底上只会显得脏。
             var crest = CreateSprite(root.transform, "PlateGlow", 3);
             crest.sprite = SpriteFactory.GradientTop(WorldArt.PlateCrest);
             crest.transform.position = new Vector3(cx, y1 - .5f, 0f);
             crest.transform.localScale = new Vector3(w, 1.0f, 1f);
 
-            // 四条边线（细而暗，只用来收住板子的边界）
             float t = 0.04f;
             Line(root.transform, "EdgeT", cx, y1, w, t, 2);
             Line(root.transform, "EdgeB", cx, y0, w, t, 2);
             Line(root.transform, "EdgeL", x0, cy, t, h, 2);
             Line(root.transform, "EdgeR", x1, cy, t, h, 2);
 
-            // 四角 L 准星
             const float corner = 1.05f;
             // Corner 贴图是「左下角 L」，顺时针转 90° 依次变成右下 / 右上 / 左上。
             Bracket(root.transform, "C_LB", x0, y0, corner, 0f);
@@ -191,19 +175,12 @@ namespace TowerDefense.Systems
             Bracket(root.transform, "C_LT", x0, y1, corner, -90f);
         }
 
-        /// <summary>
-        /// 神社院落的两笔陈设：朱色鸟居与灯笼。
-        ///
-        /// 这里原来是「每个可部署格一块石台 + 一格投影响 + 一格定位记号」——
-        /// 17×9 就是 150 多块灰方块，正是整个战场读起来像工程样品的最大单一来源。
-        /// 现在可部署性由金线格表达，这个方法只负责让院子有「入口」和「灯」。
-        /// </summary>
+        /// <summary>绘制棋盘外的鸟居和灯笼，不占用部署格。</summary>
         private void BuildDeploymentTiles(Transform parent)
         {
             var root = new GameObject("ShrineCourtyard").transform;
             root.SetParent(parent, false);
 
-            // 神社入口的朱色鸟居，位于棋盘外，不占用部署格。
             var vermilion = new Color(.56f, .23f, .29f);
             for (int side = -1; side <= 1; side += 2)
             {
@@ -213,8 +190,6 @@ namespace TowerDefense.Systems
             Line(root, "BoundaryLintel", 0, 4.72f, 17.8f, .08f, 3,
                 WorldArt.Alpha(vermilion, .65f));
 
-            // 灯笼：沿棋盘上沿悬一排暖光。暖色是这套近单色语言里唯一非绯红的高热色，
-            // 只出现在「照明」这一个语义上，正好把战场的边界从一条线变成一排光。
             for (int i = -3; i <= 3; i++)
             {
                 float x = i * 2.45f;
@@ -241,8 +216,6 @@ namespace TowerDefense.Systems
             root.transform.SetParent(parent, false);
 
             var stone = SpriteFactory.Square(1f, Color.white);
-            // 顶面受光：整条路共用同一张渐变贴图，所以它仍然读作**一条连续的路**，
-            // 而不是「一格一格的石板」—— 后者正是上一版被删掉的棋盘格。
             var lift = SpriteFactory.GradientTop(WorldArt.RoadLift);
             var directions = new[] { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
             foreach (var cell in _roadCells)
@@ -262,8 +235,7 @@ namespace TowerDefense.Systems
                 {
                     if (_roadCells.Contains(cell + direction)) continue;
                     bool horizontal = direction.y != 0;
-                    // 朝光那一侧的边亮、背光那一侧暗。四处等亮度的描边读作「描了个轮廓」，
-                    // 上亮下暗的描边读作「这块石头有个斜过的边」。
+                    // 上沿提亮、下沿加深，左右沿使用普通描边色。
                     Color edge = direction.y > 0 ? WorldArt.RoadEdgeLit
                         : direction.y < 0 ? WorldArt.RoadEdgeDark
                         : WorldArt.RoadEdge;
@@ -276,7 +248,7 @@ namespace TowerDefense.Systems
                 DrawDirectionArrows(root.transform, GetRouteWorld(r), GameConfig.RouteColors[r]);
         }
 
-        /// <summary>沿路线按固定间距摆放朝行进方向的小箭头（状态可视化：把「路线」画出来而不是让玩家猜）。</summary>
+        /// <summary>沿路线按固定间距绘制朝行进方向的箭头。</summary>
         private static void DrawDirectionArrows(Transform parent, Vector2[] points, Color color)
         {
             const float spacing = 2.4f;
@@ -295,7 +267,7 @@ namespace TowerDefense.Systems
                 float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
                 // 每段两端各留半格，避免箭头压在转角/门上
                 float usable = length - minLen * 2f;
-                if (usable < spacing * 0.6f) continue;   // 段太短就不放，否则箭头会骑在转角上
+                if (usable < spacing * 0.6f) continue;   // 短段不放箭头，避免与转角重叠
 
                 int count = Mathf.FloorToInt(usable / spacing) + 1;
                 float start = (length - (count - 1) * spacing) * 0.5f;   // 在段内居中分布
@@ -311,14 +283,13 @@ namespace TowerDefense.Systems
             }
         }
 
-        /// <summary>基地（蓝门）：六边形核心 + 双层环 + 反向自转的刻度环。</summary>
+        /// <summary>绘制基地的六边形核心、外环和自转刻度。</summary>
         private void BuildBaseVisual(Transform parent)
         {
             var go = new GameObject("Base");
             go.transform.SetParent(parent, false);
             go.transform.position = CellToWorld(GameConfig.BaseCell);
 
-            // 光晕 + 深色六边形基座 + 亮环 + 核心
             _baseGlow = CreateSprite(go.transform, "Glow", 2);
             _baseGlow.sprite = SpriteFactory.Glow(1.25f, WorldArt.AllyGlow);
             _baseGlow.transform.localPosition = Vector3.zero;
@@ -332,7 +303,7 @@ namespace TowerDefense.Systems
             var core = CreateSprite(go.transform, "Core", 7);
             core.sprite = SpriteFactory.Hex(0.30f, WorldArt.AllyBright);
 
-            // 自转刻度环：4 段短弧（用小方块近似）绕核心缓转
+            // 刻度组绕基地核心缓转。
             _baseSpin = new GameObject("Spin").transform;
             _baseSpin.SetParent(go.transform, false);
             for (int i = 0; i < 4; i++)
@@ -344,7 +315,7 @@ namespace TowerDefense.Systems
             }
         }
 
-        /// <summary>出怪口（红门）：六边形门 + 指向首段行进方向的箭头，明确「敌影从哪来」。</summary>
+        /// <summary>绘制出怪口及指向路线首段的箭头。</summary>
         private void BuildSpawnVisuals(Transform parent)
         {
             for (int r = 0; r < GameConfig.Routes.Length; r++)

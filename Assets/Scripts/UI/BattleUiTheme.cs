@@ -3,22 +3,9 @@ using UnityEngine;
 namespace TowerDefense.UI
 {
     /// <summary>
-    /// 界面视觉令牌 —— 「华贵符卡 · 高对比战术」。
-    ///
-    /// 本文件是 UI 覆盖层唯一的色值与尺度来源；战场内的颜色归 <c>WorldArt</c>。
-    /// 改任何值之前先读这三条铁律：
-    ///
-    ///   1) 近乎单色。<see cref="Ink"/> → <see cref="Char"/> → <see cref="Slate"/> → <see cref="Stone"/>
-    ///      四级灰阶承担全部结构，相邻两级明度必须拉开，禁止「深色叠深色」糊成一片。
-    ///   2) 一点绯红。<see cref="Scarlet"/> 是全场唯一的高热色，只表达
-    ///      「危险 / 封印 / 就绪 / 正在发生」。任何装饰性用色都不许碰它 ——
-    ///      它一亮，玩家就知道该看哪里。
-    ///   3) 骨白是结构色，不只是文字色。分隔线、描边、数字优先用它；
-    ///      正文用 <see cref="Bone"/>，次级说明降到 <see cref="Ash"/>。
-    ///
-    /// 排版靠「超大数字 vs 极小米字」的尺度对比 + 大量留白取胜，不靠纹样堆叠。
-    /// 字号取 <see cref="Type"/>，间距取 <see cref="Gap"/>，时长取 <see cref="Motion"/> ——
-    /// 不要在调用点写魔法数字。
+    /// 战斗与前端 UI 共用的颜色、字号、间距和动效时长。
+    /// 四级灰阶区分结构，绯色用于强调，骨白用于文字与结构线。
+    /// 战场内的颜色由 WorldArt 管理。
     /// </summary>
     public static class BattleUiTheme
     {
@@ -105,9 +92,6 @@ namespace TowerDefense.UI
         /// <summary>面板描边宽度。比发丝线略重，用来把面板从底色里切出来。</summary>
         public const float Border = 1f;
 
-        // 角标长度与斜切尺寸两个常量已删。它们的设计用途 —— L 形取景标记、卡片的对角切口 ——
-        // 都在这一版里被移除了；常量留着只会给「再切一个角」留一扇方便之门。
-
         // ---- 尺度 / 间距 / 时长 ----
 
         /// <summary>字号阶梯。跨度刻意拉大 —— 96 与 10 同屏，是这套排版的身份。</summary>
@@ -123,7 +107,7 @@ namespace TowerDefense.UI
             public const int Micro = 10;     // 极小米字：单位后缀 / 编号 / 罗马音
         }
 
-        /// <summary>间距阶梯（8pt 栅格）。不要出现 12 / 20 / 28 这种不在栅格上的值。</summary>
+        /// <summary>常用间距，包含 4 点小间距和 8 点倍数。</summary>
         public static class Gap
         {
             public const float Xs = 4f;

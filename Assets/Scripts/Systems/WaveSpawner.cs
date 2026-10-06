@@ -8,16 +8,15 @@ using TowerDefense.Data;
 namespace TowerDefense.Systems
 {
     /// <summary>
-    /// 剿灭式刷怪器：把 GameConfig.Rounds 逐轮推进。
-    /// 一轮 = 「刷完该轮所有条目 + 场上敌人清空」，之后短暂休整、打出下一轮的横幅。
-    /// 轮与轮之间有明确的开始（宽幅横幅 + 短停）与边界（清场），区分度更强。
+    /// 按 GameConfig.Rounds 推进幕次。
+    /// 每幕刷完且场上敌人清空后发放补给，休整后开始下一幕。
     /// </summary>
     public sealed class WaveSpawner : MonoBehaviour
     {
-        /// <summary>新一波动画开始时触发：参数为轮下角、中文标题、英文卷标（供 HUD 打横幅）。</summary>
+        /// <summary>幕次横幅开始时触发，参数为轮次索引、中文标题和英文卷标。</summary>
         public event Action<int, string, string> OnRoundStart;
 
-        /// <summary>一波清场完成时触发：参数为轮下角（供 HUD 打「波次清除」横幅）。</summary>
+        /// <summary>清场完成时触发，参数为轮次索引。</summary>
         public event Action<int> OnRoundClear;
 
         private int _remainingSpawns;
@@ -108,13 +107,12 @@ namespace TowerDefense.Systems
 
         private IEnumerator SpawnEntryRoutine(SpawnEntry entry, int roundIndex)
         {
-            // 与本轮开始相对的时间偏移。
+            // 刷怪时间相对本轮横幅结束。
             yield return new WaitForSeconds(entry.StartTime);
 
             var definition = GameConfig.Enemies[entry.EnemyType];
             var route = GameManager.Instance.Map.GetRouteWorld(entry.RouteIndex);
             var spawnPos = GameManager.Instance.Map.GetSpawnPosition(entry.RouteIndex);
-            // 逐轮多维增强：血量/攻击/移速按 Stage 层级爬坡，每一轮都比上一轮更凶。
             float healthScale = GameConfig.StageHealthScale(roundIndex);
             float speedScale = GameConfig.StageSpeedScale(roundIndex);
             float damageScale = GameConfig.StageDamageScale(roundIndex);

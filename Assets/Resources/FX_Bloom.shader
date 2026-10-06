@@ -1,4 +1,4 @@
-// 简易 Bloom：亮度提取 → 高斯模糊 → 叠加回画面（发光体/霓虹氛围）
+// Bloom：亮度提取、横纵均值模糊、叠加回原画面。
 Shader "TowerDefense/FX/Bloom"
 {
     Properties

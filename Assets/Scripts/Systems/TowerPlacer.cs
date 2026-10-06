@@ -8,14 +8,11 @@ using TowerDefense.Effects;
 using TowerDefense.UI;
 using TowerDefense.Util;
 
-// 音效与特效
-
 namespace TowerDefense.Systems
 {
     /// <summary>
-    /// 塔的放置/撤退交互：鼠标悬停显示格子高亮 + 格子化攻击范围预览；
-    /// 点击空地放塔，点击已有塔则撤退（返还 50%）。
-    /// 使用 legacy Input + EventSystem 判定指针是否落在 UI 上（UGUI）。
+    /// 悬停显示格子和攻击范围；点击空地部署，点击已有塔选中查看。
+    /// 撤退由所选塔的操作按钮触发；使用 legacy Input 和 EventSystem 排除 UI 操作。
     /// </summary>
     public sealed class TowerPlacer : MonoBehaviour
     {
@@ -40,12 +37,10 @@ namespace TowerDefense.Systems
             _hoverCell.sprite = SpriteFactory.RoundedSquare(0.9f, 0.3f, GameConfig.GridHoverColor);
             _hoverCell.gameObject.SetActive(false);
 
-            // 选中塔的环形指示器（跟随塔位置，颜色取塔职业色）
             _selectionRing = CreateSpriteObject(parent, "SelectionRing", 3);
             _selectionRing.sprite = SpriteFactory.Shell(0.66f, 0.075f, Color.white);
             _selectionRing.gameObject.SetActive(false);
 
-            // 攻击范围：交给几何化指示器（干净边界框 + 四角角标，替代逐格半透明方块）
             var rangeGo = new GameObject("RangeIndicator");
             rangeGo.transform.SetParent(parent, false);
             _rangeIndicator = rangeGo.AddComponent<HudRangeIndicator>();
@@ -84,7 +79,6 @@ namespace TowerDefense.Systems
             var gm = GameManager.Instance;
             var cam = Camera.main;
 
-            // 选中环跟随塔（任何状态都显示，用于 UI 面板对应当前选中的塔）
             if (SelectedTower != null && gm != null)
             {
                 _selectionRing.gameObject.SetActive(true);
@@ -111,7 +105,7 @@ namespace TowerDefense.Systems
                 return;
             }
 
-            // 指针在 UI 上时不处理放置/悬停。
+            // 指针在相机视口外或 UI 上时不处理放置和悬停。
             if (!cam.pixelRect.Contains(Input.mousePosition))
             {
                 HidePreview();
@@ -123,7 +117,7 @@ namespace TowerDefense.Systems
                 return;
             }
 
-            // 轴测（倾斜）相机：鼠标屏幕坐标必须射线求交地面 z=0 平面，否则拾取会错位
+            // 透视相机拾取需与地面 z=0 平面求交。
             var ray = cam.ScreenPointToRay(Input.mousePosition);
             var ground = new Plane(Vector3.forward, Vector3.zero);
             if (!ground.Raycast(ray, out float groundDist))
@@ -152,7 +146,6 @@ namespace TowerDefense.Systems
                     _hoverCell.color = GameConfig.GridRetreatColor;
                     if (_occupiedTowers.TryGetValue(cell, out var occupiedTower))
                     {
-                        // 已有符卡：用它的职业色显示射程，强化「这张卡管多大一片」
                         _rangeIndicator.Show(centerWorld, occupiedTower.Definition.RangeCells,
                             occupiedTower.Definition.Color);
                     }

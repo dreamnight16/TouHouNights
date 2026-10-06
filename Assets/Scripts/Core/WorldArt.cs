@@ -2,45 +2,24 @@ using UnityEngine;
 
 namespace TowerDefense.Core
 {
-    /// <summary>
-    /// 世界层视觉令牌（与 UI 侧的 <c>TdTheme</c> 平级，但只服务战场内的东西）。
-    ///
-    /// 存在的理由：地图、塔、敌人以前各自在代码里写死色值和尺寸，结果
-    ///   ① 明暗层级塌陷（深蓝叠深蓝，看不清）；
-    ///   ② 形状语言不统一（球 / 圆 / 方随意混搭，像几何体堆料）；
-    ///   ③ 没有统一的光照与描边规则，缺少"工业设计感"。
-    ///
-    /// 本层定死三条规则，所有世界单位一律遵守：
-    ///   - 价值层级：底(4%) → 棋盘(8%) → 网格(12%) → 路径(18%) → 建筑(30%) → 单位(55%~85%)。
-    ///     相邻层级必须拉开明度，不允许"深色上叠深色"。
-    ///   - 统一描边：任何单位先铺一层放大 1.14 倍的近黑剪影，再叠本体色，保证不糊在背景里。
-    ///   - 统一打光：光来自左上 45°，一律「顶部缩小上移提亮 + 落地压扁投影」。
-    ///
-    /// 形状语言：六边形 = 平台/建筑，箭形 = 有朝向的机动单位，菱形 = 尖锐/精准职业，
-    /// 圆环 = 范围/光环，L 角标 = 取景与锁定。
-    /// </summary>
+    /// <summary>战场共用的配色、明暗处理和渲染层序。</summary>
     public static class WorldArt
     {
-        // ---- 明度阶梯（括号内为近似灰度）----
-        public static readonly Color Abyss = Hex("0D1420");        // 4%  战场之外的虚空
-        public static readonly Color BoardPlate = Hex("182434");   // 8%  可部署棋盘底
+        // ---- 背景与道路 ----
+        public static readonly Color Abyss = Hex("0D1420");        // 战场背景
+        public static readonly Color BoardPlate = Hex("182434");   // 可部署棋盘底
         public static readonly Color GridMinor = new Color(1f, 1f, 1f, 0.05f);
         public static readonly Color GridMajor = new Color(1f, 1f, 1f, 0.11f);
         public static readonly Color Frame = Hex("50657C");        // 取景框 / 角标
-        // 路面是铺在漆板上的石板：填充比漆板亮得多才看得出「有这么一条道」，
-        // 描边取 UI 侧同一个灰金（#8A7A55），让世界与界面的金是同一块金。
-        public static readonly Color RoadEdge = Hex("8A7A55");     // 路径描边（灰金，左右两条竖边）
-        public static readonly Color RoadFill = Hex("3C4C60");     // 路径路面（比漆板再亮一档，石道才「铺」在板上）
+        public static readonly Color RoadEdge = Hex("8A7A55");     // 路径描边
+        public static readonly Color RoadFill = Hex("3C4C60");     // 路面填充
 
-        // 石道的朝向。平涂的描边会让整条路立刻塌回成一张平面图形 ——
-        // 上沿捕光、下沿落影之后，路面才「站」起来。
+        // 道路上沿提亮、下沿加深。
         public static readonly Color RoadEdgeLit = new Color(.92f, .82f, .58f, .60f);  // 上沿（朝光）
         public static readonly Color RoadEdgeDark = new Color(0f, 0f, 0f, .45f);       // 下沿（背光）
         public static readonly Color RoadLift = new Color(1f, 1f, 1f, .10f);           // 每格顶面的受光带
 
         // ---- 夜色天幕 ----
-        // 战场不该浮在虚空里。这三档构成「深夜神社的院子」：天顶近黑、中天深靛、地平泛暖灰蓝，
-        // 让棋盘有地平线可依，而不是一张贴在黑板上的网格。
         public static readonly Color SkyHigh = Hex("05070E");      // 天顶
         public static readonly Color SkyMid = Hex("0B1526");       // 中天
         public static readonly Color SkyLow = Hex("26333F");       // 地平（暖灰蓝）
@@ -49,24 +28,15 @@ namespace TowerDefense.Core
         public static readonly Color GoldDust = Hex("E3C489");     // 金尘
 
         // ---- 漆器与金线 ----
-        // 神社的地面是漆板，不是水泥格。棋盘底色统一成一块整板，靠极细金线分格 ——
-        // 上一版「每格一块灰方块」的棋盘格正是它读起来像工程样品的直接原因。
-        // 漆板的明度是整套战场视觉的地基，取值只有一个依据：**必须明显亮于天幕**。
-        // 上一版取 #0C1420，和夜空只差 4% —— 板子和背景糊成一片，棋盘读起来像贴在黑板上的网格。
-        // 明日方舟的做法是「平面 + 大跨度明度台阶」：底图近黑，战场是一块明显亮起来的平板，
-        // 纵深全部由这个台阶承担，而不是由任何倒角或投影。这里照同一个思路取值。
         public static readonly Color Lacquer = Hex("1A2634");      // 漆板底（明显亮于天幕）
         public static readonly Color LacquerLift = Hex("24313F");  // 漆板受光面
         public static readonly Color GoldLine = new Color(.78f, .66f, .42f, .20f);
         public static readonly Color GoldEdge = new Color(.90f, .78f, .52f, .42f);
 
-        /// <summary>
-        /// 主格线：每 4 格一道，比次格线亮且偏冷青（与 UI 侧「情报 / 数据」同色）。
-        /// 单层等权网格读作坐标纸；分出主次之后，棋盘才开始像一块**被标定过的**板。
-        /// </summary>
+        /// <summary>每 4 格一道的主格线，比次格线亮且偏冷青。</summary>
         public static readonly Color GridSurvey = new Color(.36f, .78f, .91f, .17f);
 
-        /// <summary>棋盘上沿的辉光。它是「光打在这块板上」，不是「板被削过一刀」—— 只做明度，不做体积。</summary>
+        /// <summary>棋盘上沿向下淡出的辉光。</summary>
         public static readonly Color PlateCrest = new Color(.90f, .78f, .52f, .30f);
         public static readonly Color Lantern = Hex("FFB45A");      // 灯笼暖光
         public static readonly Color LanternDeep = Hex("4A2A12");  // 灯笼暗部
@@ -88,9 +58,7 @@ namespace TowerDefense.Core
         public static readonly Color Shadow = new Color(0f, 0f, 0f, 0.32f);     // 落地投影
 
         // ---- 渲染层序分区 ----
-        // 同层并列的两个 SpriteRenderer 之间没有稳定遮挡关系（会随相机距离漂移而抖），
-        // 所以按职能分段：新增任何渲染体都必须落在对应区间，禁止随手填一个数字。
-        // 天幕在「地面」之下：渐变 → 星野 → 地平雾，三层叠出景深，再往上是地面与暗角。
+        // 按用途分配排序区间，避免遮挡顺序依赖相机距离。
         public const int LayerSky = -14;        // 天幕渐变
         public const int LayerStars = -13;      // 星野
         public const int LayerHaze = -12;       // 地平线雾

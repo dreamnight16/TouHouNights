@@ -18,9 +18,8 @@ namespace TowerDefense.UI
     }
 
     /// <summary>
-    /// 程序化图标构建器：用 Circle / Square / Triangle / Heart 等基础图元组合出清晰图标，
-    /// 让纯代码 UI 也有「美术感」——参考 Kingdom Rush 的彩色兵种图标与方舟的职业图标。
-    /// 根节点为无 Image 的 RectTransform，调用方自行定位；所有子图元 raycastTarget=false。
+    /// 用基础图元组合 HUD 和塔图标。根节点为 RectTransform，由调用方定位；
+    /// 子图元均不拦截指针。
     /// </summary>
     public static class UiIcon
     {
@@ -82,13 +81,7 @@ namespace TowerDefense.UI
         }
 
         /// <summary>
-        /// 塔职业图标。它唯一的职责是「一眼之内互不混淆」，所以五个图形按**轮廓家族**分开：
-        /// 竖条 / 空心菱形 / 实心星芒 / 六芒细线 / 空心环。
-        ///
-        /// 上一版不是这样：速射和爆符都画成火箭（只差颜色），狙击画成加号（和治疗撞车），
-        /// 结果五张卡在余光里只有三种形状 —— 玩家得逐个去读名字才知道哪个是哪个。
-        /// 参照方舟的职业图标：形状先说话，颜色只是辅助。
-        /// 全部是发丝线与单色实心块，没有描边、没有投影。
+        /// 五种塔分别使用竖条、空心菱形、实心星芒、六芒细线和空心环，方便按轮廓区分。
         /// </summary>
         public static RectTransform CreateTowerIcon(Transform parent, TowerType type, float size, Color color)
         {
@@ -142,8 +135,7 @@ namespace TowerDefense.UI
         }
 
         /// <summary>
-        /// 空心菱形：四根 ±45° 的细条首尾相接。半对角线为 <paramref name="radius"/>，
-        /// 于是边长 = radius·√2，每根的中点落在 (±radius/2, ±radius/2)。
+        /// 用四根 ±45° 细条组合菱形；radius 是半对角线相对图标边长的比例。
         /// </summary>
         private static void Rhombus(RectTransform root, float size, float radius, float thickness, Color color)
         {

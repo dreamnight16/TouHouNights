@@ -7,12 +7,11 @@ using TowerDefense.Util;
 namespace TowerDefense.UI
 {
     /// <summary>
-    /// Fluent Reveal 扫光：鼠标进入时顶部 1px 渐变光带出现并横向往返流动，离开时淡出。
+    /// 鼠标进入时显示顶部渐变光带并横向往返移动，离开时淡出。
     /// 挂在目标面板/按钮上（组件自动给目标加顶部光带 Image）。
     /// </summary>
     public sealed class RevealLight : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        private RectTransform _host;
         private Image _light;
         private Coroutine _routine;
 
@@ -20,7 +19,6 @@ namespace TowerDefense.UI
         {
             if (host == null || host.GetComponent<RevealLight>() != null) return;
             var fx = host.gameObject.AddComponent<RevealLight>();
-            fx._host = host;
             fx._tint = tint;
             var light = UiFactory.CreateImage(host, "RevealLight", new Color(1f, 1f, 1f, 0f));
             light.raycastTarget = false;

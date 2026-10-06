@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using TMPro;
 
@@ -17,13 +16,13 @@ namespace TowerDefense.UI
             "PingFang SC", "Hiragino Sans GB", "Arial Unicode MS"
         };
 
-        private const char Probe = '中';   // 探针字：一个拉丁字体必然没有的字
+        private const char Probe = '中';   // 用于检查中文覆盖。
 
         private static Font _cjk;
         private static TMP_FontAsset _tmpCjk;
         private static bool _tmpTried;
 
-        /// <summary>已验证含中文的系统字体。极端情况下返回 Unity 内置字体（调用方需自行降级）。</summary>
+        /// <summary>优先使用项目中文字体，缺失时查找系统字体，最后回退到 Unity 内置字体。</summary>
         public static Font Cjk
         {
             get
@@ -36,7 +35,7 @@ namespace TowerDefense.UI
             }
         }
 
-        /// <summary>是否拿到了真正含中文的字体（false = 环境里一个中文字体都没有）。</summary>
+        /// <summary>最近一次字体查找是否通过中文探针检查。</summary>
         public static bool HasCjk { get; private set; }
 
         /// <summary>中文 TMP 字体资产；创建失败为 null。</summary>

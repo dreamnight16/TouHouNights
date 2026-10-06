@@ -4,11 +4,8 @@ using System.Collections.Generic;
 namespace TowerDefense.Util
 {
     /// <summary>
-    /// 懒删除二叉最小堆（参考算法笔记「懒删除堆 Lazy Deletion Heap」）。
-    /// 按 <paramref name="keySelector"/> 维护最小元素；Pop 时跳过已死（IsAlive=false）的过期项。
-    /// 用于「血量最低 / 距终点最近」等全局索敌策略：堆中元素按全局 key 排序，
-    /// 塔取目标时「弹出出界项、命中即停、再把弹出的项回插」，保证堆状态不变。
-    /// 复杂度：建堆 Heapify O(n)，Push/Pop O(log n)。
+    /// 按 keySelector 排序的二叉最小堆：Rebuild 为 O(n)，Push/Pop 为 O(log n)。
+    /// 过期项的判断与懒删除由调用方负责。
     /// </summary>
     public sealed class MinHeap<T> where T : class
     {

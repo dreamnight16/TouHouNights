@@ -102,12 +102,10 @@ public sealed class MenuVerificationRunner : MonoBehaviour
         yield return new WaitForSecondsRealtime(1);
         BattleUiPlayVerification.Capture(ui, "menu-battle.png");
         Debug.Log("MENU_FLOW PASS: title, settings, music select/pause/seek, practice, restart, return, campaign reset");
-        // Same public deployment checks as mouse input. No bonus gold or damage cheats.
+        // 使用公共部署入口验证参考阵容，不增加资源或伤害。
         yield return RunBalance(game, false);
         Check(game.State == GameState.Victory, "Campaign reference formation could not win");
         Debug.Log($"CAMPAIGN_BALANCE PASS kills={game.TotalKills} leaks={game.LeakedEnemies} lives={game.Lives} towers={game.TowerCount} spirit={game.Spirit}");
-        // 结算屏此前是唯一没有截图覆盖的一屏，而它刚被改动过（删掉了评级字母后面那圈封印环）。
-        // 没有截图，「删掉环之后会不会显得空」就只能靠想象 —— 所以借这一局胜利截一张。
         yield return new WaitForSecondsRealtime(.6f);
         BattleUiPlayVerification.Capture(ui, "result.png");
         game.ReturnToMenu();

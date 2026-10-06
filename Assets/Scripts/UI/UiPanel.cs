@@ -7,31 +7,19 @@ namespace TowerDefense.UI
     /// <summary>面板四角的处理方式。</summary>
     public enum UiCorner
     {
-        /// <summary>锐利直角。默认值 —— 这套视觉的地基。</summary>
+        /// <summary>直角，默认值。</summary>
         Sharp = 0,
 
-        /// <summary>四角一致斜切：签名式切口。</summary>
+        /// <summary>四角一致斜切。</summary>
         Chamfer = 1,
 
-        /// <summary>只有左上 / 右下斜切，另外两角保持直角。不对称，最像「做过设计」的那一种。</summary>
+        /// <summary>左上和右下斜切，另外两角保持直角。</summary>
         Diagonal = 2,
     }
 
     /// <summary>
-    /// 一块面板，一个 Graphic。
-    ///
-    /// 存在的理由：上一版每块面板都是 <c>Image</c> + <c>Shadow</c> + <c>Outline</c> 三个组件。
-    /// 那是三层**硬偏移** —— 暗影其实是复制一份本体再位移，转角和斜边处会露出原形状的边；
-    /// 而且颜色只能靠 <c>Image.color</c> 一处平涂，做不出「上亮下暗」的体积。
-    /// 更贵的是布局开销：三个组件各自持有一份网格，任何尺寸变化都要重建三次。
-    ///
-    /// 本组件在 <see cref="OnPopulateMesh"/> 里一次性烘出五层，合并进同一个网格：
-    ///   ① 外辉光（向外淡出） ② 描边环 ③ 渐变本体 ④ 顶部受光 ⑤ 底部压暗
-    ///
-    /// 几何上只有一件事需要理解：**轮廓生成器同时接受「内缩量」和「角生长量」**。
-    /// 圆角半径按生长量线性增加、斜切切口按 0.586·生长量 增加、直角保持直角 ——
-    /// 这恰好是「多边形 ⊕ 半径 g 的圆盘」的闵可夫斯基和，所以辉光/描边环的每一条边
-    /// 都严格等距于本体轮廓，不会出现粗细不均的豁口。
+    /// 将外辉光、描边、本体渐变和顶部、底部窄带合并为一个 Graphic 网格。
+    /// 轮廓同时接受内缩量和角尺寸增量：圆角线性缩放，斜切按 ChamferGrow 调整，直角保持直角。
     /// </summary>
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class UiPanel : MaskableGraphic
@@ -58,7 +46,7 @@ namespace TowerDefense.UI
         [SerializeField] private Color _glowColor;
         [SerializeField] private float _glowWidth;
 
-        // OnPopulateMesh 不会被重入（同一帧内 Unity 不会并行重建网格），静态缓冲安全且免去每帧 GC。
+        // UGUI 在主线程串行重建网格，复用轮廓缓冲以减少分配。
         private static readonly List<Vector2> RingOuter = new List<Vector2>(96);
         private static readonly List<Vector2> RingInner = new List<Vector2>(96);
         private static readonly List<Vector2> BodyPoints = new List<Vector2>(96);
@@ -81,7 +69,7 @@ namespace TowerDefense.UI
             return this;
         }
 
-        /// <summary>本体垂直渐变。上亮下暗才有体积，平涂一定像色块。</summary>
+        /// <summary>设置本体的垂直渐变。</summary>
         public UiPanel Body(Color top, Color bottom)
         {
             _bodyTop = top;
@@ -90,7 +78,7 @@ namespace TowerDefense.UI
             return this;
         }
 
-        /// <summary>单色本体（仍是平涂，仅在确实不需要体积时使用，例如纯色遮罩）。</summary>
+        /// <summary>设置本体为单色。</summary>
         public UiPanel Flat(Color color)
         {
             return Body(color, color);
@@ -105,7 +93,7 @@ namespace TowerDefense.UI
             return this;
         }
 
-        /// <summary>沿顶部内缘的一条向下淡出的受光带。这是「金属/玻璃」感的主要来源。</summary>
+        /// <summary>设置沿顶部内缘向下淡出的窄带。</summary>
         public UiPanel Rim(Color color, float height = 28f)
         {
             _rimColor = color;
@@ -114,7 +102,7 @@ namespace TowerDefense.UI
             return this;
         }
 
-        /// <summary>沿底部内缘的一条向上淡出的压暗带。和 <see cref="Rim"/> 配对，面板才有「被加工过」的立体边。</summary>
+        /// <summary>设置沿底部内缘向上淡出的窄带。</summary>
         public UiPanel Foot(Color color, float height = 10f)
         {
             _footColor = color;
@@ -123,7 +111,7 @@ namespace TowerDefense.UI
             return this;
         }
 
-        /// <summary>向外淡出的辉光。绯色辉光是「就绪 / 正在发生」的统一语言。</summary>
+        /// <summary>设置向外淡出的辉光。</summary>
         public UiPanel Glow(Color color, float width)
         {
             _glowColor = color;
@@ -167,7 +155,6 @@ namespace TowerDefense.UI
             Outline(rect, border, corner, _rounded, _corner, -border, steps, BodyPoints);
             Fan(vh, BodyPoints, _bodyTop, _bodyBottom, rect.yMax, rect.yMin);
 
-            // ④ 顶部受光 + 底部压暗：一对，缺一个面板就会显得「贴」在背景上而不是「立」在上面。
             EdgeBand(vh, rect, corner, border, _rimColor, _rimHeight, true);
             EdgeBand(vh, rect, corner, border, _footColor, _footHeight, false);
         }
@@ -276,10 +263,7 @@ namespace TowerDefense.UI
         {
             if (color.a <= 0f || requestedHeight <= 0f) return;
 
-            // 受光带按**比例**封顶，不按绝对像素。20px 的受光铺在 136px 的卡片上是「一条边」，
-            // 铺在 48px 的按钮上就是整块按钮的 42% —— 同一份颜色于是从「光」变成了「粉色渐变的
-            // 上半截」，按钮看起来像两截拼的。封到 22% 之后，大面板的受光几乎不变，
-            // 而小按钮自动退回成一条边。调用点不必逐个去调数值。
+            // 窄带不超过面板高度的 22%，避免小按钮被光带占满。
             float height = Mathf.Min(requestedHeight, rect.height * .22f);
             float insetX = Mathf.Max(corner, 6f) + border;
             float x0 = rect.xMin + insetX;
